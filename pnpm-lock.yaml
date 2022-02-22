@@ -45,7 +45,7 @@ importers:
       typescript: 4.5.5
       vitest: 0.3.5
 
-  packages/example-rule:
+  packages/example-eslint-plugin:
     specifiers:
       '@atlaskit/modal-dialog': ^12.2.3
       '@types/eslint': ^8.4.1
