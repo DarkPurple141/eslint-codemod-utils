@@ -7,6 +7,7 @@
   },
   "main": "src/index.ts",
   "scripts": {
+    "build": "tsc",
     "test": "vitest"
   },
   "devDependencies": {
