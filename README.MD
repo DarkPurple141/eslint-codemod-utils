@@ -1,10 +1,12 @@
 # ESLint Codemod Utilities
 
-npm version (opens new window)Downloads/month (opens new window)Build Status (opens new window)Coverage Status (opens new window)Dependency Status(opens new window)
-
 The `eslint-codemod-utils` package is a collection of AST helper functions for more complex ESLint rule fixes. See the [motivation](#Motivation) section for more information.
 
 ## Installation
+
+```
+pnpm add -D eslint-codemod-utils
+```
 
 ```
 yarn add -D eslint-codemod-utils
