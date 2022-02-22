@@ -1,0 +1,27 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "Alex Hinds",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/eslint": "^8.4.1",
+    "@types/estree-jsx": "^0.0.1",
+    "@types/node": "^17.0.18",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5",
+    "vite": "^2.8.3",
+    "vitest": "^0.3.5"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
