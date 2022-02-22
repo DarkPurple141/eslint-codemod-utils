@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "vitest",
+    "test:ci": "vitest --run",
     "typecheck": "tsc --noEmit"
   },
   "author": "Alex Hinds",

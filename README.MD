@@ -1,5 +1,19 @@
 # ESLint Codemod Utilities
 
+npm version (opens new window)Downloads/month (opens new window)Build Status (opens new window)Coverage Status (opens new window)Dependency Status(opens new window)
+
+The `eslint-codemod-utils` package is a collection of AST helper functions for more complex ESLint rule fixes. See the [motivation](#Motivation) section for more information.
+
+## Installation
+
+```
+yarn add -D eslint-codemod-utils
+```
+
+```
+npm i --save-dev eslint-codemod-utls
+```
+
 ## How it works
 
 The library provides a 1-1 mapping for every `estree` node type. These are all lowercase complements to the underlying type they represent;
