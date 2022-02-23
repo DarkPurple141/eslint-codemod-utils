@@ -1,10 +1,9 @@
 {
   "name": "eslint-codemod-utils",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Library for managing <....>",
-  "module": "lib/index.ts",
   "source": "lib/index.ts",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "publishConfig": {
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
