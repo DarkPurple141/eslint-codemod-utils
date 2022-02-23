@@ -1,5 +1,12 @@
 # ESLint Codemod Utilities
 
+<p align="center">
+  <a href="https://github.com/DarkPurple141/eslint-codemod-utils/actions/workflows/build-test.yml">
+    <img alt="Github Actions Build Status" src="https://img.shields.io/github/workflow/status/DarkPurple141/eslint-codemod-utils/CI%20Build%20&%20Testing?style=flat-square"></a>
+  <a href="https://www.npmjs.com/package/eslint-codemod-utils">
+    <img alt="npm version" src="https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square"></a>
+</p>
+
 The `eslint-codemod-utils` package is a collection of AST helper functions for more complex ESLint rule fixes. See the [motivation](#Motivation) section for more information.
 
 ## Installation

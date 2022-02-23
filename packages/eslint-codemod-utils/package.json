@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Library for managing <....>",
   "source": "lib/index.ts",
-  "main": "dist/index.js",
+  "main": "lib/index.ts",
   "publishConfig": {
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
