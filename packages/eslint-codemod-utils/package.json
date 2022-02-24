@@ -14,7 +14,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublish": "pnpm build"
   },
   "author": "Alex Hinds",
   "license": "ISC",
