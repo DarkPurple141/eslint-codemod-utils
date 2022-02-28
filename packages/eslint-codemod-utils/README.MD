@@ -7,7 +7,7 @@
     <img alt="npm version" src="https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square"></a>
 </p>
 
-The `eslint-codemod-utils` package is a collection of AST helper functions for more complex ESLint rule fixes. See the [motivation](#Motivation) section for more information.
+The `eslint-codemod-utils` package is a library of AST helper functions to help apply more complex ESLint rule fixes. This library provides first class typescript support to supercharge your custom eslint rules.
 
 ## Installation
 
@@ -23,12 +23,42 @@ yarn add -D eslint-codemod-utils
 npm i --save-dev eslint-codemod-utls
 ```
 
+## Getting started
+
+To put together a basic JSX node, you might do something like this:
+
+```ts
+import {
+  jsxElement,
+  jsxOpeningElement,
+  jsxClosingElement,
+  identifier,
+} from 'eslint-codemod-utils'
+
+const modalName = identifier({ name: 'Modal' })
+const modal = jsxElement({
+  openingElement: jsxOpeningElement({ name: modalName, selfClosing: false }),
+  closingElement: jsxClosingElement({ name: modalName }),
+})
+```
+
+This would produce an `estree` compliant node type that you can also nicely stringify to apply your eslint
+fixes. For example:
+
+```ts
+modal.toString()
+// produces: <Modal></Modal>
+```
+
+The real power of this approach is when combining these utilties with `estree` nodes exposed by `eslint` rule fixers. In these cases, rather than
+recreating the entire tree, you can instead focus on only the fix you actually need to affect. See the `example-eslint-plugin` for more information.
+
 ## How it works
 
-The library provides a 1-1 mapping for every `estree` node type. These are all lowercase complements to the underlying type they represent;
-eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString` which means they recursively produce the correct string output for any valid `estree` AST.
+The library provides a 1-1 mapping of types to utility functions every `estree` node type. These are all lowercase complements to the underlying type they represent;
+eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes also implement their own `toString` which means without they recursively produce the correct string output for any valid `estree` AST.
 
-The full API (WIP) is below. I intend to clean up some of these types to make it clearer - each helper takes in a valid `estree` node and spits out a similar, but
+The full API (WIP) is below. Each helper takes in a valid `estree` node and spits out a similar, but
 slightly altered node that can be more easily stringified.
 
 ```ts

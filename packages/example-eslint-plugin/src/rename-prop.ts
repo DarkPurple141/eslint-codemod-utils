@@ -1,5 +1,5 @@
 import { Rule } from 'eslint'
-import { JSXOpeningElement, Node } from 'estree-jsx'
+import { JSXOpeningElement } from 'estree-jsx'
 import {
   jsxAttribute,
   jsxIdentifier,

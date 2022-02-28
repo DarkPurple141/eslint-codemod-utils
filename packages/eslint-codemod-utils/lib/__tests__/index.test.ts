@@ -1,4 +1,3 @@
-import { describe, expect, test } from 'vitest'
 import {
   jsxClosingElement,
   jsxIdentifier,
@@ -14,6 +13,8 @@ import {
   importSpecifier,
   importDefaultSpecifier,
   jsxText,
+  jsxSpreadAttribute,
+  callExpression,
 } from '..'
 
 describe('importDeclaration', () => {
@@ -102,17 +103,37 @@ describe('importDeclaration', () => {
     ).eq(`import { Bongo, Congo, Jongo } from '@atlaskit/modal-dialog'`)
   })
 
-  test.todo('with aliasing')
+  test('with aliasing', () => {
+    expect(
+      importDeclaration({
+        specifiers: [
+          importSpecifier({
+            imported: identifier({ name: 'Bongo' }),
+            local: identifier({ name: 'BongoMan' }),
+          }),
+          importSpecifier({
+            imported: identifier({ name: 'Congo' }),
+            local: identifier({ name: 'CongoMan' }),
+          }),
+          importSpecifier({
+            imported: identifier({ name: 'Jongo' }),
+            local: identifier({ name: 'JongoGirl' }),
+          }),
+        ],
+        source: literal({ value: '@atlaskit/modal-dialog' }),
+      }).toString()
+    ).eq(
+      `import { Bongo as BongoMan, Congo as CongoMan, Jongo as JongoGirl } from '@atlaskit/modal-dialog'`
+    )
+  })
 })
 
 describe('jsxClosingElement', () => {
   test('basic', () => {
     expect(
-      String(
-        jsxClosingElement({
-          name: jsxIdentifier({ name: 'Modal' }),
-        })
-      )
+      jsxClosingElement({
+        name: jsxIdentifier({ name: 'Modal' }),
+      }).toString()
     ).eq(`</Modal>`)
   })
 
@@ -133,13 +154,45 @@ describe('jsxClosingElement', () => {
 describe('jsxMemberExpression', () => {
   test('basic', () => {
     expect(
-      String(
-        jsxMemberExpression({
-          object: jsxIdentifier({ name: 'AK' }),
-          property: jsxIdentifier({ name: 'Modal' }),
-        })
-      )
+      jsxMemberExpression({
+        object: jsxIdentifier({ name: 'AK' }),
+        property: jsxIdentifier({ name: 'Modal' }),
+      }).toString()
     ).eq('AK.Modal')
+  })
+})
+
+describe('jsxSpeadAttribute', () => {
+  test('basic', () => {
+    expect(
+      jsxSpreadAttribute({
+        argument: identifier({ name: 'spread' }),
+      }).toString()
+    ).eq('{...spread}')
+  })
+
+  test('callExpression', () => {
+    expect(
+      jsxSpreadAttribute({
+        argument: callExpression({
+          callee: identifier({ name: 'spread' }),
+          arguments: [],
+          optional: false,
+        }),
+      }).toString()
+    ).eq('{...spread()}')
+  })
+
+  test('optional callExpression', () => {
+    expect(
+      jsxSpreadAttribute({
+        argument: callExpression({
+          callee: identifier({ name: 'spread' }),
+          arguments: [],
+          optional: true,
+        }),
+      }).toString()
+    ).eq('{...spread?.()}')
   })
 })
 
@@ -232,6 +285,8 @@ describe('jsxElement', () => {
                   attributes: [],
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
+                children: [],
+                closingElement: null,
               }),
             ],
           })
@@ -250,6 +305,7 @@ describe('jsxElement', () => {
             openingElement: jsxOpeningElement({
               attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
+              selfClosing: false,
             }),
             closingElement: jsxClosingElement({
               name: jsxIdentifier({ name: 'Modal' }),
@@ -263,6 +319,7 @@ describe('jsxElement', () => {
                 loc: { start: { column: 2 } },
                 openingElement: jsxOpeningElement({
                   attributes: [],
+                  selfClosing: false,
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
                 children: [
@@ -276,6 +333,7 @@ describe('jsxElement', () => {
                     openingElement: jsxOpeningElement({
                       attributes: [],
                       name: jsxIdentifier({ name: 'VeryNested' }),
+                      selfClosing: false,
                     }),
                   }),
                 ],
@@ -302,54 +360,46 @@ describe('jsxOpeningElement', () => {
   test('with comment', () => {
     const commentValue = 'Hello this is a comment'
     expect(
-      String(
-        jsxOpeningElement({
-          leadingComments: [comment({ value: commentValue, type: 'Line' })],
-          name: jsxIdentifier({ name: 'Modal' }),
-          attributes: [],
-          selfClosing: true,
-        })
-      )
+      jsxOpeningElement({
+        leadingComments: [comment({ value: commentValue, type: 'Line' })],
+        name: jsxIdentifier({ name: 'Modal' }),
+        attributes: [],
+        selfClosing: true,
+      }).toString()
     ).eq(`// ${commentValue}\n<Modal />`)
   })
   test('with comments', () => {
     const commentValue = 'Hello this is a comment'
     expect(
-      String(
-        jsxOpeningElement({
-          leadingComments: [
-            comment({ value: commentValue, type: 'Line' }),
-            comment({ value: 'Second line', type: 'Line' }),
-          ],
-          name: jsxIdentifier({ name: 'Modal' }),
-          attributes: [],
-          selfClosing: true,
-        })
-      )
+      jsxOpeningElement({
+        leadingComments: [
+          comment({ value: commentValue, type: 'Line' }),
+          comment({ value: 'Second line', type: 'Line' }),
+        ],
+        name: jsxIdentifier({ name: 'Modal' }),
+        attributes: [],
+        selfClosing: true,
+      }).toString()
     ).eq(`// ${commentValue}\n// Second line\n<Modal />`)
   })
 
   test('no attributes', () => {
     expect(
-      String(
-        jsxOpeningElement({
-          name: jsxIdentifier({ name: 'Modal' }),
-          attributes: [],
-          selfClosing: true,
-        })
-      )
+      jsxOpeningElement({
+        name: jsxIdentifier({ name: 'Modal' }),
+        attributes: [],
+        selfClosing: true,
+      }).toString()
     ).eq(`<Modal />`)
   })
 
   test('no attributes not-self closing', () => {
     expect(
-      String(
-        jsxOpeningElement({
-          name: jsxIdentifier({ name: 'Modal' }),
-          attributes: [],
-          selfClosing: false,
-        })
-      )
+      jsxOpeningElement({
+        name: jsxIdentifier({ name: 'Modal' }),
+        attributes: [],
+        selfClosing: false,
+      }).toString()
     ).eq(`<Modal>`)
   })
 })

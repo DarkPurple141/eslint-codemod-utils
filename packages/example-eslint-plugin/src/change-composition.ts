@@ -102,6 +102,8 @@ const rule: Rule.RuleModule = {
                       loc: { start: { column: node.loc.start.column + 2 } },
                       openingElement: jsxOpeningElement({
                         name: modalHeaderIdentifer,
+                        selfClosing: false,
+                        attributes: [],
                       }),
                       closingElement: jsxClosingElement({
                         name: modalHeaderIdentifer,

@@ -1,1 +1,5 @@
-export type StringableASTNode<T> = T & { __pragma: 'ecu'; toString(): string }
+import type { BaseNode } from 'estree-jsx'
+
+export type StringableASTNode<T extends BaseNode> = (
+  node: Omit<T, 'type'>
+) => T & { __pragma: 'ecu'; toString(): string }
