@@ -248,6 +248,28 @@ export const callExpression: StringableASTNode<SimpleCallExpression> = ({
     }${optional ? '?.' : ''}(${calleeArgs.map(String).join(', ')})`,
 })
 
+/**
+ * __JSXSpreadAttribute__
+ *
+ * @example Usage
+ *
+ * ```js
+ * import { jsxSpreadAttribute, identifier } from 'eslint-codemod-utils'
+ *
+ * const spreadAttr = jsxSpreadAttribute({
+ *  argument: identifier({ name: 'spread' })
+ * })
+ * ```
+ * @example
+ *
+ * ```js
+ * // Produces a spread attribute
+ * <div {...spread}>
+ *      ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃
+ * ```
+ *
+ * @returns {JSXSpreadAttribute}
+ */
 export const jsxSpreadAttribute: StringableASTNode<JSXSpreadAttribute> = ({
   argument,
 }) => ({
