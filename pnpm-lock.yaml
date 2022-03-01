@@ -49,7 +49,7 @@ importers:
       typescript: 4.5.5
       vitest: 0.3.5_c8@7.11.0
 
-  packages/example-eslint-plugin:
+  packages/eslint-plugin-example:
     specifiers:
       '@atlaskit/modal-dialog': ^12.2.3
       '@types/eslint': ^8.4.1
