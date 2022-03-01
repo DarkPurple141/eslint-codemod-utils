@@ -7,9 +7,7 @@
     "test": "vitest",
     "test:ci": "vitest --run",
     "coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit",
-    "prepublish": "pnpm build -r",
-    "publish": "pnpm changeset publish"
+    "typecheck": "tsc --noEmit"
   },
   "author": "Alex Hinds",
   "license": "ISC",
