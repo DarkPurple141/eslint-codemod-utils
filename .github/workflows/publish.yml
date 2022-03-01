@@ -1,9 +1,9 @@
 name: Publish Package
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
 
-# publish flow originally from: https://github.com/vitejs/vite/blob/main/.github/workflows/publish.yml
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -27,17 +27,12 @@ jobs:
       - name: Install deps
         run: pnpm install
 
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
+      - name: Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # This expects you to have a script called release which does a build for your packages and calls changeset publish
+          publish: pnpm publish
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish package
-        run: |
-          cd packages/eslint-codemod-utils
-          pnpm run publish -- ${{ github.ref_name }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
