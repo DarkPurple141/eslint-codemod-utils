@@ -30,7 +30,7 @@ importers:
       prettier: 2.5.1
       typescript: 4.5.5
       vite: 2.8.3
-      vitest: 0.5.8_c8@7.11.0
+      vitest: 0.6.1_c8@7.11.0
 
   packages/eslint-codemod-utils:
     specifiers:
@@ -2925,8 +2925,8 @@ packages:
       - stylus
     dev: true
 
-  /vitest/0.5.8_c8@7.11.0:
-    resolution: {integrity: sha512-LTtjwaNiFKeDm/G/XbvXzFSFRB91uMIjszwfRRr5gNpdhoo9IE2BIeAMAyKbpGaj0oAqTOltCQ6A0x/7b/1Ueg==}
+  /vitest/0.6.1_c8@7.11.0:
+    resolution: {integrity: sha512-rgHgTO3xHCrbgmqYdUz4ViO0g2ekHeOfV60J6+1c6Ypzk1EqCE2sN8IpF4TDGs6BOvWIsVd/ob5c6U4Ozzu92g==}
     engines: {node: '>=14.14.0'}
     hasBin: true
     peerDependencies:
