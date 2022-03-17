@@ -3,14 +3,6 @@ import { typeToHelperLookup } from './constants'
 
 import { StringableASTNode } from './types'
 
-export const newExpression: StringableASTNode<estree.NewExpression> = (
-  node
-) => ({
-  ...node,
-  type: 'NewExpression',
-  __pragma: 'ecu',
-})
-
 /**
  * __CallExpression__
  *
@@ -47,7 +39,9 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
         ? 'super'
         : // @ts-expect-error
           typeToHelperLookup[callee.type](callee)
-    }${optional ? '?.' : ''}(${calleeArgs.map(String).join(', ')})`,
+    }${optional ? '?.' : ''}(${calleeArgs
+      .map((node) => typeToHelperLookup[node.type](node))
+      .join(', ')})`,
 })
 
 /**
@@ -98,6 +92,94 @@ export const importSpecifier: StringableASTNode<estree.ImportSpecifier> = ({
         : `${imported.name} as ${local.name}`
     }`,
 })
+
+export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
+  elements,
+  ...other
+}) => {
+  return {
+    ...other,
+    type: 'ArrayExpression',
+    elements,
+    __pragma: 'ecu',
+    toString: () =>
+      `[${elements
+        .map((node) => typeToHelperLookup[node.type](node))
+        .map(String)
+        .join(', ')}]`,
+  }
+}
+
+export const expressionStatement: StringableASTNode<
+  estree.ExpressionStatement
+> = ({ expression, ...other }) => ({
+  __pragma: 'ecu',
+  ...other,
+  expression,
+  type: 'ExpressionStatement',
+  toString: () => String(typeToHelperLookup[expression.type](expression)),
+})
+
+export const newExpression: StringableASTNode<estree.NewExpression> = ({
+  callee,
+  ...other
+}) => ({
+  ...other,
+  callee,
+  type: 'NewExpression',
+  __pragma: 'ecu',
+  toString: () => `new ${typeToHelperLookup[callee.type](callee)}`,
+})
+
+export const memberExpression: StringableASTNode<estree.MemberExpression> = ({
+  object,
+  property,
+  ...other
+}) => ({
+  ...other,
+  type: 'MemberExpression',
+  __pragma: 'ecu',
+  object,
+  property,
+  // TODO fix type issues
+  toString: () =>
+    `${typeToHelperLookup[object.type](object)}.${typeToHelperLookup[
+      object.type
+    ](property)}`,
+})
+
+export const variableDeclarator: StringableASTNode<
+  estree.VariableDeclarator
+> = ({ id, init, ...other }) => {
+  return {
+    ...other,
+    id,
+    init,
+    type: 'VariableDeclarator',
+    __pragma: 'ecu',
+    toString: () =>
+      `${typeToHelperLookup[id.type](id)}${
+        init ? ` = ${typeToHelperLookup[init.type](init)}` : ''
+      }`,
+  }
+}
+
+export const variableDeclaration: StringableASTNode<
+  estree.VariableDeclaration
+> = ({ declarations, kind, ...other }) => {
+  return {
+    ...other,
+    declarations,
+    kind,
+    type: 'VariableDeclaration',
+    __pragma: 'ecu',
+    toString: () =>
+      `${kind ? `${kind} ` : ''}${declarations
+        .map(variableDeclarator)
+        .map(String)
+        .join()}`,
+  }
+}
 
 export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
   specifiers,
@@ -172,9 +254,9 @@ export const switchStatement: StringableASTNode<estree.SwitchStatement> = ({
   ...other
 }) => ({
   ...other,
-  toString: () => {
-    throw new Error('Unimplemented')
-  },
+  toString: () => `switch (unimplemented) {
+    case 'TO': 'DO';
+  }`,
   __pragma: 'ecu',
   cases,
   discriminant,
@@ -219,4 +301,69 @@ export const awaitExpression: StringableASTNode<estree.AwaitExpression> = ({
   __pragma: 'ecu',
   argument,
   type: 'AwaitExpression',
+})
+
+export const functionDeclaration: StringableASTNode<
+  estree.FunctionDeclaration
+> = ({ body, async, id, generator, params, ...other }) => ({
+  ...other,
+  type: 'FunctionDeclaration',
+  __pragma: 'ecu',
+  body,
+  async,
+  id,
+  generator,
+  params,
+  // TODO
+  toString: () => `function XXXXXX () {}`,
+})
+
+export const classDeclaration: StringableASTNode<estree.ClassDeclaration> = ({
+  superClass,
+  id,
+  body,
+  ...other
+}) => {
+  return {
+    ...other,
+    type: 'ClassDeclaration',
+    superClass,
+    body,
+    id,
+    __pragma: 'ecu',
+    toString: () => `class __Unimplemented {}`,
+  }
+}
+
+export const classExpression: StringableASTNode<estree.ClassExpression> = ({
+  superClass,
+  id,
+  body,
+  ...other
+}) => {
+  return {
+    ...other,
+    type: 'ClassExpression',
+    superClass,
+    body,
+    id,
+    __pragma: 'ecu',
+    toString: () =>
+      String(classDeclaration({ superClass, id, body, ...other })),
+  }
+}
+
+export const program: StringableASTNode<estree.Program> = ({
+  body,
+  ...other
+}) => ({
+  ...other,
+  type: 'Program',
+  toString: () =>
+    body
+      .map((node) => typeToHelperLookup[node.type](node))
+      .map(String)
+      .join('\n'),
+  __pragma: 'ecu',
+  body,
 })

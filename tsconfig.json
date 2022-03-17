@@ -6,6 +6,7 @@
       "noImplicitAny": true,
       "moduleResolution": "node",
       "declaration": true,
+      "resolveJsonModule": true,
       "types": ["vitest/globals"]
   },
   
