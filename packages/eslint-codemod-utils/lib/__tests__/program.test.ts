@@ -13,11 +13,16 @@ let z,zz,zzz
 const x = class __Unimplemented {}
 class __Unimplemented {}
 switch (e) {
-  case 'x': false;
+  case 'x': false; '';
 }
+const v1 = 1 + 4 + 2
+let a = 1
 ;
 []
 const yy = {}
+for (let i = 0;;i++) {
+continue
+}
 const y = <Modal isOpen={true} onClick={onClick}>
   hello
 </Modal>

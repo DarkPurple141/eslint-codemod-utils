@@ -8,8 +8,14 @@ interface ESTreeNode {
   type: NodeType
 }
 
-export const node = <Node extends ESTreeNode | estree.Expression>(
+export const node = <
+  Node extends
+    | ESTreeNode
+    | estree.Expression
+    | estree.Statement
+    | estree.Pattern
+>(
   node: Node
 ): NodeMap[NodeType] => {
-  return typeToHelperLookup[node.type](node as any)
+  return typeToHelperLookup[node.type](node)
 }

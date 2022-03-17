@@ -36,6 +36,12 @@ import {
   yieldExpression,
   unaryExpression,
   blockStatement,
+  objectPattern,
+  staticBlock,
+  debuggerStatement,
+  forStatement,
+  binaryExpression,
+  updateExpression,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -43,6 +49,7 @@ export const typeToHelperLookup = new Proxy(
   {
     ArrayExpression: arrayExpression,
     BlockStatement: blockStatement,
+    BinaryExpression: binaryExpression,
     // TODO implement
     JSXFragment: identity,
     // TODO implement
@@ -60,12 +67,15 @@ export const typeToHelperLookup = new Proxy(
     ArrowFunctionExpression: arrowFunctionExpression,
     Identifier: identifier,
     Literal: literal,
-    /** this isn't a real node type */
+    /** this isn't a concrete node type */
     Expression: identity,
+    ForStatement: forStatement,
     ImportSpecifier: importSpecifier,
     ImportDeclaration: importDeclaration,
     ThisExpression: thisExpression,
     ObjectExpression: objectExpression,
+    ObjectPattern: objectPattern,
+    RestElement: identity,
     MemberExpression: memberExpression,
     NewExpression: newExpression,
     SwitchStatement: switchStatement,
@@ -76,12 +86,19 @@ export const typeToHelperLookup = new Proxy(
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
     ClassExpression: classExpression,
+    DebuggerStatement: debuggerStatement,
+    /** this isn't a concrete node type */
+    Pattern: identity,
+    /** this isn't a concrete node type */
+    Statement: identity,
     PrivateIdentifier: identity,
     Super: identity,
     SpreadElement: spreadElement,
+    StaticBlock: staticBlock,
     WhileStatement: whileStatement,
     ExpressionStatement: expressionStatement,
     UnaryExpression: unaryExpression,
+    UpdateExpression: updateExpression,
     VariableDeclaration: variableDeclaration,
     VariableDeclarator: variableDeclarator,
     YieldExpression: yieldExpression,

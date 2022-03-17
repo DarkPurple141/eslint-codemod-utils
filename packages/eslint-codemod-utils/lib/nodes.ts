@@ -39,6 +39,23 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
     }(${calleeArgs.map(node).join(', ')})`,
 })
 
+export const binaryExpression: StringableASTNode<estree.BinaryExpression> = ({
+  left,
+  right,
+  operator,
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    left,
+    right,
+    operator,
+    type: 'BinaryExpression',
+    toString: () => `${node(left)} ${operator} ${node(right)}`,
+  }
+}
+
 /**
  * __ArrowFunctionExpression__
  *
@@ -83,10 +100,9 @@ export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
  *
  * @example
  *
- * ```js
- * typeof x
- * ^^^^^^
- *
+ * ```ts
+ * const y = typeof x
+ *           ^^^^^^
  * ++x
  * ^^
  * ```
@@ -184,6 +200,26 @@ export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
   }
 }
 
+export const updateExpression: StringableASTNode<estree.UpdateExpression> = ({
+  argument,
+  operator,
+  prefix,
+  ...other
+}) => {
+  return {
+    ...other,
+    argument,
+    operator,
+    prefix,
+    type: 'UpdateExpression',
+    __pragma: 'ecu',
+    toString: () =>
+      `${
+        prefix ? `${operator}${node(argument)}` : `${node(argument)}${operator}`
+      }`,
+  }
+}
+
 export const expressionStatement: StringableASTNode<
   estree.ExpressionStatement
 > = ({ expression, ...other }) => ({
@@ -218,7 +254,33 @@ export const property: StringableASTNode<estree.Property> = ({
     value,
     type: 'Property',
     __pragma: 'ecu',
-    toString: () => `${kind ? kind + ' ' : ''}${node(key)}: ${node(value)}`,
+    toString: () =>
+      `${kind === 'init' ? '' : kind + ' '}${node(key)}${
+        kind === 'init' ? ': ' : ''
+      }${node(value)}`,
+  }
+}
+
+/**
+ * __ObjectPattern__
+ *
+ * @example
+ * ```ts
+ * function App({ a }) {}
+ *              ^^^^^
+ * ```
+ * @returns
+ */
+export const objectPattern: StringableASTNode<estree.ObjectPattern> = ({
+  properties,
+  ...other
+}) => {
+  return {
+    ...other,
+    properties,
+    type: 'ObjectPattern',
+    __pragma: 'ecu',
+    toString: () => `{${properties.map(node).map(String).join(', ')}}`,
   }
 }
 
@@ -245,12 +307,12 @@ export const objectExpression: StringableASTNode<estree.ObjectExpression> = ({
     properties,
     type: 'ObjectExpression',
     toString: () =>
-      `{${properties
+      `{\n${properties
         .map((node) =>
           node.type === 'Property' ? property(node) : spreadElement(node)
         )
         .map(String)
-        .join(',\n')}}`,
+        .join(',\n')}\n}`,
   }
 }
 
@@ -404,17 +466,44 @@ export const switchStatement: StringableASTNode<estree.SwitchStatement> = ({
   type: 'SwitchStatement',
 })
 
+export const forStatement: StringableASTNode<estree.ForStatement> = ({
+  body,
+  init,
+  test,
+  update,
+  ...other
+}) => ({
+  ...other,
+  __pragma: 'ecu',
+  init,
+  body,
+  test,
+  update,
+  type: 'ForStatement',
+  toString: () =>
+    `for (${init ? node(init) : ''};${update ? node(update) : ''};${
+      test ? node(test) : ''
+    }) {\n${node(body)}\n}`,
+})
+
 export const continueStatement: StringableASTNode<estree.ContinueStatement> = ({
   label,
   ...other
 }) => ({
   ...other,
-  toString: () => {
-    throw new Error('Unimplemented')
-  },
+  toString: () => `continue${label ? ` ${node(label)}` : ''}`,
   __pragma: 'ecu',
   label,
   type: 'ContinueStatement',
+})
+
+export const debuggerStatement: StringableASTNode<estree.DebuggerStatement> = (
+  node
+) => ({
+  ...node,
+  toString: () => `debugger`,
+  __pragma: 'ecu',
+  type: 'DebuggerStatement',
 })
 
 export const conditionalExpression: StringableASTNode<
@@ -443,6 +532,31 @@ export const awaitExpression: StringableASTNode<estree.AwaitExpression> = ({
   argument,
   type: 'AwaitExpression',
 })
+
+/**
+ * __StaticBlock__
+ *
+ * @example
+ * ```ts
+ * class A {
+ * // only applicable inside a class
+ *  static { }
+ *  ^^^^^^^^^^
+ * }
+ * ```
+ */
+export const staticBlock: StringableASTNode<estree.StaticBlock> = ({
+  body,
+  ...other
+}) => {
+  return {
+    ...other,
+    body,
+    type: 'StaticBlock',
+    __pragma: 'ecu',
+    toString: () => `static {\n${body.map(node).map(String).join('\n')}\n}`,
+  }
+}
 
 export const functionDeclaration: StringableASTNode<
   estree.FunctionDeclaration
