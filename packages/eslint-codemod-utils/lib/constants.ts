@@ -1,5 +1,4 @@
 import {
-  identity,
   jsxAttribute,
   jsxClosingElement,
   jsxElement,
@@ -30,7 +29,12 @@ import {
   arrayExpression,
   variableDeclarator,
   classExpression,
+  objectExpression,
+  emptyStatement,
+  spreadElement,
+  arrowFunctionExpression,
 } from './nodes'
+import { identity } from './utils/identity'
 
 export const typeToHelperLookup = new Proxy(
   {
@@ -47,21 +51,27 @@ export const typeToHelperLookup = new Proxy(
     JSXSpreadAttribute: jsxSpreadAttribute,
     JSXAttribute: jsxAttribute,
     JSXMemberExpression: jsxMemberExpression,
+    JSXNamespacedName: identity,
     JSXIdentifier: jsxIdentifier,
+    ArrowFunctionExpression: arrowFunctionExpression,
     Identifier: identifier,
     Literal: literal,
     ImportSpecifier: importSpecifier,
     ImportDeclaration: importDeclaration,
     ThisExpression: thisExpression,
+    ObjectExpression: objectExpression,
     MemberExpression: memberExpression,
     NewExpression: newExpression,
     SwitchStatement: switchStatement,
+    EmptyStatement: emptyStatement,
     FunctionExpression: identity,
     FunctionDeclaration: functionDeclaration,
     CallExpression: callExpression,
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
     ClassExpression: classExpression,
+    Super: identity,
+    SpreadElement: spreadElement,
     WhileStatement: whileStatement,
     ExpressionStatement: expressionStatement,
     VariableDeclaration: variableDeclaration,

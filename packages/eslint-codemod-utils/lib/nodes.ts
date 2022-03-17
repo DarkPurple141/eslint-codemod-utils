@@ -2,6 +2,7 @@ import * as estree from 'estree'
 import { typeToHelperLookup } from './constants'
 
 import { StringableASTNode } from './types'
+import { node } from './utils/node'
 
 /**
  * __CallExpression__
@@ -34,15 +35,36 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
   optional,
   type: 'CallExpression',
   toString: () =>
-    `${
-      callee.type === 'Super'
-        ? 'super'
-        : // @ts-expect-error
-          typeToHelperLookup[callee.type](callee)
-    }${optional ? '?.' : ''}(${calleeArgs
-      .map((node) => typeToHelperLookup[node.type](node))
-      .join(', ')})`,
+    `${callee.type === 'Super' ? 'super' : node(callee)}${
+      optional ? '?.' : ''
+    }(${calleeArgs.map(node).join(', ')})`,
 })
+
+/**
+ * __ArrowFunctionExpression__
+ *
+ * @example
+ * ```js
+ * const arrow = () => 42
+ *               ⌃⌃⌃⌃⌃⌃⌃⌃
+ * ```
+ * @returns {estree.ArrowFunctionExpression}
+ */
+export const arrowFunctionExpression: StringableASTNode<
+  estree.ArrowFunctionExpression
+> = ({ async, body, expression, params, ...other }) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    async,
+    expression,
+    body,
+    params,
+    type: 'ArrowFunctionExpression',
+    toString: () =>
+      `(${params.map(node).map(String).join(', ')}) => {${node(body)}}`,
+  }
+}
 
 /**
  * __ThisExpression__
@@ -52,6 +74,7 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
  * ```js
  * // In `this.self` 'this' is a ThisExpression.
  * this.self
+ * ⌃⌃⌃⌃
  * ```
  *
  * @returns {estree.ThisExpression}
@@ -102,11 +125,7 @@ export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
     type: 'ArrayExpression',
     elements,
     __pragma: 'ecu',
-    toString: () =>
-      `[${elements
-        .map((node) => typeToHelperLookup[node.type](node))
-        .map(String)
-        .join(', ')}]`,
+    toString: () => `[${elements.map(node).map(String).join(', ')}]`,
   }
 }
 
@@ -129,6 +148,67 @@ export const newExpression: StringableASTNode<estree.NewExpression> = ({
   type: 'NewExpression',
   __pragma: 'ecu',
   toString: () => `new ${typeToHelperLookup[callee.type](callee)}`,
+})
+
+export const property: StringableASTNode<estree.Property> = ({
+  kind,
+  key,
+  value,
+  ...other
+}) => {
+  return {
+    ...other,
+    key,
+    kind,
+    value,
+    type: 'Property',
+    __pragma: 'ecu',
+    toString: () =>
+      `${kind ? kind + ' ' : ''}${typeToHelperLookup[key.type](
+        key
+      )}: ${typeToHelperLookup[value.type](value)}`,
+  }
+}
+
+export const spreadElement: StringableASTNode<estree.SpreadElement> = ({
+  argument,
+  ...other
+}) => {
+  return {
+    ...other,
+    argument,
+    type: 'SpreadElement',
+    __pragma: 'ecu',
+    toString: () => `...${typeToHelperLookup[argument.type](argument)}`,
+  }
+}
+
+export const objectExpression: StringableASTNode<estree.ObjectExpression> = ({
+  properties,
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    properties,
+    type: 'ObjectExpression',
+    toString: () =>
+      `{${properties
+        .map((node) =>
+          node.type === 'Property' ? property(node) : spreadElement(node)
+        )
+        .map(String)
+        .join(',\n')}}`,
+  }
+}
+
+export const emptyStatement: StringableASTNode<estree.EmptyStatement> = ({
+  ...other
+}) => ({
+  ...other,
+  type: 'EmptyStatement',
+  __pragma: 'ecu',
+  toString: () => `;`,
 })
 
 export const memberExpression: StringableASTNode<estree.MemberExpression> = ({
@@ -248,15 +328,33 @@ export const whileStatement: StringableASTNode<estree.WhileStatement> = ({
   },
 })
 
+export const switchCase: StringableASTNode<estree.SwitchCase> = ({
+  consequent,
+  test,
+  ...other
+}) => {
+  return {
+    ...other,
+    consequent,
+    test,
+    type: 'SwitchCase',
+    __pragma: 'ecu',
+    toString: () =>
+      `case ${typeToHelperLookup[test.type](test)}: ${consequent
+        .map(node)
+        .map(String)
+        .join('; ')};`,
+  }
+}
+
 export const switchStatement: StringableASTNode<estree.SwitchStatement> = ({
   cases,
   discriminant,
   ...other
 }) => ({
   ...other,
-  toString: () => `switch (unimplemented) {
-    case 'TO': 'DO';
-  }`,
+  toString: () => `switch (${node(discriminant)}) {
+  ${cases.map(switchCase)}\n}`,
   __pragma: 'ecu',
   cases,
   discriminant,

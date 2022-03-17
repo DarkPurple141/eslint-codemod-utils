@@ -9,14 +9,18 @@ describe('program', () => {
 function XXXXXX () {}
 new X
 X()
+let z,zz,zzz
 const x = class __Unimplemented {}
 class __Unimplemented {}
-switch (unimplemented) {
-    case 'TO': 'DO';
-  }
+switch (e) {
+  case 'x': false;
+}
+;
+[]
+const yy = {}
 const y = <Modal isOpen={true} onClick={onClick}>
   hello
-</[object Object]> 
+</Modal>
 ReactDOM.render(<App />, document.getElementById('root'))`
     )
   })
