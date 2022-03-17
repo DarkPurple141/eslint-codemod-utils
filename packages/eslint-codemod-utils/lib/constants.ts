@@ -33,12 +33,16 @@ import {
   emptyStatement,
   spreadElement,
   arrowFunctionExpression,
+  yieldExpression,
+  unaryExpression,
+  blockStatement,
 } from './nodes'
 import { identity } from './utils/identity'
 
 export const typeToHelperLookup = new Proxy(
   {
     ArrayExpression: arrayExpression,
+    BlockStatement: blockStatement,
     // TODO implement
     JSXFragment: identity,
     // TODO implement
@@ -56,6 +60,8 @@ export const typeToHelperLookup = new Proxy(
     ArrowFunctionExpression: arrowFunctionExpression,
     Identifier: identifier,
     Literal: literal,
+    /** this isn't a real node type */
+    Expression: identity,
     ImportSpecifier: importSpecifier,
     ImportDeclaration: importDeclaration,
     ThisExpression: thisExpression,
@@ -70,12 +76,15 @@ export const typeToHelperLookup = new Proxy(
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
     ClassExpression: classExpression,
+    PrivateIdentifier: identity,
     Super: identity,
     SpreadElement: spreadElement,
     WhileStatement: whileStatement,
     ExpressionStatement: expressionStatement,
+    UnaryExpression: unaryExpression,
     VariableDeclaration: variableDeclaration,
     VariableDeclarator: variableDeclarator,
+    YieldExpression: yieldExpression,
   } as const,
   {
     // dynamic getter will fail and provide debug information

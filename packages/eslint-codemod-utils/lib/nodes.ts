@@ -1,5 +1,4 @@
 import * as estree from 'estree'
-import { typeToHelperLookup } from './constants'
 
 import { StringableASTNode } from './types'
 import { node } from './utils/node'
@@ -66,6 +65,47 @@ export const arrowFunctionExpression: StringableASTNode<
   }
 }
 
+export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
+  body,
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    body,
+    type: 'BlockStatement',
+    toString: () => `${body.map(node).map(String).join('\n')}`,
+  }
+}
+
+/**
+ * __UnaryExpression__
+ *
+ * @example
+ *
+ * ```js
+ * typeof x
+ * ^^^^^^
+ *
+ * ++x
+ * ^^
+ * ```
+ *
+ * @returns {estree.UnaryExpression}
+ */
+export const unaryExpression: StringableASTNode<estree.UnaryExpression> = ({
+  operator,
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    operator,
+    type: 'UnaryExpression',
+    toString: () => operator,
+  }
+}
+
 /**
  * __ThisExpression__
  *
@@ -116,6 +156,21 @@ export const importSpecifier: StringableASTNode<estree.ImportSpecifier> = ({
     }`,
 })
 
+export const yieldExpression: StringableASTNode<estree.YieldExpression> = ({
+  argument,
+  delegate,
+  ...other
+}) => {
+  return {
+    ...other,
+    argument,
+    delegate,
+    type: 'YieldExpression',
+    __pragma: 'ecu',
+    toString: () => `yield`,
+  }
+}
+
 export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
   elements,
   ...other
@@ -136,7 +191,7 @@ export const expressionStatement: StringableASTNode<
   ...other,
   expression,
   type: 'ExpressionStatement',
-  toString: () => String(typeToHelperLookup[expression.type](expression)),
+  toString: () => String(node(expression)),
 })
 
 export const newExpression: StringableASTNode<estree.NewExpression> = ({
@@ -147,7 +202,7 @@ export const newExpression: StringableASTNode<estree.NewExpression> = ({
   callee,
   type: 'NewExpression',
   __pragma: 'ecu',
-  toString: () => `new ${typeToHelperLookup[callee.type](callee)}`,
+  toString: () => `new ${node(callee)}`,
 })
 
 export const property: StringableASTNode<estree.Property> = ({
@@ -163,10 +218,7 @@ export const property: StringableASTNode<estree.Property> = ({
     value,
     type: 'Property',
     __pragma: 'ecu',
-    toString: () =>
-      `${kind ? kind + ' ' : ''}${typeToHelperLookup[key.type](
-        key
-      )}: ${typeToHelperLookup[value.type](value)}`,
+    toString: () => `${kind ? kind + ' ' : ''}${node(key)}: ${node(value)}`,
   }
 }
 
@@ -179,7 +231,7 @@ export const spreadElement: StringableASTNode<estree.SpreadElement> = ({
     argument,
     type: 'SpreadElement',
     __pragma: 'ecu',
-    toString: () => `...${typeToHelperLookup[argument.type](argument)}`,
+    toString: () => `...${node(argument)}`,
   }
 }
 
@@ -222,10 +274,7 @@ export const memberExpression: StringableASTNode<estree.MemberExpression> = ({
   object,
   property,
   // TODO fix type issues
-  toString: () =>
-    `${typeToHelperLookup[object.type](object)}.${typeToHelperLookup[
-      object.type
-    ](property)}`,
+  toString: () => `${node(object)}.${node(property)}`,
 })
 
 export const variableDeclarator: StringableASTNode<
@@ -237,10 +286,7 @@ export const variableDeclarator: StringableASTNode<
     init,
     type: 'VariableDeclarator',
     __pragma: 'ecu',
-    toString: () =>
-      `${typeToHelperLookup[id.type](id)}${
-        init ? ` = ${typeToHelperLookup[init.type](init)}` : ''
-      }`,
+    toString: () => `${node(id)}${init ? ` = ${node(init)}` : ''}`,
   }
 }
 
@@ -340,10 +386,7 @@ export const switchCase: StringableASTNode<estree.SwitchCase> = ({
     type: 'SwitchCase',
     __pragma: 'ecu',
     toString: () =>
-      `case ${typeToHelperLookup[test.type](test)}: ${consequent
-        .map(node)
-        .map(String)
-        .join('; ')};`,
+      `case ${node(test)}: ${consequent.map(node).map(String).join('; ')};`,
   }
 }
 
@@ -457,11 +500,7 @@ export const program: StringableASTNode<estree.Program> = ({
 }) => ({
   ...other,
   type: 'Program',
-  toString: () =>
-    body
-      .map((node) => typeToHelperLookup[node.type](node))
-      .map(String)
-      .join('\n'),
+  toString: () => body.map(node).map(String).join('\n'),
   __pragma: 'ecu',
   body,
 })
