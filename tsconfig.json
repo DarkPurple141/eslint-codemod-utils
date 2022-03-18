@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "strict": true,
       "module": "commonjs",
       "esModuleInterop": true,
       "target": "es6",
       "noImplicitAny": true,
       "moduleResolution": "node",
       "declaration": true,
+      "resolveJsonModule": true,
       "types": ["vitest/globals"]
   },
   

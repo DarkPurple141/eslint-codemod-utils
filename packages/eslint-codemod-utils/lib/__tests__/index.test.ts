@@ -16,6 +16,7 @@ import {
   jsxSpreadAttribute,
   callExpression,
 } from '..'
+import { staticBlock } from '../nodes'
 
 describe('importDeclaration', () => {
   test('basic', () => {
@@ -353,6 +354,12 @@ describe('jsxElement', () => {
     </VeryNested>
   </BadPeople>
 </Modal>`)
+  })
+})
+
+describe('staticBlock', () => {
+  test('basic', () => {
+    expect(staticBlock({ body: [] }).toString()).eq(`static {\n\n}`)
   })
 })
 

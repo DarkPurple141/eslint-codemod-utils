@@ -15,8 +15,6 @@ import type {
 import { typeToHelperLookup } from './constants'
 import type { StringableASTNode } from './types'
 
-export const identity = <T>(node: T) => node
-
 export const whiteSpace = (loc: SourceLocation) =>
   ''.padStart(loc?.start?.column || 0, ' ')
 
@@ -212,9 +210,9 @@ export const jsxClosingElement: StringableASTNode<JSXClosingElement> = ({
   return {
     type: 'JSXClosingElement',
     __pragma: 'ecu',
-    // @ts-ignore // TODO revist this later
-    name: typeToHelperLookup[name.type](name),
-    toString: () => `</${name}>`,
+    name,
+    // @ts-ignore
+    toString: () => `</${typeToHelperLookup[name.type](name)}>`,
   }
 }
 
