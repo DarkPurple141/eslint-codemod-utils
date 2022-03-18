@@ -17,5 +17,6 @@ export const node = <
 >(
   node: Node
 ): NodeMap[NodeType] => {
+  // @ts-expect-error
   return typeToHelperLookup[node.type](node)
 }

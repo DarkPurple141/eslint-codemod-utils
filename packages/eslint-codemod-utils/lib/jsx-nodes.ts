@@ -12,8 +12,8 @@ import type {
   JSXSpreadAttribute,
 } from 'estree-jsx'
 
-import { typeToHelperLookup } from './constants'
 import type { StringableASTNode } from './types'
+import { node } from './utils/node'
 
 export const whiteSpace = (loc: SourceLocation) =>
   ''.padStart(loc?.start?.column || 0, ' ')
@@ -29,7 +29,7 @@ export const comment = ({ value, type, loc }: Comment) => ({
   type,
   __pragma: 'ecu',
   toString: () =>
-    whiteSpace(loc) + (type === 'Line' ? `// ${value}` : `/* ${value} */`),
+    whiteSpace(loc!) + (type === 'Line' ? `// ${value}` : `/* ${value} */`),
 })
 
 export const jsxIdentifier: StringableASTNode<JSXIdentifier> = ({ name }) => ({
@@ -104,17 +104,11 @@ export const jsxElement: StringableASTNode<JSXElement> = ({
   type: 'JSXElement',
   __pragma: 'ecu',
   toString: (): string => {
-    const indent = whiteSpace(loc)
+    const indent = whiteSpace(loc!)
     const spacing = '\n  ' + indent
     return `${jsxOpeningElement(openingElement)}${
       children.length
-        ? spacing +
-          children
-            /* @ts-expect-error */
-            .map((child) => typeToHelperLookup[child.type](child))
-            .map(String)
-            .join(spacing) +
-          '\n'
+        ? spacing + children.map(node).map(String).join(spacing) + '\n'
         : ''
     }${closingElement ? `${indent}${jsxClosingElement(closingElement)}` : ''}`
   },
@@ -148,8 +142,7 @@ export const jsxSpreadAttribute: StringableASTNode<JSXSpreadAttribute> = ({
   __pragma: 'ecu',
   type: 'JSXSpreadAttribute',
   argument,
-  // @ts-ignore TODO fix this when mapping is complete
-  toString: () => `{...${typeToHelperLookup[argument.type](argument)}}`,
+  toString: () => `{...${node(argument)}}`,
 })
 
 export const jsxOpeningElement: StringableASTNode<JSXOpeningElement> = ({
@@ -180,9 +173,9 @@ export const jsxOpeningElement: StringableASTNode<JSXOpeningElement> = ({
                 return attr
                 // TS wanted this extra branch :thinking
               } else if (attr.type === 'JSXAttribute') {
-                return typeToHelperLookup[attr.type](attr)
+                return node(attr)
               } else {
-                return typeToHelperLookup[attr.type](attr)
+                return node(attr)
               }
             })
             .map(String)
@@ -211,8 +204,7 @@ export const jsxClosingElement: StringableASTNode<JSXClosingElement> = ({
     type: 'JSXClosingElement',
     __pragma: 'ecu',
     name,
-    // @ts-ignore
-    toString: () => `</${typeToHelperLookup[name.type](name)}>`,
+    toString: () => `</${node(name)}>`,
   }
 }
 
@@ -253,17 +245,7 @@ export const jsxExpressionContainer: StringableASTNode<
       return String(jsxExpressionContainer(expression))
     }
 
-    // @ts-expect-error TODO this is because the lookup is incomplete
-    const expressionType = typeToHelperLookup[expression.type]
-
-    if (expressionType) {
-      // @ts-expect-error
-      return `{${typeToHelperLookup[expression.type](expression)}}`
-    }
-
-    throw new Error(
-      `eslint-codemod-utils: Unknown node type ${expression.type}`
-    )
+    return `{${node(expression)}}`
   },
 })
 
@@ -293,7 +275,7 @@ export const jsxAttribute: StringableASTNode<JSXAttribute> = ({
       value
         ? `=${
             value.type === 'Literal'
-              ? typeToHelperLookup.Literal(value)
+              ? node(value)
               : value.type === 'JSXElement'
               ? jsxElement(value)
               : jsxExpressionContainer(value as JSXExpressionContainer)
