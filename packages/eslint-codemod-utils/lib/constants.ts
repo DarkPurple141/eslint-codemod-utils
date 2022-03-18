@@ -42,11 +42,22 @@ import {
   forStatement,
   binaryExpression,
   updateExpression,
+  returnStatement,
+  exportNamedDeclaration,
+  exportSpecifier,
+  exportDefaultDeclaration,
+  exportAllDeclaration,
+  logicalExpression,
+  functionExpression,
 } from './nodes'
 import { identity } from './utils/identity'
 
 export const typeToHelperLookup = new Proxy(
   {
+    // TODO implement
+    AssignmentProperty: identity,
+    // TODO implement
+    AssignmentExpression: identity,
     ArrayExpression: arrayExpression,
     BlockStatement: blockStatement,
     BinaryExpression: binaryExpression,
@@ -65,8 +76,10 @@ export const typeToHelperLookup = new Proxy(
     JSXNamespacedName: identity,
     JSXIdentifier: jsxIdentifier,
     ArrowFunctionExpression: arrowFunctionExpression,
+    FunctionExpression: functionExpression,
     Identifier: identifier,
     Literal: literal,
+    LogicalExpression: logicalExpression,
     /** this isn't a concrete node type */
     Expression: identity,
     ForStatement: forStatement,
@@ -80,18 +93,22 @@ export const typeToHelperLookup = new Proxy(
     NewExpression: newExpression,
     SwitchStatement: switchStatement,
     EmptyStatement: emptyStatement,
-    FunctionExpression: identity,
     FunctionDeclaration: functionDeclaration,
     CallExpression: callExpression,
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
     ClassExpression: classExpression,
     DebuggerStatement: debuggerStatement,
+    ExportNamedDeclaration: exportNamedDeclaration,
+    ExportSpecifier: exportSpecifier,
+    ExportAllDeclaration: exportAllDeclaration,
+    ExportDefaultDeclaration: exportDefaultDeclaration,
     /** this isn't a concrete node type */
     Pattern: identity,
     /** this isn't a concrete node type */
     Statement: identity,
     PrivateIdentifier: identity,
+    ReturnStatement: returnStatement,
     Super: identity,
     SpreadElement: spreadElement,
     StaticBlock: staticBlock,

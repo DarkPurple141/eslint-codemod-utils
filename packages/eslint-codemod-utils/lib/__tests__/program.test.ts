@@ -19,14 +19,32 @@ const v1 = 1 + 4 + 2
 let a = 1
 ;
 []
-const yy = {}
+const yy = {
+  a: 1,
+  get z() {
+
+},
+  init() {
+
+},
+  blob() {
+
+},
+  b() {
+
+}
+}
 for (let i = 0;;i++) {
 continue
 }
 const y = <Modal isOpen={true} onClick={onClick}>
   hello
 </Modal>
-ReactDOM.render(<App />, document.getElementById('root'))`
+ReactDOM.render(<App />, document.getElementById('root'))
+export { b as y }from './other'
+export default b
+export const yyy = 10
+export * from 's'`
     )
   })
 })

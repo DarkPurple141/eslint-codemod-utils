@@ -82,6 +82,24 @@ export const arrowFunctionExpression: StringableASTNode<
   }
 }
 
+export const functionExpression: StringableASTNode<
+  estree.FunctionExpression
+> = ({ async, generator, body, params, id, ...other }) => {
+  return {
+    ...other,
+    id,
+    async,
+    generator,
+    body,
+    params,
+    __pragma: 'ecu',
+    type: 'FunctionExpression',
+    toString: () =>
+      `${id ? node(id) : ''}(${params.map(node).join(', ')}) {\n${node(
+        body
+      )}\n}`,
+  }
+}
 export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
   body,
   ...other
@@ -92,6 +110,18 @@ export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
     body,
     type: 'BlockStatement',
     toString: () => `${body.map(node).map(String).join('\n')}`,
+  }
+}
+
+export const returnStatement: StringableASTNode<estree.ReturnStatement> = ({
+  argument,
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    type: 'ReturnStatement',
+    toString: () => `return${argument ? ` ${node(argument)}` : ''};`,
   }
 }
 
@@ -154,6 +184,67 @@ export const importDefaultSpecifier: StringableASTNode<
   toString: () => local.name,
 })
 
+export const exportNamedDeclaration: StringableASTNode<
+  estree.ExportNamedDeclaration
+> = ({ declaration, specifiers, source, ...other }) => {
+  return {
+    ...other,
+    declaration,
+    specifiers,
+    source,
+    type: 'ExportNamedDeclaration',
+    __pragma: 'ecu',
+    toString: () =>
+      `export ${declaration ? node(declaration) : ''}${
+        specifiers.length
+          ? `{ ${specifiers.map(node).map(String).join(', ')} }`
+          : ''
+      }${source ? `from ${node(source)}` : ''}`,
+  }
+}
+
+export const exportDefaultDeclaration: StringableASTNode<
+  estree.ExportDefaultDeclaration
+> = ({ declaration, ...other }) => {
+  return {
+    ...other,
+    type: 'ExportDefaultDeclaration',
+    declaration,
+    __pragma: 'ecu',
+    toString: () => `export default ${node(declaration)}`,
+  }
+}
+
+export const exportAllDeclaration: StringableASTNode<
+  estree.ExportAllDeclaration
+> = ({ source, ...other }) => {
+  return {
+    ...other,
+    type: 'ExportAllDeclaration',
+    source,
+    __pragma: 'ecu',
+    toString: () => `export * from ${node(source)}`,
+  }
+}
+
+export const exportSpecifier: StringableASTNode<estree.ExportSpecifier> = ({
+  exported,
+  local,
+  ...other
+}) => {
+  return {
+    ...other,
+    exported,
+    local,
+    type: 'ExportSpecifier',
+    __pragma: 'ecu',
+    toString: () =>
+      local.name !== exported.name
+        ? `${node(exported)} as ${node(local)}`
+        : String(node(local)),
+  }
+}
+
 export const importSpecifier: StringableASTNode<estree.ImportSpecifier> = ({
   imported,
   local,
@@ -196,6 +287,7 @@ export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
     type: 'ArrayExpression',
     elements,
     __pragma: 'ecu',
+    // @ts-expect-error
     toString: () => `[${elements.map(node).map(String).join(', ')}]`,
   }
 }
@@ -245,6 +337,7 @@ export const property: StringableASTNode<estree.Property> = ({
   kind,
   key,
   value,
+  method,
   ...other
 }) => {
   return {
@@ -252,11 +345,12 @@ export const property: StringableASTNode<estree.Property> = ({
     key,
     kind,
     value,
+    method,
     type: 'Property',
     __pragma: 'ecu',
     toString: () =>
       `${kind === 'init' ? '' : kind + ' '}${node(key)}${
-        kind === 'init' ? ': ' : ''
+        method || kind !== 'init' ? '' : ': '
       }${node(value)}`,
   }
 }
@@ -280,10 +374,24 @@ export const objectPattern: StringableASTNode<estree.ObjectPattern> = ({
     properties,
     type: 'ObjectPattern',
     __pragma: 'ecu',
+    // @ts-ignore TODO AssignmentProperty causing issues
     toString: () => `{${properties.map(node).map(String).join(', ')}}`,
   }
 }
 
+/**
+ * __SpreadElement__
+ *
+ * @example
+ * ```ts
+ * const obj = {
+ *  ...spread
+ *  ^^^^^^^^^
+ * }
+ * ```
+ *
+ * @returns {estree.SpreadElement}
+ */
 export const spreadElement: StringableASTNode<estree.SpreadElement> = ({
   argument,
   ...other
@@ -307,12 +415,12 @@ export const objectExpression: StringableASTNode<estree.ObjectExpression> = ({
     properties,
     type: 'ObjectExpression',
     toString: () =>
-      `{\n${properties
+      `{\n  ${properties
         .map((node) =>
           node.type === 'Property' ? property(node) : spreadElement(node)
         )
         .map(String)
-        .join(',\n')}\n}`,
+        .join(',\n  ')}\n}`,
   }
 }
 
@@ -335,9 +443,25 @@ export const memberExpression: StringableASTNode<estree.MemberExpression> = ({
   __pragma: 'ecu',
   object,
   property,
-  // TODO fix type issues
   toString: () => `${node(object)}.${node(property)}`,
 })
+
+export const logicalExpression: StringableASTNode<estree.LogicalExpression> = ({
+  left,
+  right,
+  operator,
+  ...other
+}) => {
+  return {
+    ...other,
+    left,
+    right,
+    operator,
+    type: 'LogicalExpression',
+    __pragma: 'ecu',
+    toString: () => `${node(left)} ${operator} ${node(right)}`,
+  }
+}
 
 export const variableDeclarator: StringableASTNode<
   estree.VariableDeclarator
@@ -405,13 +529,13 @@ export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
 export const literal: StringableASTNode<estree.Literal> = ({
   value,
   raw,
-  // @ts-expect-error
+  // @ts-expect-error TODO bigint
 }) => ({
   value,
   raw,
   type: 'Literal',
   __pragma: 'ecu',
-  toString: () => raw || value.toString(),
+  toString: () => raw || String(value),
 })
 
 export const identifier: StringableASTNode<estree.Identifier> = ({ name }) => ({
@@ -448,6 +572,7 @@ export const switchCase: StringableASTNode<estree.SwitchCase> = ({
     type: 'SwitchCase',
     __pragma: 'ecu',
     toString: () =>
+      // @ts-ignore
       `case ${node(test)}: ${consequent.map(node).map(String).join('; ')};`,
   }
 }
@@ -481,8 +606,8 @@ export const forStatement: StringableASTNode<estree.ForStatement> = ({
   update,
   type: 'ForStatement',
   toString: () =>
-    `for (${init ? node(init) : ''};${update ? node(update) : ''};${
-      test ? node(test) : ''
+    `for (${init ? node(init) : ''};${test ? node(test) : ''};${
+      update ? node(update) : ''
     }) {\n${node(body)}\n}`,
 })
 
@@ -604,7 +729,7 @@ export const classExpression: StringableASTNode<estree.ClassExpression> = ({
     id,
     __pragma: 'ecu',
     toString: () =>
-      String(classDeclaration({ superClass, id, body, ...other })),
+      String(classDeclaration({ superClass, id: id || null, body, ...other })),
   }
 }
 
