@@ -635,9 +635,7 @@ export const conditionalExpression: StringableASTNode<
   estree.ConditionalExpression
 > = ({ consequent, alternate, test, ...other }) => ({
   ...other,
-  toString: () => {
-    throw new Error('Unimplemented')
-  },
+  toString: () => `${node(test)} ? ${node(consequent)} : ${node(alternate)}`,
   __pragma: 'ecu',
   consequent,
   alternate,
