@@ -6,7 +6,26 @@ describe('program', () => {
   test('basic', () => {
     expect(String(program(programFixture as any))).eq(
       `import A, { Welcome } from '@atlaskit/welcome'
-function XXXXXX () {}
+import { X } from './other'
+import tmm, * as x from 'thing'
+import 'blah'
+function App({a: a}, {b: c}) {
+return (
+  <div>
+  
+      
+  <Welcome name="Sara" otherName={2} isBlanketHidden {...x()} />
+  
+      
+  <Welcome name="Cahal" />
+  
+      
+  <Welcome name="Edite" />
+  
+    
+</div>
+  );
+}
 new X
 X()
 let z,zz,zzz

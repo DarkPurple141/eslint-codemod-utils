@@ -49,6 +49,8 @@ import {
   exportAllDeclaration,
   logicalExpression,
   functionExpression,
+  importNamespaceSpecifier,
+  property,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -84,6 +86,7 @@ export const typeToHelperLookup = new Proxy(
     Expression: identity,
     ForStatement: forStatement,
     ImportSpecifier: importSpecifier,
+    ImportNamespaceSpecifier: importNamespaceSpecifier,
     ImportDeclaration: importDeclaration,
     ThisExpression: thisExpression,
     ObjectExpression: objectExpression,
@@ -108,6 +111,7 @@ export const typeToHelperLookup = new Proxy(
     /** this isn't a concrete node type */
     Statement: identity,
     PrivateIdentifier: identity,
+    Property: property,
     ReturnStatement: returnStatement,
     Super: identity,
     SpreadElement: spreadElement,

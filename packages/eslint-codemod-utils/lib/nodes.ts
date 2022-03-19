@@ -121,7 +121,15 @@ export const returnStatement: StringableASTNode<estree.ReturnStatement> = ({
     ...other,
     __pragma: 'ecu',
     type: 'ReturnStatement',
-    toString: () => `return${argument ? ` ${node(argument)}` : ''};`,
+    toString: () =>
+      `return${
+        argument
+          ? // @ts-expect-error
+            argument.type === 'JSXElement'
+            ? ` (\n  ${node(argument)}\n  )`
+            : ` ${node(argument)}`
+          : ''
+      };`,
   }
 }
 
@@ -493,6 +501,17 @@ export const variableDeclaration: StringableASTNode<
   }
 }
 
+export const importNamespaceSpecifier: StringableASTNode<
+  estree.ImportNamespaceSpecifier
+> = ({ local }) => {
+  return {
+    type: 'ImportNamespaceSpecifier',
+    __pragma: 'ecu',
+    local,
+    toString: () => `* as ${local.name}`,
+  }
+}
+
 export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
   specifiers,
   source,
@@ -516,12 +535,30 @@ export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
       (spec): spec is estree.ImportSpecifier => spec.type === 'ImportSpecifier'
     )
 
+    const nameSpaceSpecifier = specifiers.find(
+      (node): node is estree.ImportNamespaceSpecifier =>
+        node.type === 'ImportNamespaceSpecifier'
+    )
+
+    const seperator = otherSpecifiers.length > 4 ? ',\n  ' : ', '
+    const leadOrEndSpecifier = otherSpecifiers.length > 4 ? '\n' : ' '
+
     return `import ${defaultSpecifier ? defaultSpecifier.local.name : ''}${
       otherSpecifiers.length
         ? defaultSpecifier
-          ? `, { ${otherSpecifiers.map(importSpecifier).join(', ')} }`
-          : `{ ${otherSpecifiers.map(importSpecifier).join(', ')} }`
+          ? `, {${leadOrEndSpecifier}${otherSpecifiers
+              .map(importSpecifier)
+              .join(seperator)}${leadOrEndSpecifier}}`
+          : `{${leadOrEndSpecifier}${otherSpecifiers
+              .map(importSpecifier)
+              .join(seperator)}${leadOrEndSpecifier}}`
         : ''
+    }${
+      (otherSpecifiers.length || defaultSpecifier) && nameSpaceSpecifier
+        ? ', '
+        : ''
+    }${
+      nameSpaceSpecifier ? importNamespaceSpecifier(nameSpaceSpecifier) : ''
     } from '${source.value}'`
   },
 })
@@ -692,8 +729,11 @@ export const functionDeclaration: StringableASTNode<
   id,
   generator,
   params,
-  // TODO
-  toString: () => `function XXXXXX () {}`,
+  toString: () =>
+    `function ${id ? node(id) : ''}(${params
+      .map(node)
+      .map(String)
+      .join(', ')}) {\n${node(body)}\n}`,
 })
 
 export const classDeclaration: StringableASTNode<estree.ClassDeclaration> = ({
