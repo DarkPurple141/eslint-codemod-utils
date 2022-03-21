@@ -39,6 +39,15 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
     }(${calleeArgs.map(node).join(', ')})`,
 })
 
+/**
+ * __BinaryExpression__
+ *
+ * @example
+ * ```ts
+ * const x = 'left' + 'right'
+ *           ^^^^^^^^^^^^^^^^
+ * ```
+ */
 export const binaryExpression: StringableASTNode<estree.BinaryExpression> = ({
   left,
   right,
@@ -95,9 +104,9 @@ export const functionExpression: StringableASTNode<
     __pragma: 'ecu',
     type: 'FunctionExpression',
     toString: () =>
-      `${id ? node(id) : ''}(${params.map(node).join(', ')}) {\n${node(
-        body
-      )}\n}`,
+      `${async ? 'async ' : ''}${id ? node(id) : ''}(${params
+        .map(node)
+        .join(', ')}) {\n${node(body)}\n}`,
   }
 }
 export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
@@ -330,6 +339,15 @@ export const expressionStatement: StringableASTNode<
   toString: () => String(node(expression)),
 })
 
+/**
+ * __NewExpression__
+ *
+ * @example
+ * ```ts
+ * new SomeThing
+ * ^^^^^^^^^^^^^
+ * ```
+ */
 export const newExpression: StringableASTNode<estree.NewExpression> = ({
   callee,
   ...other
