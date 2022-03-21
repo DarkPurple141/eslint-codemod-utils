@@ -29,8 +29,8 @@ return (
 new X
 X()
 let z,zz,zzz
-const x = class __Unimplemented {}
-class __Unimplemented {}
+const x = class Z {}
+class D extends B {}
 switch (e) {
   case 'x': false; '';
 }

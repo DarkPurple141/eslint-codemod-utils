@@ -51,6 +51,8 @@ import {
   functionExpression,
   importNamespaceSpecifier,
   property,
+  classBody,
+  methodDefinition,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -93,6 +95,7 @@ export const typeToHelperLookup = new Proxy(
     ObjectPattern: objectPattern,
     RestElement: identity,
     MemberExpression: memberExpression,
+    MethodDefinition: methodDefinition,
     NewExpression: newExpression,
     SwitchStatement: switchStatement,
     EmptyStatement: emptyStatement,
@@ -101,6 +104,7 @@ export const typeToHelperLookup = new Proxy(
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
     ClassExpression: classExpression,
+    ClassBody: classBody,
     DebuggerStatement: debuggerStatement,
     ExportNamedDeclaration: exportNamedDeclaration,
     ExportSpecifier: exportSpecifier,

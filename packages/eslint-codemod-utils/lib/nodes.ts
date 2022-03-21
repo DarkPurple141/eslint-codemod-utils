@@ -736,6 +736,38 @@ export const functionDeclaration: StringableASTNode<
       .join(', ')}) {\n${node(body)}\n}`,
 })
 
+export const methodDefinition: StringableASTNode<estree.MethodDefinition> = ({
+  computed,
+  key,
+  kind,
+  value,
+  ...other
+}) => {
+  return {
+    ...other,
+    computed,
+    key,
+    kind,
+    value,
+    __pragma: 'ecu',
+    type: 'MethodDefinition',
+    toString: () => ``,
+  }
+}
+
+export const classBody: StringableASTNode<estree.ClassBody> = ({
+  body,
+  ...other
+}) => {
+  return {
+    ...other,
+    type: 'ClassBody',
+    body,
+    __pragma: 'ecu',
+    toString: () => body.map(node).map(String).join('\n'),
+  }
+}
+
 export const classDeclaration: StringableASTNode<estree.ClassDeclaration> = ({
   superClass,
   id,
@@ -749,7 +781,10 @@ export const classDeclaration: StringableASTNode<estree.ClassDeclaration> = ({
     body,
     id,
     __pragma: 'ecu',
-    toString: () => `class __Unimplemented {}`,
+    toString: () =>
+      `class${id ? ` ${node(id)}` : ''}${
+        superClass ? ` extends ${node(superClass)}` : ''
+      } {${node(body)}}`,
   }
 }
 
