@@ -51,17 +51,21 @@ import {
   functionExpression,
   importNamespaceSpecifier,
   property,
+  propertyDefinition,
   classBody,
   methodDefinition,
+  assignmentExpression,
 } from './nodes'
 import { identity } from './utils/identity'
+
+export const DEFAULT_WHITESPACE = '\n  '
 
 export const typeToHelperLookup = new Proxy(
   {
     // TODO implement
     AssignmentProperty: identity,
     // TODO implement
-    AssignmentExpression: identity,
+    AssignmentExpression: assignmentExpression,
     ArrayExpression: arrayExpression,
     BlockStatement: blockStatement,
     BinaryExpression: binaryExpression,
@@ -116,6 +120,7 @@ export const typeToHelperLookup = new Proxy(
     Statement: identity,
     PrivateIdentifier: identity,
     Property: property,
+    PropertyDefinition: propertyDefinition,
     ReturnStatement: returnStatement,
     Super: identity,
     SpreadElement: spreadElement,

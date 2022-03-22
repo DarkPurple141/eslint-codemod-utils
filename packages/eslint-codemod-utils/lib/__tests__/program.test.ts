@@ -10,7 +10,7 @@ import { X } from './other'
 import tmm, * as x from 'thing'
 import 'blah'
 function App({a: a}, {b: c}) {
-return (
+  return (
   <div>
   
       
@@ -30,31 +30,38 @@ new X
 X()
 let z,zz,zzz
 const x = class Z {}
-class D extends B {}
+class D extends B {
+  constructor () {
+  super()
+  this.hello='hi'
+}
+  other () {
+  return this.hello;
+}
+}
 switch (e) {
   case 'x': false; '';
+  default: 'zz';
 }
 const v1 = 1 + 4 + 2
-let a = 1
+{
+  let a = 1
+}
 ;
 []
 const yy = {
   a: 1,
-  get z() {
-
-},
-  init() {
-
-},
-  blob() {
-
-},
-  b() {
-
-}
+  get z() {},
+  set j(j) {},
+  init: function () {},
+  blob: async function () {},
+  b: function () {},
+  c: function d() {},
+  pp: function () {},
+  zz: async function () {}
 }
 for (let i = 0;;i++) {
-continue
+  continue
 }
 const y = <Modal isOpen={true} onClick={onClick}>
   hello
