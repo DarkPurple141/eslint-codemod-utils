@@ -31,7 +31,8 @@ ruleTester.run('change-composition', rule, {
       errors: ['error'],
       output: `
       import React from 'react'
-      import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
+      // The import "ModalHeader" has been added by codemod
+import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
   
       const App = () => {
         return (
@@ -56,7 +57,8 @@ ruleTester.run('change-composition', rule, {
       errors: ['error'],
       output: `
       import React from 'react'
-      import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
+      // The import "ModalHeader" has been added by codemod
+import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
   
       const App = () => {
         return (
@@ -82,7 +84,8 @@ ruleTester.run('change-composition', rule, {
       errors: ['error'],
       output: `
       import React from 'react'
-      import Modal, { ModalHeader } from '@atlaskit/modal-dialog'
+      // The import "ModalHeader" has been added by codemod
+import Modal, { ModalHeader } from '@atlaskit/modal-dialog'
   
       const App = () => {
         return (
@@ -107,7 +110,8 @@ ruleTester.run('change-composition', rule, {
       errors: ['error'],
       output: `
       import React from 'react'
-      import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
+      // The import "ModalHeader" has been added by codemod
+import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
   
       const App = () => {
         return (

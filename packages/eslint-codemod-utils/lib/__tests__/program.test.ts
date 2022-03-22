@@ -14,6 +14,9 @@ function App({a: a}, {b: c}) {
   <div>
   
       
+  {...A}
+  
+      
   <Welcome name="Sara" otherName={2} isBlanketHidden {...x()} />
   
       
@@ -26,7 +29,7 @@ function App({a: a}, {b: c}) {
 </div>
   );
 }
-new X
+new X(\`\${hello}: "world" \${1 == 2 ? \`\${Welcome}\` : ''}\`)
 X()
 let z,zz,zzz
 const x = class Z {}
@@ -62,6 +65,9 @@ const yy = {
 }
 for (let i = 0;;i++) {
   continue
+}
+while (i < 0) {
+  break
 }
 const y = <Modal isOpen={true} onClick={onClick}>
   hello

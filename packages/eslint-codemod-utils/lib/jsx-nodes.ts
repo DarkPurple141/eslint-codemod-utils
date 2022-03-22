@@ -10,7 +10,9 @@ import type {
   JSXExpressionContainer,
   JSXText,
   JSXSpreadAttribute,
+  JSXSpreadChild,
 } from 'estree-jsx'
+import { DEFAULT_WHITESPACE } from './constants'
 
 import type { StringableASTNode } from './types'
 import { node } from './utils/node'
@@ -38,6 +40,19 @@ export const jsxIdentifier: StringableASTNode<JSXIdentifier> = ({ name }) => ({
   __pragma: 'ecu',
   toString: () => name,
 })
+
+export const jsxSpreadChild: StringableASTNode<JSXSpreadChild> = ({
+  expression,
+  ...other
+}) => {
+  return {
+    ...other,
+    expression,
+    __pragma: 'ecu',
+    type: 'JSXSpreadChild',
+    toString: () => `{...${node(expression)}}`,
+  }
+}
 
 export const jsxMemberExpression: StringableASTNode<JSXMemberExpression> = ({
   object,
@@ -105,7 +120,7 @@ export const jsxElement: StringableASTNode<JSXElement> = ({
   __pragma: 'ecu',
   toString: (): string => {
     const indent = whiteSpace(loc!)
-    const spacing = '\n  ' + indent
+    const spacing = DEFAULT_WHITESPACE + indent
     return `${jsxOpeningElement(openingElement)}${
       children.length
         ? spacing + children.map(node).map(String).join(spacing) + '\n'
@@ -171,9 +186,6 @@ export const jsxOpeningElement: StringableASTNode<JSXOpeningElement> = ({
             .map((attr) => {
               if ('__pragma' in attr) {
                 return attr
-                // TS wanted this extra branch :thinking
-              } else if (attr.type === 'JSXAttribute') {
-                return node(attr)
               } else {
                 return node(attr)
               }
