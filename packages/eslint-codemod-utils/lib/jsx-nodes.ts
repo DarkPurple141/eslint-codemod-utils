@@ -10,6 +10,7 @@ import type {
   JSXExpressionContainer,
   JSXText,
   JSXSpreadAttribute,
+  JSXSpreadChild,
 } from 'estree-jsx'
 import { DEFAULT_WHITESPACE } from './constants'
 
@@ -39,6 +40,19 @@ export const jsxIdentifier: StringableASTNode<JSXIdentifier> = ({ name }) => ({
   __pragma: 'ecu',
   toString: () => name,
 })
+
+export const jsxSpreadChild: StringableASTNode<JSXSpreadChild> = ({
+  expression,
+  ...other
+}) => {
+  return {
+    ...other,
+    expression,
+    __pragma: 'ecu',
+    type: 'JSXSpreadChild',
+    toString: () => `{...${node(expression)}}`,
+  }
+}
 
 export const jsxMemberExpression: StringableASTNode<JSXMemberExpression> = ({
   object,

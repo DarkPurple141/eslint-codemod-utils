@@ -355,19 +355,21 @@ export const expressionStatement: StringableASTNode<
  *
  * @example
  * ```ts
- * new SomeThing
- * ^^^^^^^^^^^^^
+ * new SomeThing()
+ * ^^^^^^^^^^^^^^^
  * ```
  */
 export const newExpression: StringableASTNode<estree.NewExpression> = ({
   callee,
+  arguments: argumentsParam,
   ...other
 }) => ({
   ...other,
   callee,
+  arguments: argumentsParam,
   type: 'NewExpression',
   __pragma: 'ecu',
-  toString: () => `new ${node(callee)}`,
+  toString: () => `new ${node(callee)}(${argumentsParam.map(node).join(', ')})`,
 })
 
 export const property: StringableASTNode<estree.Property> = ({
@@ -544,6 +546,19 @@ export const importNamespaceSpecifier: StringableASTNode<
   }
 }
 
+export const templateElement: StringableASTNode<estree.TemplateElement> = ({
+  value,
+  ...other
+}) => {
+  return {
+    ...other,
+    value,
+    __pragma: 'ecu',
+    type: 'TemplateElement',
+    toString: () => `${value.raw}`,
+  }
+}
+
 export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
   specifiers,
   source,
@@ -662,6 +677,42 @@ export const switchStatement: StringableASTNode<estree.SwitchStatement> = ({
   discriminant,
   type: 'SwitchStatement',
 })
+
+export const templateLiteral: StringableASTNode<estree.TemplateLiteral> = ({
+  expressions,
+  quasis,
+  ...other
+}) => {
+  if (quasis.length < expressions.length) {
+    throw new Error(
+      'invariant: quasis should always outnumber expressions in a TemplateLiteral'
+    )
+  }
+  return {
+    ...other,
+    __pragma: 'ecu',
+    type: 'TemplateLiteral',
+    quasis,
+    expressions,
+    toString: () => {
+      const range = Array.from({ length: quasis.length + expressions.length })
+      return (
+        '`' +
+        range
+          .map((_, index) => {
+            if (index % 2 === 0) {
+              return node(quasis[Math.floor(index / 2)])
+            } else {
+              return `\${${node(expressions[Math.floor(index / 2)])}}`
+            }
+          })
+          .map(String)
+          .join('') +
+        '`'
+      )
+    },
+  }
+}
 
 export const forStatement: StringableASTNode<estree.ForStatement> = ({
   body,

@@ -7,6 +7,7 @@ import {
   jsxMemberExpression,
   jsxOpeningElement,
   jsxSpreadAttribute,
+  jsxSpreadChild,
   jsxText,
 } from './jsx-nodes'
 
@@ -56,6 +57,9 @@ import {
   methodDefinition,
   assignmentExpression,
   breakStatement,
+  templateLiteral,
+  templateElement,
+  conditionalExpression,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -69,10 +73,10 @@ export const typeToHelperLookup = new Proxy(
     ArrayExpression: arrayExpression,
     BlockStatement: blockStatement,
     BinaryExpression: binaryExpression,
+    ConditionalExpression: conditionalExpression,
     // TODO implement
     JSXFragment: identity,
-    // TODO implement
-    JSXSpreadChild: identity,
+    JSXSpreadChild: jsxSpreadChild,
     JSXExpressionContainer: jsxExpressionContainer,
     JSXClosingElement: jsxClosingElement,
     JSXOpeningElement: jsxOpeningElement,
@@ -95,6 +99,8 @@ export const typeToHelperLookup = new Proxy(
     ImportNamespaceSpecifier: importNamespaceSpecifier,
     ImportDeclaration: importDeclaration,
     ThisExpression: thisExpression,
+    TemplateLiteral: templateLiteral,
+    TemplateElement: templateElement,
     ObjectExpression: objectExpression,
     ObjectPattern: objectPattern,
     RestElement: identity,
