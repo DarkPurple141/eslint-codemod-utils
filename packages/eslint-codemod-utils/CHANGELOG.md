@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 0.0.6
+
+### Patch Changes
+
+- 8d31804: Adds MethodDefinition, ClassDefinition
+
 ## 0.0.5
 
 ### Patch Changes
