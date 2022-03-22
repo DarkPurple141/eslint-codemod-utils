@@ -63,6 +63,9 @@ const yy = {
 for (let i = 0;;i++) {
   continue
 }
+while (i < 0) {
+  break
+}
 const y = <Modal isOpen={true} onClick={onClick}>
   hello
 </Modal>

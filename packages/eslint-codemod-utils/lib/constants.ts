@@ -55,6 +55,7 @@ import {
   classBody,
   methodDefinition,
   assignmentExpression,
+  breakStatement,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -64,7 +65,6 @@ export const typeToHelperLookup = new Proxy(
   {
     // TODO implement
     AssignmentProperty: identity,
-    // TODO implement
     AssignmentExpression: assignmentExpression,
     ArrayExpression: arrayExpression,
     BlockStatement: blockStatement,
@@ -118,6 +118,7 @@ export const typeToHelperLookup = new Proxy(
     Pattern: identity,
     /** this isn't a concrete node type */
     Statement: identity,
+    BreakStatement: breakStatement,
     PrivateIdentifier: identity,
     Property: property,
     PropertyDefinition: propertyDefinition,

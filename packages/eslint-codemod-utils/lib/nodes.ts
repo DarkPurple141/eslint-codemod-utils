@@ -415,7 +415,6 @@ export const objectPattern: StringableASTNode<estree.ObjectPattern> = ({
     properties,
     type: 'ObjectPattern',
     __pragma: 'ecu',
-    // @ts-ignore TODO AssignmentProperty causing issues
     toString: () => `{${properties.map(node).map(String).join(', ')}}`,
   }
 }
@@ -627,7 +626,7 @@ export const whileStatement: StringableASTNode<estree.WhileStatement> = ({
   body,
   type: 'WhileStatement',
   toString() {
-    throw new Error('Unimplemented')
+    return `while (${node(test)}) ${node(body)}`
   },
 })
 
@@ -695,6 +694,17 @@ export const continueStatement: StringableASTNode<estree.ContinueStatement> = ({
   type: 'ContinueStatement',
 })
 
+export const breakStatement: StringableASTNode<estree.BreakStatement> = ({
+  label,
+  ...other
+}) => ({
+  ...other,
+  toString: () => `break${label ? ` ${node(label)}` : ''}`,
+  __pragma: 'ecu',
+  label,
+  type: 'BreakStatement',
+})
+
 export const debuggerStatement: StringableASTNode<estree.DebuggerStatement> = (
   node
 ) => ({
@@ -735,9 +745,7 @@ export const awaitExpression: StringableASTNode<estree.AwaitExpression> = ({
   ...other
 }) => ({
   ...other,
-  toString: () => {
-    throw new Error('Unimplemented')
-  },
+  toString: () => `await ${node(argument)}`,
   __pragma: 'ecu',
   argument,
   type: 'AwaitExpression',
