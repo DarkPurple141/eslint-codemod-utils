@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 0.0.7
+
+### Patch Changes
+
+- cf5df6a: Implements estree.WhileStatement & estree.BreakStatement
+
 ## 0.0.6
 
 ### Patch Changes
