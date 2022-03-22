@@ -153,6 +153,7 @@ const rule: Rule.RuleModule = {
                   )
                 )
               )
+              fixes.push(fixer.insertTextBefore(importNode, `// The import "ModalHeader" has been added by codemod\n`))
             }
 
             return fixes

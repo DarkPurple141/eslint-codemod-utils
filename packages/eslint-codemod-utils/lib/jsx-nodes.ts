@@ -11,6 +11,7 @@ import type {
   JSXText,
   JSXSpreadAttribute,
 } from 'estree-jsx'
+import { DEFAULT_WHITESPACE } from './constants'
 
 import type { StringableASTNode } from './types'
 import { node } from './utils/node'
@@ -105,7 +106,7 @@ export const jsxElement: StringableASTNode<JSXElement> = ({
   __pragma: 'ecu',
   toString: (): string => {
     const indent = whiteSpace(loc!)
-    const spacing = '\n  ' + indent
+    const spacing = DEFAULT_WHITESPACE + indent
     return `${jsxOpeningElement(openingElement)}${
       children.length
         ? spacing + children.map(node).map(String).join(spacing) + '\n'
@@ -171,9 +172,6 @@ export const jsxOpeningElement: StringableASTNode<JSXOpeningElement> = ({
             .map((attr) => {
               if ('__pragma' in attr) {
                 return attr
-                // TS wanted this extra branch :thinking
-              } else if (attr.type === 'JSXAttribute') {
-                return node(attr)
               } else {
                 return node(attr)
               }
