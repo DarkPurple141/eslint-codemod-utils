@@ -7,7 +7,7 @@
     <img alt="npm version" src="https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square"></a>
 </p>
 
-The `eslint-codemod-utils` package is a library of AST helper functions to help apply more complex ESLint rule fixes. This library provides first class typescript support to supercharge your custom eslint rules.
+The `eslint-codemod-utils` package is a library of helper functions designed to enable code evolution in a similar way to `jscodeshift` - but leaning on the live and ongoing enforcement of `eslint` in your source - rather than one off codemod scripts. It provides first class typescript support and will supercharge your custom eslint rules.
 
 ## Installation
 
@@ -25,7 +25,7 @@ npm i --save-dev eslint-codemod-utils
 
 ## Getting started
 
-To put together a basic JSX node, you might do something like this:
+To create a basic JSX node, you might do something like this:
 
 ```ts
 import {
@@ -42,7 +42,7 @@ const modal = jsxElement({
 })
 ```
 
-This would produce an `estree` compliant node type that you can also nicely stringify to apply your eslint
+This would produce an `esprima` compliant node type that you can **also** nicely stringify to apply your eslint
 fixes. For example:
 
 ```ts
@@ -50,261 +50,107 @@ modal.toString()
 // produces: <Modal></Modal>
 ```
 
-The real power of this approach is when combining these utilties with `estree` nodes exposed by `eslint` rule fixers. In these cases, rather than
-recreating the entire tree, you can instead focus on only the fix you actually need to affect. See the `example-eslint-plugin` for more information.
+The real power of this approach is when combining these utilties with `eslint` rule custom fixe. In these cases, rather than
+relying on string manipulation - which can be inexact, hacky or complex to reason about - you can instead focus on only the fix you actually need to affect.
+
+### Your first `eslint` codemod
+
+Writing a codemod is generally broken down into three parts:
+
+1. Find
+2. Modify
+3. Remove / Cleanup
+
+Let's say we're trying to add a new element required to be composed by our Design System's Modal element - a `ModalBody` which is going to
+be wrapped by the original `Modal` container. Assuming you've found the right node a normal fix might look like this:
+
+```ts
+import { Rule } from 'eslint'
+
+function fix(fixer: Rule.RuleFixer) {
+  return fixer.replaceText(node, '<Modal><ModalBody></ModalBody></Modal>')
+}
+```
+
+So for this input:
+
+```ts
+const MyModal = () => <Modal></Modal>
+```
+
+We make this change:
+
+```diff
+- const MyModal = () => <Modal></Modal>
++ const MyModal = () => <Modal><ModalBody></ModalBody></Modal>
+```
+
+This kinda works, but the problem is the existing usage of Modal in our codebase is likely (guaranteed!) to be considerably more complex than
+this example.
+
+- If our Modal has props, we need to consider them
+- If our Modal has children, we need to consider them
+- If our Modal is aliased, we need to consider that
+
+Instead of relying on string manipulation to reconstruct the existing AST, we instead leverage the information `eslint` is already giving to us.
+
+```ts
+import * as esUtils from 'eslint-codemod-utils'
+import { Rule } from 'eslint'
+
+// This is slightly more verbose, but it's considerably more robust -
+// Simply re-using and spitting out the exisitng AST as a string
+function fix(fixer: Rule.RuleFixer) {
+  const jsxIdentifier = esUtils.jsxIdentifier({ name: 'ModalBody' })
+  const modalBodyNode = esUtils.jsxElement({
+    openingElement: esUtils.jsxOpeningElement({ name: jsxIdentifier }),
+    closingElement: esUtils.jsxClosingElement({ name: jsxIdentifier }),
+    // pass children of original element to new wrapper
+    children: node.children,
+  })
+  return fixer.replaceText(
+    node,
+    esUtils.jsxElement({ ...node, children: [modalBodyNode] }).toString()
+  )
+}
+```
+
+The above will work for the original example:
+
+```diff
+- const MyModal = () => <Modal></Modal>
++ const MyModal = () => <Modal><ModalBody></ModalBody></Modal>
+```
+
+But it will also work for:
+
+```diff
+- const MyModal = () => <Modal type="full-width"></Modal>
++ const MyModal = () => <Modal type="full-width"><ModalBody></ModalBody></Modal>
+```
+
+Or:
+
+```diff
+- const MyModal = () => <Modal><SomeChild/></Modal>
++ const MyModal = () => <Modal><ModalBody><SomeChild/></ModalBody></Modal>
+```
+
+It's a declarative approach to solve the same problem.
+
+See the [eslint-plugin-example](packages/eslint-plugin-example) example for examples of more real world fixes.
 
 ## How it works
 
-The library provides a 1-1 mapping of types to utility functions every `estree` node type. These are all lowercase complements to the underlying type they represent;
-eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString`. This means any string cast will recursively produce the correct string output for any valid `estree` AST.
+The library provides a 1-1 mapping of types to utility functions every `esprima` node type. These are all lowercase complements to the underlying type they represent;
+eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString`. This means any string cast will recursively produce the correct string output for any valid `esprima` AST.
 
-The full API (WIP) is below. Each helper takes in a valid `estree` node and spits out an augmented one that can be more easily stringified.
-
-### Nodes
-
-````ts
-/**
- * __CallExpression__
- *
- * @example
- *
- * Usage
- * ```
- * const call = callExpression({ callee: identifier({ name: 'normalCallExpression' }) })
- * ```
- *
- * Produces
- *
- * @example
- *
- * ```js
- * normalCallExpression()
- * ```
- *
- * @returns {CallExpression}
- */
-export declare const callExpression: StringableASTNode<estree.SimpleCallExpression>
-export declare const binaryExpression: StringableASTNode<estree.BinaryExpression>
-/**
- * __ArrowFunctionExpression__
- *
- * @example
- * ```js
- * const arrow = () => 42
- *               ⌃⌃⌃⌃⌃⌃⌃⌃
- * ```
- * @returns {estree.ArrowFunctionExpression}
- */
-export declare const arrowFunctionExpression: StringableASTNode<estree.ArrowFunctionExpression>
-export declare const functionExpression: StringableASTNode<estree.FunctionExpression>
-export declare const blockStatement: StringableASTNode<estree.BlockStatement>
-export declare const returnStatement: StringableASTNode<estree.ReturnStatement>
-/**
- * __UnaryExpression__
- *
- * @example
- *
- * ```ts
- * const y = typeof x
- *           ^^^^^^
- * ++x
- * ^^
- * ```
- *
- * @returns {estree.UnaryExpression}
- */
-export declare const unaryExpression: StringableASTNode<estree.UnaryExpression>
-/**
- * __ThisExpression__
- *
- * @example
- *
- * ```js
- * // In `this.self` 'this' is a ThisExpression.
- * this.self
- * ⌃⌃⌃⌃
- * ```
- *
- * @returns {estree.ThisExpression}
- */
-export declare const thisExpression: StringableASTNode<estree.ThisExpression>
-export declare const importDefaultSpecifier: StringableASTNode<estree.ImportDefaultSpecifier>
-export declare const exportNamedDeclaration: StringableASTNode<estree.ExportNamedDeclaration>
-export declare const exportDefaultDeclaration: StringableASTNode<estree.ExportDefaultDeclaration>
-export declare const exportAllDeclaration: StringableASTNode<estree.ExportAllDeclaration>
-export declare const exportSpecifier: StringableASTNode<estree.ExportSpecifier>
-export declare const importSpecifier: StringableASTNode<estree.ImportSpecifier>
-export declare const yieldExpression: StringableASTNode<estree.YieldExpression>
-export declare const arrayExpression: StringableASTNode<estree.ArrayExpression>
-export declare const updateExpression: StringableASTNode<estree.UpdateExpression>
-export declare const expressionStatement: StringableASTNode<estree.ExpressionStatement>
-export declare const newExpression: StringableASTNode<estree.NewExpression>
-export declare const property: StringableASTNode<estree.Property>
-/**
- * __ObjectPattern__
- *
- * @example
- * ```ts
- * function App({ a }) {}
- *              ^^^^^
- * ```
- * @returns
- */
-export declare const objectPattern: StringableASTNode<estree.ObjectPattern>
-/**
- * __SpreadElement__
- *
- * @example
- * ```ts
- * const obj = {
- *  ...spread
- *  ^^^^^^^^^
- * }
- * ```
- *
- * @returns {estree.SpreadElement}
- */
-export declare const spreadElement: StringableASTNode<estree.SpreadElement>
-export declare const objectExpression: StringableASTNode<estree.ObjectExpression>
-export declare const emptyStatement: StringableASTNode<estree.EmptyStatement>
-export declare const memberExpression: StringableASTNode<estree.MemberExpression>
-export declare const logicalExpression: StringableASTNode<estree.LogicalExpression>
-export declare const variableDeclarator: StringableASTNode<estree.VariableDeclarator>
-export declare const variableDeclaration: StringableASTNode<estree.VariableDeclaration>
-export declare const importDeclaration: StringableASTNode<estree.ImportDeclaration>
-export declare const literal: StringableASTNode<estree.Literal>
-export declare const identifier: StringableASTNode<estree.Identifier>
-export declare const whileStatement: StringableASTNode<estree.WhileStatement>
-export declare const switchCase: StringableASTNode<estree.SwitchCase>
-export declare const switchStatement: StringableASTNode<estree.SwitchStatement>
-export declare const forStatement: StringableASTNode<estree.ForStatement>
-export declare const continueStatement: StringableASTNode<estree.ContinueStatement>
-export declare const debuggerStatement: StringableASTNode<estree.DebuggerStatement>
-export declare const conditionalExpression: StringableASTNode<estree.ConditionalExpression>
-export declare const awaitExpression: StringableASTNode<estree.AwaitExpression>
-/**
- * __StaticBlock__
- *
- * @example
- * ```ts
- * class A {
- * // only applicable inside a class
- *  static { }
- *  ^^^^^^^^^^
- * }
- * ```
- */
-export declare const staticBlock: StringableASTNode<estree.StaticBlock>
-export declare const functionDeclaration: StringableASTNode<estree.FunctionDeclaration>
-export declare const classDeclaration: StringableASTNode<estree.ClassDeclaration>
-export declare const classExpression: StringableASTNode<estree.ClassExpression>
-export declare const program: StringableASTNode<estree.Program>
-````
-
-### JSX Nodes
-
-````ts
-export declare const jsxIdentifier: StringableASTNode<JSXIdentifier>
-export declare const jsxMemberExpression: StringableASTNode<JSXMemberExpression>
-/**
- * __JSXElement__
- *
- * @example
- *
- * Usage
- * ```
- * import { jsxElement, jsxOpeningElement, jsxClosingElement, identifier } from 'eslint-codemod-utils'
- *
- * const modalName = identifier({ name: 'Modal' })
- * const modal = jsxElement({
- *  openingElement: jsxOpeningElement({ name: modalName, selfClosing: false }),
- *  closingElement: jsxClosingElement({ name: modalName }),
- * })
- * ```
- *
- * @example
- *
- * Produces
- * ```js
- * <Modal></Modal>
- * ```
- *
- * @returns {JSXElement}
- */
-export declare const jsxElement: StringableASTNode<JSXElement>
-/**
- * __JSXSpreadAttribute__
- *
- * @example Usage
- *
- * ```js
- * import { jsxSpreadAttribute, identifier } from 'eslint-codemod-utils'
- *
- * const spreadAttr = jsxSpreadAttribute({
- *  argument: identifier({ name: 'spread' })
- * })
- * ```
- * @example
- *
- * ```js
- * // Produces a spread attribute
- * <div {...spread}>
- *      ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃
- * ```
- *
- * @returns {JSXSpreadAttribute}
- */
-export declare const jsxSpreadAttribute: StringableASTNode<JSXSpreadAttribute>
-export declare const jsxOpeningElement: StringableASTNode<JSXOpeningElement>
-/**
- * __JSXClosingElement__
- *
- * @example
- *
- * ```js
- * // The below jsx div is a closing element.
- * // A closing element is expected to match a valid opening element of the same name
- * </div>
- * ```
- *
- * @returns {JSXClosingElement}
- */
-export declare const jsxClosingElement: StringableASTNode<JSXClosingElement>
-/**
- * __JSXText__
- *
- * @example
- *
- * ```js
- * // In the below jsx, the string, "hello world" is considered JSXText.
- * // JSXText can be a any number, boolean, or string value.
- * <div>hello world</div>
- * ```
- *
- * @returns {JSXText}
- */
-export declare const jsxText: StringableASTNode<JSXText>
-export declare const jsxExpressionContainer: StringableASTNode<JSXExpressionContainer>
-/**
- * __JSXAttribute__
- *
- * @example
- *
- * ```js
- * // In the below jsx, `a`, `b` and `c` reflect different valid
- * // jsx attributes. There values can come in many forms.
- * <div a={10} b="string" c={object} />
- * ```
- *
- * @returns {JSXAttribute}
- */
-export declare const jsxAttribute: StringableASTNode<JSXAttribute>
-````
+Each helper takes in a valid `esprima` node and spits out an augmented one that can be more easily stringified. See -> [API](API.md) for more.
 
 ## Motivation
 
-This idea came about after wrestling with the limitations of `ESLint` rule fixes. For context, `ESLint` rules rely heavily on string based utilities to apply
-fixes to code. For example this fix which appends a semi-colon to a `Literal` (from the `ESLint` documentation website itself):
+This idea came about after wrestling with the limitations of `eslint` rule fixes. For context, `eslint` rules rely heavily on string based utilities to apply
+fixes to code. For example this fix which appends a semi-colon to a `Literal` (from the `eslint` documentation website itself):
 
 ```js
 context.report({
