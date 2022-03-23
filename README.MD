@@ -136,21 +136,21 @@ Or:
 + const MyModal = () => <Modal><ModalBody><SomeChild/></ModalBody></Modal>
 ```
 
-It's a declarative approach to solving the same problem.
+It's a declarative approach to solve the same problem.
 
 See the [eslint-plugin-example](packages/eslint-plugin-example) example for examples of more real world fixes.
 
 ## How it works
 
-The library provides a 1-1 mapping of types to utility functions every `estree` node type. These are all lowercase complements to the underlying type they represent;
-eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString`. This means any string cast will recursively produce the correct string output for any valid `estree` AST.
+The library provides a 1-1 mapping of types to utility functions every `esprima` node type. These are all lowercase complements to the underlying type they represent;
+eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString`. This means any string cast will recursively produce the correct string output for any valid `esprima` AST.
 
-Each helper takes in a valid `estree` node and spits out an augmented one that can be more easily stringified. See -> [API](API.md) for more.
+Each helper takes in a valid `esprima` node and spits out an augmented one that can be more easily stringified. See -> [API](API.md) for more.
 
 ## Motivation
 
-This idea came about after wrestling with the limitations of `ESLint` rule fixes. For context, `ESLint` rules rely heavily on string based utilities to apply
-fixes to code. For example this fix which appends a semi-colon to a `Literal` (from the `ESLint` documentation website itself):
+This idea came about after wrestling with the limitations of `eslint` rule fixes. For context, `eslint` rules rely heavily on string based utilities to apply
+fixes to code. For example this fix which appends a semi-colon to a `Literal` (from the `eslint` documentation website itself):
 
 ```js
 context.report({
