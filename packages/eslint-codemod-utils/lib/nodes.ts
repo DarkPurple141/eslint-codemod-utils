@@ -67,6 +67,27 @@ export const binaryExpression: StringableASTNode<estree.BinaryExpression> = ({
 }
 
 /**
+ * __SequenceExpression__
+ *
+ * @example
+ * ```ts
+ * const x = (4, 8)
+ *           ^^^^^^
+ * ```
+ */
+export const sequenceExpression: StringableASTNode<
+  estree.SequenceExpression
+> = ({ expressions, ...other }) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    expressions,
+    type: 'SequenceExpression',
+    toString: () => `(${expressions.map(node).map(String).join(', ')})`,
+  }
+}
+
+/**
  * __ArrowFunctionExpression__
  *
  * @example
@@ -92,6 +113,19 @@ export const arrowFunctionExpression: StringableASTNode<
         .map(node)
         .map(String)
         .join(', ')}) => ${node(body)}`,
+  }
+}
+
+export const taggedTemplateExpression: StringableASTNode<
+  estree.TaggedTemplateExpression
+> = ({ quasi, tag, ...other }) => {
+  return {
+    ...other,
+    quasi,
+    tag,
+    __pragma: 'ecu',
+    type: 'TaggedTemplateExpression',
+    toString: () => `${node(tag)}${node(quasi)}`,
   }
 }
 

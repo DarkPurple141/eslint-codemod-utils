@@ -19,6 +19,7 @@ import {
 } from '..'
 
 import * as espree from 'espree'
+import { taggedTemplateExpression, variableDeclaration } from '../nodes'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
@@ -425,5 +426,13 @@ describe('jsxOpeningElement', () => {
         selfClosing: false,
       }).toString()
     ).eq(`<Modal>`)
+  })
+})
+
+describe('TaggedTemplateExpression', () => {
+  test('basic', () => {
+    const testString = `const x = css\`color: red;\``
+    const { body } = espree.parse(testString, ESPREE_OPTIONS)
+    expect(variableDeclaration(body[0]).toString()).eq(testString)
   })
 })

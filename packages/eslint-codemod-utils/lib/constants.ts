@@ -33,6 +33,7 @@ import {
   objectExpression,
   emptyStatement,
   spreadElement,
+  sequenceExpression,
   arrowFunctionExpression,
   yieldExpression,
   unaryExpression,
@@ -60,6 +61,7 @@ import {
   templateLiteral,
   templateElement,
   conditionalExpression,
+  taggedTemplateExpression,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -101,6 +103,7 @@ export const typeToHelperLookup = new Proxy(
     ThisExpression: thisExpression,
     TemplateLiteral: templateLiteral,
     TemplateElement: templateElement,
+    TaggedTemplateExpression: taggedTemplateExpression,
     ObjectExpression: objectExpression,
     ObjectPattern: objectPattern,
     RestElement: identity,
@@ -130,6 +133,7 @@ export const typeToHelperLookup = new Proxy(
     PropertyDefinition: propertyDefinition,
     ReturnStatement: returnStatement,
     Super: identity,
+    SequenceExpression: sequenceExpression,
     SpreadElement: spreadElement,
     StaticBlock: staticBlock,
     WhileStatement: whileStatement,

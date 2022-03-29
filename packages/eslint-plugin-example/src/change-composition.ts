@@ -29,7 +29,7 @@ const rule: Rule.RuleModule = {
     fixable: 'code',
   },
   create(context) {
-    let importNode: ImportDeclaration = null
+    let importNode: ImportDeclaration | null = null
 
     return {
       ImportDeclaration(node) {
@@ -57,7 +57,7 @@ const rule: Rule.RuleModule = {
             spec.type === 'ImportDefaultSpecifier'
         )
 
-        if (openingElement.name.name !== localDefaultImport.local.name) {
+        if (openingElement.name.name !== localDefaultImport?.local.name) {
           return
         }
 
@@ -78,7 +78,7 @@ const rule: Rule.RuleModule = {
             const modalHeaderIdentifer = jsxIdentifier({ name: 'ModalHeader' })
             const fixed =
               '(\n' +
-              ''.padStart(node.loc.start.column, ' ') +
+              ''.padStart(node.loc?.start?.column || 0, ' ') +
               String(
                 jsxElement({
                   loc: node.loc,
@@ -128,6 +128,11 @@ const rule: Rule.RuleModule = {
               `\n${whiteSpace(node.loc)})`
 
             const fixes = [fixer.replaceText(node as any, fixed)]
+
+            // should never occurr
+            if (!importNode) {
+              return fixes
+            }
 
             if (
               !importNode.specifiers.some(
