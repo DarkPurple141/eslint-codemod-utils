@@ -117,15 +117,14 @@ const rule: Rule.RuleModule = {
                           : headingAttribute.value.type === 'JSXElement'
                           ? jsxElement(headingAttribute.value)
                           : jsxExpressionContainer({
-                              // @ts-expect-error TODO deal with ChainExpression
-                              expression: headingAttribute.value,
+                              expression: headingAttribute.value!,
                             }),
                       ],
                     })
                   ),
                 })
               ) +
-              `\n${whiteSpace(node.loc)})`
+              `\n${whiteSpace(node.loc!)})`
 
             const fixes = [fixer.replaceText(node as any, fixed)]
 

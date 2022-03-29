@@ -16,10 +16,10 @@ import {
   jsxSpreadAttribute,
   callExpression,
   staticBlock,
+  variableDeclaration,
 } from '..'
 
 import * as espree from 'espree'
-import { taggedTemplateExpression, variableDeclaration } from '../nodes'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
