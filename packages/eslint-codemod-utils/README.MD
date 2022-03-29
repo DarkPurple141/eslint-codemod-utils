@@ -42,7 +42,7 @@ const modal = jsxElement({
 })
 ```
 
-This would produce an `esprima` compliant node type that you can **also** nicely stringify to apply your eslint
+This would produce an `espree` compliant node type that you can **also** nicely stringify to apply your eslint
 fixes. For example:
 
 ```ts
@@ -142,10 +142,10 @@ See the [eslint-plugin-example](packages/eslint-plugin-example) example for exam
 
 ## How it works
 
-The library provides a 1-1 mapping of types to utility functions every `esprima` node type. These are all lowercase complements to the underlying type they represent;
-eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString`. This means any string cast will recursively produce the correct string output for any valid `esprima` AST.
+The library provides a 1-1 mapping of types to utility functions every `espree` node type. These are all lowercase complements to the underlying type they represent;
+eg. `jsxIdentifier` produces a `JSXIdentifier` node representation. These nodes all implement their own `toString`. This means any string cast will recursively produce the correct string output for any valid `espree` AST.
 
-Each helper takes in a valid `esprima` node and spits out an augmented one that can be more easily stringified. See -> [API](API.md) for more.
+Each helper takes in a valid `espree` node and spits out an augmented one that can be more easily stringified. See -> [API](API.md) for more.
 
 ## Motivation
 
@@ -187,7 +187,7 @@ context.report({
   node: node,
   message: 'error',
   fix(fixer) {
-    // The variables 'fixed' works with the estree AST to create
+    // The variables 'fixed' works with the espree AST to create
     // its own representation which can easily be stringified
     const fixed = jsxOpeningElement({
       name: node.name,
@@ -195,7 +195,7 @@ context.report({
       attributes: node.attributes.map((attr) => {
         if (attr.type === 'JSXAttribute' && attr.name.name === 'open') {
           const internal = jsxAttribute({
-            // estree nodes are spread into the util with no issues
+            // espree nodes are spread into the util with no issues
             ...attr,
             // others are recreated or re-mapped
             name: jsxIdentifier({

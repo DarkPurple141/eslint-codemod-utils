@@ -14,9 +14,6 @@ function App({a: a}, {b: c}) {
   <div>
   
       
-  {...A}
-  
-      
   <Welcome name="Sara" otherName={2} isBlanketHidden {...x()} />
   
       
@@ -29,10 +26,11 @@ function App({a: a}, {b: c}) {
 </div>
   );
 }
+const silly = (1, 3)
 new X(\`\${hello}: "world" \${1 == 2 ? \`\${Welcome}\` : ''}\`)
 X()
 let z,zz,zzz
-const x = class Z {}
+const p = class Z {}
 class D extends B {
   constructor () {
   super()

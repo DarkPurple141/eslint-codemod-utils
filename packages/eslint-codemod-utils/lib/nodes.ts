@@ -40,6 +40,19 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
     }(${calleeArgs.map(node).join(', ')})`,
 })
 
+export const chainExpression: StringableASTNode<estree.ChainExpression> = ({
+  expression,
+  ...other
+}) => {
+  return {
+    ...other,
+    expression,
+    type: 'ChainExpression',
+    __pragma: 'ecu',
+    toString: () => `${node(expression)}`,
+  }
+}
+
 /**
  * __BinaryExpression__
  *
@@ -63,6 +76,27 @@ export const binaryExpression: StringableASTNode<estree.BinaryExpression> = ({
     operator,
     type: 'BinaryExpression',
     toString: () => `${node(left)} ${operator} ${node(right)}`,
+  }
+}
+
+/**
+ * __SequenceExpression__
+ *
+ * @example
+ * ```ts
+ * const x = (4, 8)
+ *           ^^^^^^
+ * ```
+ */
+export const sequenceExpression: StringableASTNode<
+  estree.SequenceExpression
+> = ({ expressions, ...other }) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    expressions,
+    type: 'SequenceExpression',
+    toString: () => `(${expressions.map(node).map(String).join(', ')})`,
   }
 }
 
@@ -95,6 +129,28 @@ export const arrowFunctionExpression: StringableASTNode<
   }
 }
 
+/**
+ * __TaggedTemplateExpression__
+ *
+ * @example
+ * ```ts
+ * const style = css`color: red;`
+ *                   ^^^^^^^^^^^
+ * ```
+ */
+export const taggedTemplateExpression: StringableASTNode<
+  estree.TaggedTemplateExpression
+> = ({ quasi, tag, ...other }) => {
+  return {
+    ...other,
+    quasi,
+    tag,
+    __pragma: 'ecu',
+    type: 'TaggedTemplateExpression',
+    toString: () => `${node(tag)}${node(quasi)}`,
+  }
+}
+
 export const functionExpression: StringableASTNode<
   estree.FunctionExpression
 > = ({ async, generator, body, params, id, ...other }) => {
@@ -113,6 +169,7 @@ export const functionExpression: StringableASTNode<
         .join(', ')}) ${node(body)}`,
   }
 }
+
 export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
   body,
   ...other
@@ -200,6 +257,57 @@ export const thisExpression: StringableASTNode<estree.ThisExpression> = (
   type: 'ThisExpression',
   __pragma: 'ecu',
   toString: () => `this`,
+})
+
+/**
+ * __WithStatement__
+ *
+ * @example
+ *
+ * ```ts
+ * with (Math) {
+ *   a = PI * r * r;
+ *   x = r * cos(PI);
+ *   y = r * sin(PI / 2);
+ * }
+ * ```
+ *
+ * @returns {estree.WithStatement}
+ */
+export const withStatement: StringableASTNode<estree.WithStatement> = ({
+  object,
+  body,
+  ...other
+}) => ({
+  ...other,
+  type: 'WithStatement',
+  __pragma: 'ecu',
+  object,
+  body,
+  toString: () => `with (${node(object)}) ${node(body)}`,
+})
+
+/**
+ * __ImportExpression__
+ *
+ * @example
+ *
+ * ```ts
+ * import('some-path')
+ * ⌃⌃⌃⌃^^^^^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.ImportExpression}
+ */
+export const importExpression: StringableASTNode<estree.ImportExpression> = ({
+  source,
+  ...other
+}) => ({
+  ...other,
+  type: 'ImportExpression',
+  __pragma: 'ecu',
+  source,
+  toString: () => `import(${node(source)})`,
 })
 
 export const importDefaultSpecifier: StringableASTNode<
@@ -291,6 +399,18 @@ export const importSpecifier: StringableASTNode<estree.ImportSpecifier> = ({
     }`,
 })
 
+/**
+ * __YieldExpression__
+ *
+ * @example
+ *
+ * ```ts
+ * const thing = yield someYieldExpression
+ *               ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃^^^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.YieldExpression}
+ */
 export const yieldExpression: StringableASTNode<estree.YieldExpression> = ({
   argument,
   delegate,
@@ -302,7 +422,7 @@ export const yieldExpression: StringableASTNode<estree.YieldExpression> = ({
     delegate,
     type: 'YieldExpression',
     __pragma: 'ecu',
-    toString: () => `yield`,
+    toString: () => `yield ${argument ? node(argument) : ''}`,
   }
 }
 

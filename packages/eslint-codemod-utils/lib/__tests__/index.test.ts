@@ -15,8 +15,16 @@ import {
   jsxText,
   jsxSpreadAttribute,
   callExpression,
+  staticBlock,
+  variableDeclaration,
 } from '..'
-import { staticBlock } from '../nodes'
+
+import * as espree from 'espree'
+
+const ESPREE_OPTIONS = {
+  ecmaVersion: 2015,
+  sourceType: 'module',
+}
 
 describe('importDeclaration', () => {
   test('basic', () => {
@@ -28,6 +36,16 @@ describe('importDeclaration', () => {
         })
       )
     ).eq(`import '@atlaskit/modal-dialog'`)
+  })
+
+  test('basic - espress', () => {
+    const { body } = espree.parse(
+      `import '@atlaskit/modal-dialog'`,
+      ESPREE_OPTIONS
+    )
+    expect(importDeclaration(body[0]).toString()).eq(
+      `import '@atlaskit/modal-dialog'`
+    )
   })
 
   test('basic named import', () => {
@@ -408,5 +426,13 @@ describe('jsxOpeningElement', () => {
         selfClosing: false,
       }).toString()
     ).eq(`<Modal>`)
+  })
+})
+
+describe('TaggedTemplateExpression', () => {
+  test('basic', () => {
+    const testString = `const x = css\`color: red;\``
+    const { body } = espree.parse(testString, ESPREE_OPTIONS)
+    expect(variableDeclaration(body[0]).toString()).eq(testString)
   })
 })

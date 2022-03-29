@@ -3,6 +3,7 @@ import type {
   JSXClosingElement,
   JSXMemberExpression,
   JSXIdentifier,
+  JSXFragment,
   Comment,
   SourceLocation,
   JSXElement,
@@ -11,13 +12,16 @@ import type {
   JSXText,
   JSXSpreadAttribute,
   JSXSpreadChild,
+  JSXOpeningFragment,
+  JSXClosingFragment,
+  JSXEmptyExpression,
 } from 'estree-jsx'
 import { DEFAULT_WHITESPACE } from './constants'
 
 import type { StringableASTNode } from './types'
 import { node } from './utils/node'
 
-export const whiteSpace = (loc: SourceLocation) =>
+export const whiteSpace = (loc?: SourceLocation) =>
   ''.padStart(loc?.start?.column || 0, ' ')
 
 export const comments = (comments: Comment[] = []) => ({
@@ -39,6 +43,48 @@ export const jsxIdentifier: StringableASTNode<JSXIdentifier> = ({ name }) => ({
   type: 'JSXIdentifier',
   __pragma: 'ecu',
   toString: () => name,
+})
+
+export const jsxOpeningFragment: StringableASTNode<JSXOpeningFragment> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    type: 'JSXOpeningFragment',
+    toString: () => `<>`,
+  }
+}
+
+export const jsxClosingFragment: StringableASTNode<JSXClosingFragment> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    type: 'JSXClosingFragment',
+    toString: () => `</>`,
+  }
+}
+
+export const jsxFragment: StringableASTNode<JSXFragment> = ({
+  openingFragment,
+  closingFragment,
+  children,
+  ...other
+}) => ({
+  ...other,
+  openingFragment,
+  closingFragment,
+  children,
+  type: 'JSXFragment',
+  __pragma: 'ecu',
+  toString: () => {
+    return `${node(openingFragment)}${children
+      .map(node)
+      .map(String)
+      .join('\n')}${node(closingFragment)}`
+  },
 })
 
 export const jsxSpreadChild: StringableASTNode<JSXSpreadChild> = ({
@@ -240,6 +286,17 @@ export const jsxText: StringableASTNode<JSXText> = ({ value, raw }) => ({
   __pragma: 'ecu',
   toString: () => value,
 })
+
+export const jsxEmptyExpression: StringableASTNode<JSXEmptyExpression> = (
+  node
+) => {
+  return {
+    ...node,
+    type: 'JSXEmptyExpression',
+    __pragma: 'ecu',
+    toString: () => `{}`,
+  }
+}
 
 export const jsxExpressionContainer: StringableASTNode<
   JSXExpressionContainer
