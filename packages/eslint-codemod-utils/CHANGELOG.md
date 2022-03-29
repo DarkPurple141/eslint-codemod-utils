@@ -1,5 +1,15 @@
 # eslint-codemod-utils
 
+## 0.1.0
+
+### Minor Changes
+
+- 5716178: Improves documentation and removes WIP status of a number of docs / types.
+
+### Patch Changes
+
+- 3eb841a: Adds additional utility functions.
+
 ## 0.0.7
 
 ### Patch Changes
