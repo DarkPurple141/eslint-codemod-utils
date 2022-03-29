@@ -61,7 +61,7 @@ Writing a codemod is generally broken down into three parts:
 2. Modify
 3. Remove / Cleanup
 
-Let's say we're trying to add a new element required to be composed by our Design System's Modal element - a `ModalBody` which is going to
+The `eslint` custom rule API allows us to find nodes fairly simply, but how might we modify them? Let's say we're trying to add a new element required to be composed by our Design System's Modal element - a `ModalBody` which is going to
 be wrapped by the original `Modal` container. Assuming you've found the right node a normal fix might look like this:
 
 ```ts
