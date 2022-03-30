@@ -210,6 +210,27 @@ export const returnStatement: StringableASTNode<estree.ReturnStatement> = ({
   }
 }
 
+export const throwStatement: StringableASTNode<estree.ThrowStatement> = ({
+  argument,
+  ...other
+}) => {
+  return {
+    ...other,
+    argument,
+    __pragma: 'ecu',
+    type: 'ThrowStatement',
+    toString: () =>
+      `throw${
+        argument
+          ? // @ts-expect-error
+            argument.type === 'JSXElement' || argument.type === 'JSXFragment'
+            ? ` (${DEFAULT_WHITESPACE}${node(argument)}${DEFAULT_WHITESPACE})`
+            : ` ${node(argument)}`
+          : ''
+      };`,
+  }
+}
+
 /**
  * __UnaryExpression__
  *
@@ -257,6 +278,40 @@ export const thisExpression: StringableASTNode<estree.ThisExpression> = (
   type: 'ThisExpression',
   __pragma: 'ecu',
   toString: () => `this`,
+})
+
+/**
+ * __IfStatement__
+ *
+ * @example
+ *
+ * ```ts
+ * if (test) {
+ * // consequant
+ * } else {
+ * // alternate
+ * }
+ * ⌃⌃⌃⌃^^^^^^^^
+ * ```
+ *
+ * @returns {estree.IfStatement}
+ */
+export const ifStatement: StringableASTNode<estree.IfStatement> = ({
+  test,
+  alternate,
+  consequent,
+  ...other
+}) => ({
+  ...other,
+  test,
+  alternate,
+  consequent,
+  type: 'IfStatement',
+  __pragma: 'ecu',
+  toString: () =>
+    `if (${node(test)}) ${node(consequent)} ${
+      alternate ? `else ${node(alternate)}` : ''
+    }`,
 })
 
 /**

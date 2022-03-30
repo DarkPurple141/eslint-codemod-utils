@@ -8,11 +8,16 @@ export function isNode<T extends EslintNode>(node: T, type: unknown): boolean {
 export function closestOfType<T extends EslintNode>(
   node: T,
   type: unknown
-): EslintNode {
+): EslintNode | null {
   if (isNode(node, type)) {
     return node
   }
-  return closestOfType(node.parent, type)
+
+  if (node.parent) {
+    return closestOfType(node.parent, type)
+  }
+
+  return null
 }
 
 export function hasJSXAttribute(node: JSXElement, attributeName: string) {

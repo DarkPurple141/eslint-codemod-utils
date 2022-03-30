@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git://github.com/DarkPurple141/eslint-codemod-utils.git"
   },
+  "keywords": ["eslint", "codemods", "jscodeshift", "espree"],
   "publishConfig": {
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
