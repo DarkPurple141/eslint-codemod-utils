@@ -20,6 +20,7 @@ import {
 } from '..'
 
 import * as espree from 'espree'
+import { ifStatement, throwStatement } from '../nodes'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
@@ -378,6 +379,28 @@ describe('jsxElement', () => {
 describe('staticBlock', () => {
   test('basic', () => {
     expect(staticBlock({ body: [] }).toString()).eq(`static {\n\n}`)
+  })
+})
+
+describe('ifStatement', () => {
+  test('basic', () => {
+    const testString = [
+      `if (1 < 3) {} else if (1 == 0) {`,
+      `  console.log('success')`,
+      `} else {`,
+      `  console.log('error')`,
+      `}`,
+    ].join('\n')
+    const { body } = espree.parse(testString)
+    expect(ifStatement(body[0]).toString()).eq(testString)
+  })
+})
+
+describe('throwStatement', () => {
+  test('basic', () => {
+    const testString = [`throw new Error();`].join('\n')
+    const { body } = espree.parse(testString)
+    expect(throwStatement(body[0]).toString()).eq(testString)
   })
 })
 

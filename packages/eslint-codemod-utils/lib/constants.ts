@@ -70,6 +70,8 @@ import {
   importExpression,
   chainExpression,
   withStatement,
+  ifStatement,
+  throwStatement,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -104,6 +106,7 @@ export const typeToHelperLookup = new Proxy(
     ArrowFunctionExpression: arrowFunctionExpression,
     FunctionExpression: functionExpression,
     Identifier: identifier,
+    IfStatement: ifStatement,
     // TODO implement
     LabeledStatement: identity,
     Literal: literal,
@@ -116,6 +119,7 @@ export const typeToHelperLookup = new Proxy(
     ImportDeclaration: importDeclaration,
     ImportExpression: importExpression,
     ThisExpression: thisExpression,
+    ThrowStatement: throwStatement,
     TemplateLiteral: templateLiteral,
     TemplateElement: templateElement,
     TaggedTemplateExpression: taggedTemplateExpression,
