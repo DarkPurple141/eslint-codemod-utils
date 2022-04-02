@@ -25,20 +25,24 @@ import { DEFAULT_WHITESPACE } from './constants'
  * @returns {CallExpression}
  */
 export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
-  callee,
-  arguments: calleeArgs,
-  optional = false,
-}) => ({
-  __pragma: 'ecu',
   arguments: calleeArgs,
   callee,
   optional,
-  type: 'CallExpression',
-  toString: () =>
-    `${callee.type === 'Super' ? 'super' : node(callee)}${
-      optional ? '?.' : ''
-    }(${calleeArgs.map(node).join(', ')})`,
-})
+  ...other
+}) => {
+  return {
+    ...other,
+    __pragma: 'ecu',
+    arguments: calleeArgs,
+    callee,
+    optional,
+    type: 'CallExpression',
+    toString: () =>
+      `${callee.type === 'Super' ? 'super' : node(callee)}${
+        optional ? '?.' : ''
+      }(${calleeArgs.map(node).join(', ')})`,
+  }
+}
 
 export const chainExpression: StringableASTNode<estree.ChainExpression> = ({
   expression,
@@ -315,6 +319,66 @@ export const ifStatement: StringableASTNode<estree.IfStatement> = ({
 })
 
 /**
+ * __CatchClause__
+ *
+ * @example
+ *
+ * ```ts
+ * // always inside a try statement
+ * catch (e) {}
+ * ⌃⌃⌃⌃^^^^^^^^
+ * ```
+ *
+ * @returns {estree.CatchClause}
+ */
+export const catchClause: StringableASTNode<estree.CatchClause> = ({
+  body,
+  param,
+  ...other
+}) => ({
+  ...other,
+  body,
+  param,
+  type: 'CatchClause',
+  __pragma: 'ecu',
+  toString: () => `catch${param ? ` (${node(param)})` : ''} ${node(body)}`,
+})
+
+/**
+ * __TryStatement__
+ *
+ * @example
+ *
+ * ```ts
+ * try {
+ * // block
+ * } catch(e) { // <--- handler
+ *
+ * } finally {} // <--- finalizer
+ * ⌃⌃⌃⌃^^^^^^^^
+ * ```
+ *
+ * @returns {estree.TryStatement}
+ */
+export const tryStatement: StringableASTNode<estree.TryStatement> = ({
+  block,
+  finalizer,
+  handler,
+  ...other
+}) => ({
+  ...other,
+  block,
+  finalizer,
+  handler,
+  type: 'TryStatement',
+  __pragma: 'ecu',
+  toString: () =>
+    `try ${node(block)} ${handler ? node(handler) : ''} ${
+      finalizer ? `finally ${node(finalizer)}` : ''
+    }`,
+})
+
+/**
  * __WithStatement__
  *
  * @example
@@ -490,8 +554,32 @@ export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
     type: 'ArrayExpression',
     elements,
     __pragma: 'ecu',
-    // @ts-expect-error
-    toString: () => `[${elements.map(node).map(String).join(', ')}]`,
+    toString: () =>
+      `[${elements
+        .filter((n): n is estree.SpreadElement | estree.Expression =>
+          Boolean(n)
+        )
+        .map(node)
+        .map(String)
+        .join(', ')}]`,
+  }
+}
+
+export const arrayPattern: StringableASTNode<estree.ArrayPattern> = ({
+  elements,
+  ...other
+}) => {
+  return {
+    ...other,
+    type: 'ArrayPattern',
+    elements,
+    __pragma: 'ecu',
+    toString: () =>
+      `[${elements
+        .filter((n): n is estree.Pattern => Boolean(n))
+        .map(node)
+        .map(String)
+        .join(', ')}]`,
   }
 }
 
@@ -786,23 +874,71 @@ export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
   },
 })
 
-export const literal: StringableASTNode<estree.Literal> = ({
+export const bigIntLiteral: StringableASTNode<estree.BigIntLiteral> = ({
   value,
   raw,
-  // @ts-expect-error TODO bigint
+  bigint,
+  ...other
 }) => ({
+  ...other,
   value,
   raw,
+  bigint,
   type: 'Literal',
   __pragma: 'ecu',
   toString: () => raw || String(value),
 })
+
+export const regExpLiteral: StringableASTNode<estree.RegExpLiteral> = ({
+  value,
+  raw,
+  regex,
+  ...other
+}) => ({
+  ...other,
+  value,
+  raw,
+  regex,
+  type: 'Literal',
+  __pragma: 'ecu',
+  toString: () => raw || String(value),
+})
+
+export const literal: StringableASTNode<estree.Literal> = (n) => {
+  if ('bigint' in n) {
+    return bigIntLiteral(n as estree.BigIntLiteral)
+  } else if ('regex' in n) {
+    return regExpLiteral(n as estree.RegExpLiteral)
+  } else {
+    return {
+      ...(n as estree.SimpleLiteral),
+      type: 'Literal',
+      __pragma: 'ecu',
+      toString: () => n.raw || String(n.value),
+    }
+  }
+}
 
 export const identifier: StringableASTNode<estree.Identifier> = ({ name }) => ({
   type: 'Identifier',
   __pragma: 'ecu',
   name,
   toString: () => name,
+})
+
+export const doWhileStatement: StringableASTNode<estree.DoWhileStatement> = ({
+  test,
+  body,
+  ...other
+}) => ({
+  ...other,
+  __pragma: 'ecu',
+  test,
+  body,
+  type: 'DoWhileStatement',
+  toString() {
+    return `do ${node(body)} while (${node(test)})`
+  },
 })
 
 export const whileStatement: StringableASTNode<estree.WhileStatement> = ({
@@ -909,6 +1045,36 @@ export const forStatement: StringableASTNode<estree.ForStatement> = ({
     }) ${node(body)}`,
 })
 
+export const forInStatement: StringableASTNode<estree.ForInStatement> = ({
+  body,
+  left,
+  right,
+  ...other
+}) => ({
+  ...other,
+  __pragma: 'ecu',
+  body,
+  left,
+  right,
+  type: 'ForInStatement',
+  toString: () => `for (${node(left)} in ${node(right)}) ${node(body)}`,
+})
+
+export const forOfStatement: StringableASTNode<estree.ForOfStatement> = ({
+  body,
+  left,
+  right,
+  ...other
+}) => ({
+  ...other,
+  __pragma: 'ecu',
+  body,
+  left,
+  right,
+  type: 'ForOfStatement',
+  toString: () => `for (${node(left)} of ${node(right)}) ${node(body)}`,
+})
+
 export const continueStatement: StringableASTNode<estree.ContinueStatement> = ({
   label,
   ...other
@@ -962,7 +1128,7 @@ export const assignmentExpression: StringableASTNode<
     left,
     right,
     operator,
-    toString: () => `${node(left)}${operator}${node(right)}`,
+    toString: () => `${node(left)}${operator as string}${node(right)}`,
   }
 }
 

@@ -9,21 +9,23 @@ describe('program', () => {
 import { X } from './other'
 import tmm, * as x from 'thing'
 import 'blah'
+const someImport = import('hello.js')
+const someStatement = probably.blob
 function App({a: a}, {b: c}) {
   return (
   <div>
-  
       
-  <Welcome name="Sara" otherName={2} isBlanketHidden {...x()} />
-  
       
-  <Welcome name="Cahal" />
-  
+      <Welcome name="Sara" otherName={2} isBlanketHidden {...x()} />
       
-  <Welcome name="Edite" />
-  
+      
+      <Welcome name="Cahal" />
+      
+      
+      <Welcome name="Edite" />
+      
     
-</div>
+    </div>
   );
 }
 const silly = (1, 3)
@@ -50,6 +52,11 @@ const v1 = 1 + 4 + 2
 }
 ;
 []
+if (1 < 3) {} else if (1 == 0) {
+  console.log('success')
+} else {
+  console.log('error')
+}
 const yy = {
   a: 1,
   get z() {},
@@ -64,12 +71,17 @@ const yy = {
 for (let i = 0;;i++) {
   continue
 }
+try {
+  throw new Error('bad thing');
+} catch {} finally {
+  console.log('cleanup')
+}
 while (i < 0) {
   break
 }
 const y = <Modal isOpen={true} onClick={onClick}>
-  hello
-</Modal>
+            hello
+          </Modal>
 ReactDOM.render(<App />, document.getElementById('root'))
 export { b as y }from './other'
 export default b

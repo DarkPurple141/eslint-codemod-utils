@@ -7,8 +7,9 @@ export function isNode<T extends EslintNode>(node: T, type: unknown): boolean {
 
 export function closestOfType<T extends EslintNode>(
   node: T,
-  type: unknown
+  type: EslintNode['type']
 ): EslintNode | null {
+  console.info(node)
   if (isNode(node, type)) {
     return node
   }
