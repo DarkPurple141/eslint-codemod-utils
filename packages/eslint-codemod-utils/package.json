@@ -1,6 +1,6 @@
 {
   "name": "eslint-codemod-utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A collection of AST helper functions for more complex ESLint rule fixes.",
   "source": "lib/index.ts",
   "main": "lib/index.ts",
@@ -8,7 +8,12 @@
     "type": "git",
     "url": "git://github.com/DarkPurple141/eslint-codemod-utils.git"
   },
-  "keywords": ["eslint", "codemods", "jscodeshift", "espree"],
+  "keywords": [
+    "eslint",
+    "codemods",
+    "jscodeshift",
+    "espree"
+  ],
   "publishConfig": {
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
