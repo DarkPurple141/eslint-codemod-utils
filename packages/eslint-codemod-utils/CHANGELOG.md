@@ -1,5 +1,12 @@
 # eslint-codemod-utils
 
+## 0.1.1
+
+### Patch Changes
+
+- ba82178: Adds additional test cases, further AST node types (WithStatement, IfStatement, ThrowStatement).
+- fbd92dd: Adds CatchClause, TryStatement, DoWhileStatement, ForInStatement, ForOfStatement, ArrayPattern support.
+
 ## 0.1.0
 
 ### Minor Changes
