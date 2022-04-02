@@ -72,6 +72,12 @@ import {
   withStatement,
   ifStatement,
   throwStatement,
+  catchClause,
+  tryStatement,
+  doWhileStatement,
+  forInStatement,
+  forOfStatement,
+  arrayPattern,
 } from './nodes'
 import { identity } from './utils/identity'
 
@@ -81,9 +87,11 @@ export const typeToHelperLookup = new Proxy(
   {
     // TODO implement
     AssignmentProperty: identity,
+    AssignmentPattern: identity,
     AssignmentExpression: assignmentExpression,
     AwaitExpression: awaitExpression,
     ArrayExpression: arrayExpression,
+    ArrayPattern: arrayPattern,
     BlockStatement: blockStatement,
     BinaryExpression: binaryExpression,
     ConditionalExpression: conditionalExpression,
@@ -114,6 +122,8 @@ export const typeToHelperLookup = new Proxy(
     /** this isn't a concrete node type */
     Expression: identity,
     ForStatement: forStatement,
+    ForInStatement: forInStatement,
+    ForOfStatement: forOfStatement,
     ImportSpecifier: importSpecifier,
     ImportNamespaceSpecifier: importNamespaceSpecifier,
     ImportDeclaration: importDeclaration,
@@ -136,11 +146,14 @@ export const typeToHelperLookup = new Proxy(
     EmptyStatement: emptyStatement,
     FunctionDeclaration: functionDeclaration,
     CallExpression: callExpression,
+    SimpleCallExpression: callExpression,
+    CatchClause: catchClause,
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
     ClassExpression: classExpression,
     ClassBody: classBody,
     DebuggerStatement: debuggerStatement,
+    DoWhileStatement: doWhileStatement,
     ExportNamedDeclaration: exportNamedDeclaration,
     ExportSpecifier: exportSpecifier,
     ExportAllDeclaration: exportAllDeclaration,
@@ -158,6 +171,7 @@ export const typeToHelperLookup = new Proxy(
     SequenceExpression: sequenceExpression,
     SpreadElement: spreadElement,
     StaticBlock: staticBlock,
+    TryStatement: tryStatement,
     WhileStatement: whileStatement,
     WithStatement: withStatement,
     ExpressionStatement: expressionStatement,

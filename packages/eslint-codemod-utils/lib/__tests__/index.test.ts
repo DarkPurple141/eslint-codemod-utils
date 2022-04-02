@@ -20,7 +20,7 @@ import {
 } from '..'
 
 import * as espree from 'espree'
-import { ifStatement, throwStatement } from '../nodes'
+import { doWhileStatement, ifStatement, throwStatement } from '../nodes'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
@@ -379,6 +379,18 @@ describe('jsxElement', () => {
 describe('staticBlock', () => {
   test('basic', () => {
     expect(staticBlock({ body: [] }).toString()).eq(`static {\n\n}`)
+  })
+})
+
+describe('doWhileStatement', () => {
+  test('basic', () => {
+    const testString = [
+      `do {`,
+      `  console.log('work')`,
+      `} while (1 < 3)`,
+    ].join('\n')
+    const { body } = espree.parse(testString)
+    expect(doWhileStatement(body[0]).toString()).eq(testString)
   })
 })
 

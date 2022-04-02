@@ -1,5 +1,5 @@
 import * as espree from 'espree'
-import { hasJSXAttribute } from '../utils/utils'
+import { closestOfType, hasJSXAttribute } from '../utils/utils'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
@@ -8,6 +8,17 @@ const ESPREE_OPTIONS = {
     jsx: true,
   },
 }
+
+/** This is not a valid test in the non eslint runtime */
+describe.skip('closestOfType', () => {
+  test('basic', () => {
+    const program = espree.parse('<Hello name="world"></Hello>', ESPREE_OPTIONS)
+    console.log(program.body[0].expression)
+    expect(
+      closestOfType(program.body[0].expression.openingElement, 'JSXElement')
+    ).toHaveProperty('type', 'JSXElement')
+  })
+})
 
 describe('hasJSXAttribute', () => {
   test('basic', () => {
