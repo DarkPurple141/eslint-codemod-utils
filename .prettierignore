@@ -1,6 +1,4 @@
 dist
 pnpm-lock.yaml
-tsconfig.json
-package.json
-*rc
+*rc$
 coverage

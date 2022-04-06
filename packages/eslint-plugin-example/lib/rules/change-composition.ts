@@ -28,6 +28,7 @@ const rule: Rule.RuleModule = {
     },
     fixable: 'code',
   },
+  // @ts-expect-error
   create(context) {
     let importNode: ImportDeclaration | null = null
 
@@ -39,9 +40,7 @@ const rule: Rule.RuleModule = {
           importNode = node
         }
       },
-      JSXElement(_node: any) {
-        const node: JSXElement = _node
-
+      JSXElement(node: JSXElement) {
         if (!importNode) {
           return
         }
@@ -72,7 +71,8 @@ const rule: Rule.RuleModule = {
         }
 
         context.report({
-          node: node as any,
+          // @ts-ignore
+          node,
           message: 'error',
           fix(fixer) {
             const modalHeaderIdentifer = jsxIdentifier({ name: 'ModalHeader' })
@@ -110,13 +110,14 @@ const rule: Rule.RuleModule = {
                       }),
                       children: [
                         // JSXText case
-                        headingAttribute.value.type === 'Literal' &&
+                        headingAttribute?.value?.type === 'Literal' &&
                         typeof headingAttribute.value.value === 'string'
                           ? // @ts-ignore
                             jsxText(headingAttribute.value)
-                          : headingAttribute.value.type === 'JSXElement'
+                          : headingAttribute?.value?.type === 'JSXElement'
                           ? jsxElement(headingAttribute.value)
                           : jsxExpressionContainer({
+                              // @ts-expect-error TODO this shouldn't error
                               expression: headingAttribute.value!,
                             }),
                       ],
@@ -126,7 +127,8 @@ const rule: Rule.RuleModule = {
               ) +
               `\n${whiteSpace(node.loc!)})`
 
-            const fixes = [fixer.replaceText(node as any, fixed)]
+            // @ts-expect-error
+            const fixes = [fixer.replaceText(node, fixed)]
 
             // should never occurr
             if (!importNode) {
@@ -157,7 +159,12 @@ const rule: Rule.RuleModule = {
                   )
                 )
               )
-              fixes.push(fixer.insertTextBefore(importNode, `// The import "ModalHeader" has been added by codemod\n`))
+              fixes.push(
+                fixer.insertTextBefore(
+                  importNode,
+                  `// The import "ModalHeader" has been added by codemod\n`
+                )
+              )
             }
 
             return fixes

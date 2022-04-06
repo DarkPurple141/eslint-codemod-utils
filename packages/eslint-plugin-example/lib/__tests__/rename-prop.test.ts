@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint'
 
-import rule from '../rename-prop'
+import rule from '../rules/rename-prop'
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run('test-rule', rule, {
+ruleTester.run('jsx/update-prop-name', rule, {
   valid: [
     {
       code: '<Hello />',

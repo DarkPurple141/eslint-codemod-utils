@@ -70,7 +70,7 @@ const rule: Rule.RuleModule = {
               })
             )
 
-            // @ts-ignore
+            // @ts-ignore node doesn't have correct type infererence
             return fixer.replaceText(node, fixed)
           },
         })

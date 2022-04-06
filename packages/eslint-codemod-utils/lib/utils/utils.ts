@@ -9,7 +9,6 @@ export function closestOfType<T extends EslintNode>(
   node: T,
   type: EslintNode['type']
 ): EslintNode | null {
-  console.info(node)
   if (isNode(node, type)) {
     return node
   }
