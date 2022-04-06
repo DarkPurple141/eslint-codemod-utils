@@ -13,7 +13,6 @@ const ESPREE_OPTIONS = {
 describe.skip('closestOfType', () => {
   test('basic', () => {
     const program = espree.parse('<Hello name="world"></Hello>', ESPREE_OPTIONS)
-    console.log(program.body[0].expression)
     expect(
       closestOfType(program.body[0].expression.openingElement, 'JSXElement')
     ).toHaveProperty('type', 'JSXElement')
