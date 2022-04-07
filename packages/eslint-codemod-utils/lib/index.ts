@@ -3,3 +3,7 @@ export * from './constants'
 export * from './nodes'
 export * from './jsx-nodes'
 export * from './utils/utils'
+export * from './types'
+
+// re-export estree-jsx
+export * from 'estree-jsx'

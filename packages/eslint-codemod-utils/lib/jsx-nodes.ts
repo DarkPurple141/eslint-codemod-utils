@@ -18,7 +18,7 @@ import type {
 } from 'estree-jsx'
 import { DEFAULT_WHITESPACE } from './constants'
 
-import type { StringableASTNode } from './types'
+import type { StringableASTNodeFn } from './types'
 import { node } from './utils/node'
 
 export const whiteSpace = (loc?: SourceLocation) =>
@@ -38,14 +38,16 @@ export const comment = ({ value, type, loc }: Comment) => ({
     whiteSpace(loc!) + (type === 'Line' ? `// ${value}` : `/* ${value} */`),
 })
 
-export const jsxIdentifier: StringableASTNode<JSXIdentifier> = ({ name }) => ({
+export const jsxIdentifier: StringableASTNodeFn<JSXIdentifier> = ({
+  name,
+}) => ({
   name,
   type: 'JSXIdentifier',
   __pragma: 'ecu',
   toString: () => name,
 })
 
-export const jsxOpeningFragment: StringableASTNode<JSXOpeningFragment> = ({
+export const jsxOpeningFragment: StringableASTNodeFn<JSXOpeningFragment> = ({
   ...other
 }) => {
   return {
@@ -56,7 +58,7 @@ export const jsxOpeningFragment: StringableASTNode<JSXOpeningFragment> = ({
   }
 }
 
-export const jsxClosingFragment: StringableASTNode<JSXClosingFragment> = ({
+export const jsxClosingFragment: StringableASTNodeFn<JSXClosingFragment> = ({
   ...other
 }) => {
   return {
@@ -67,7 +69,7 @@ export const jsxClosingFragment: StringableASTNode<JSXClosingFragment> = ({
   }
 }
 
-export const jsxFragment: StringableASTNode<JSXFragment> = ({
+export const jsxFragment: StringableASTNodeFn<JSXFragment> = ({
   openingFragment,
   closingFragment,
   children,
@@ -87,7 +89,7 @@ export const jsxFragment: StringableASTNode<JSXFragment> = ({
   },
 })
 
-export const jsxSpreadChild: StringableASTNode<JSXSpreadChild> = ({
+export const jsxSpreadChild: StringableASTNodeFn<JSXSpreadChild> = ({
   expression,
   ...other
 }) => {
@@ -100,7 +102,7 @@ export const jsxSpreadChild: StringableASTNode<JSXSpreadChild> = ({
   }
 }
 
-export const jsxMemberExpression: StringableASTNode<JSXMemberExpression> = ({
+export const jsxMemberExpression: StringableASTNodeFn<JSXMemberExpression> = ({
   object,
   property,
 }) => ({
@@ -152,7 +154,7 @@ const DEFAULT_LOC: SourceLocation = {
  *
  * @returns {JSXElement}
  */
-export const jsxElement: StringableASTNode<JSXElement> = ({
+export const jsxElement: StringableASTNodeFn<JSXElement> = ({
   openingElement,
   closingElement,
   children = [],
@@ -197,7 +199,7 @@ export const jsxElement: StringableASTNode<JSXElement> = ({
  *
  * @returns {JSXSpreadAttribute}
  */
-export const jsxSpreadAttribute: StringableASTNode<JSXSpreadAttribute> = ({
+export const jsxSpreadAttribute: StringableASTNodeFn<JSXSpreadAttribute> = ({
   argument,
 }) => ({
   __pragma: 'ecu',
@@ -206,7 +208,7 @@ export const jsxSpreadAttribute: StringableASTNode<JSXSpreadAttribute> = ({
   toString: () => `{...${node(argument)}}`,
 })
 
-export const jsxOpeningElement: StringableASTNode<JSXOpeningElement> = ({
+export const jsxOpeningElement: StringableASTNodeFn<JSXOpeningElement> = ({
   name,
   attributes = [],
   selfClosing = false,
@@ -255,7 +257,7 @@ export const jsxOpeningElement: StringableASTNode<JSXOpeningElement> = ({
  *
  * @returns {JSXClosingElement}
  */
-export const jsxClosingElement: StringableASTNode<JSXClosingElement> = ({
+export const jsxClosingElement: StringableASTNodeFn<JSXClosingElement> = ({
   name,
 }) => {
   return {
@@ -279,7 +281,7 @@ export const jsxClosingElement: StringableASTNode<JSXClosingElement> = ({
  *
  * @returns {JSXText}
  */
-export const jsxText: StringableASTNode<JSXText> = ({ value, raw }) => ({
+export const jsxText: StringableASTNodeFn<JSXText> = ({ value, raw }) => ({
   type: 'JSXText',
   value,
   raw,
@@ -287,7 +289,7 @@ export const jsxText: StringableASTNode<JSXText> = ({ value, raw }) => ({
   toString: () => value,
 })
 
-export const jsxEmptyExpression: StringableASTNode<JSXEmptyExpression> = (
+export const jsxEmptyExpression: StringableASTNodeFn<JSXEmptyExpression> = (
   node
 ) => {
   return {
@@ -298,7 +300,7 @@ export const jsxEmptyExpression: StringableASTNode<JSXEmptyExpression> = (
   }
 }
 
-export const jsxExpressionContainer: StringableASTNode<
+export const jsxExpressionContainer: StringableASTNodeFn<
   JSXExpressionContainer
 > = ({ expression }) => ({
   expression,
@@ -331,7 +333,7 @@ export const jsxExpressionContainer: StringableASTNode<
  *
  * @returns {JSXAttribute}
  */
-export const jsxAttribute: StringableASTNode<JSXAttribute> = ({
+export const jsxAttribute: StringableASTNodeFn<JSXAttribute> = ({
   name,
   value,
 }) => ({

@@ -1,4 +1,4 @@
-import { JSXElement } from 'estree-jsx'
+import type { JSXElement } from 'estree-jsx'
 import type { EslintNode } from '../types'
 
 export function isNode<T extends EslintNode>(node: T, type: unknown): boolean {

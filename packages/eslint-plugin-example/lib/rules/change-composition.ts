@@ -1,11 +1,9 @@
-import { Rule } from 'eslint'
+import type { Rule } from 'eslint'
 import {
   ImportDeclaration,
   ImportDefaultSpecifier,
   JSXAttribute,
   JSXElement,
-} from 'estree-jsx'
-import {
   identifier,
   importDeclaration,
   importSpecifier,

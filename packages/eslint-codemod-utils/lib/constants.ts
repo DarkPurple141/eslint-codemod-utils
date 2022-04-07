@@ -78,8 +78,12 @@ import {
   forInStatement,
   forOfStatement,
   arrayPattern,
+  program,
+  switchCase,
+  importDefaultSpecifier,
 } from './nodes'
 import { identity } from './utils/identity'
+import { NodeMap } from './utils/node'
 
 export const DEFAULT_WHITESPACE = '\n  '
 
@@ -87,6 +91,7 @@ export const typeToHelperLookup = new Proxy(
   {
     // TODO implement
     AssignmentProperty: identity,
+    // TODO implement
     AssignmentPattern: identity,
     AssignmentExpression: assignmentExpression,
     AwaitExpression: awaitExpression,
@@ -126,6 +131,7 @@ export const typeToHelperLookup = new Proxy(
     ForOfStatement: forOfStatement,
     ImportSpecifier: importSpecifier,
     ImportNamespaceSpecifier: importNamespaceSpecifier,
+    ImportDefaultSpecifier: importDefaultSpecifier,
     ImportDeclaration: importDeclaration,
     ImportExpression: importExpression,
     ThisExpression: thisExpression,
@@ -165,12 +171,14 @@ export const typeToHelperLookup = new Proxy(
     BreakStatement: breakStatement,
     PrivateIdentifier: identity,
     Property: property,
+    Program: program,
     PropertyDefinition: propertyDefinition,
     ReturnStatement: returnStatement,
     Super: identity,
     SequenceExpression: sequenceExpression,
     SpreadElement: spreadElement,
     StaticBlock: staticBlock,
+    SwitchCase: switchCase,
     TryStatement: tryStatement,
     WhileStatement: whileStatement,
     WithStatement: withStatement,
@@ -180,7 +188,7 @@ export const typeToHelperLookup = new Proxy(
     VariableDeclaration: variableDeclaration,
     VariableDeclarator: variableDeclarator,
     YieldExpression: yieldExpression,
-  } as const,
+  } as NodeMap,
   {
     // dynamic getter will fail and provide debug information
     get(target, name, receiver) {
