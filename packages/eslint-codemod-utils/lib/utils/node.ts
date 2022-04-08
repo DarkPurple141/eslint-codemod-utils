@@ -1,12 +1,6 @@
 import { typeToHelperLookup } from '../constants'
 import type { StringableASTNode, EslintCodemodUtilsBaseNode } from '../types'
 
-export type Listener<
-  T extends EslintCodemodUtilsBaseNode = EslintCodemodUtilsBaseNode
-> = {
-  [E in T as E['type']]?: (eventNodeListener: E) => void
-}
-
 export type NodeMap<
   T extends EslintCodemodUtilsBaseNode = EslintCodemodUtilsBaseNode
 > = {

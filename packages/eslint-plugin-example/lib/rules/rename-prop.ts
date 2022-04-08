@@ -1,9 +1,9 @@
 import { Rule } from 'eslint'
-import { JSXOpeningElement } from 'estree-jsx'
 import {
   jsxAttribute,
   jsxIdentifier,
   jsxOpeningElement,
+  RuleListener,
 } from 'eslint-codemod-utils'
 
 const TO_RENAME = 'open'
@@ -18,11 +18,10 @@ const rule: Rule.RuleModule = {
     },
     fixable: 'code',
   },
-  create(context) {
+  // @ts-ignore
+  create(context): RuleListener {
     return {
-      JSXOpeningElement(_node: any) {
-        const node: JSXOpeningElement = _node
-
+      JSXOpeningElement(node) {
         if (
           !(node.name.type === 'JSXIdentifier' && node.name.name === 'AKModal')
         ) {
