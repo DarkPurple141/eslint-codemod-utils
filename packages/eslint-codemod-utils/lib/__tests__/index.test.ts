@@ -1,26 +1,28 @@
 import {
+  callExpression,
+  comment,
+  doWhileStatement,
+  identifier,
+  ifStatement,
+  importDeclaration,
+  importDefaultSpecifier,
+  importSpecifier,
+  jsxAttribute,
   jsxClosingElement,
+  jsxElement,
+  jsxExpressionContainer,
   jsxIdentifier,
   jsxMemberExpression,
   jsxOpeningElement,
-  comment,
-  jsxElement,
-  jsxExpressionContainer,
-  identifier,
-  jsxAttribute,
-  literal,
-  importDeclaration,
-  importSpecifier,
-  importDefaultSpecifier,
-  jsxText,
   jsxSpreadAttribute,
-  callExpression,
+  jsxText,
+  literal,
   staticBlock,
+  throwStatement,
   variableDeclaration,
 } from '..'
 
 import * as espree from 'espree'
-import { doWhileStatement, ifStatement, throwStatement } from '../nodes'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,

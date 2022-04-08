@@ -7,7 +7,7 @@
     "eslint-codemod-utils": "workspace:*"
   },
   "source": "src/index.ts",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "vitest"

@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "A collection of AST helper functions for more complex ESLint rule fixes.",
   "source": "lib/index.ts",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/DarkPurple141/eslint-codemod-utils.git"

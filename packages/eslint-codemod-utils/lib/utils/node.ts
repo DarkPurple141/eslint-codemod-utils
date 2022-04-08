@@ -1,5 +1,5 @@
 import { typeToHelperLookup } from '../constants'
-import type { StringableASTNode, EslintCodemodUtilsBaseNode } from '../types'
+import type { EslintCodemodUtilsBaseNode, StringableASTNode } from '../types'
 
 export type NodeMap<
   T extends EslintCodemodUtilsBaseNode = EslintCodemodUtilsBaseNode

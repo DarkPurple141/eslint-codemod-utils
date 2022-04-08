@@ -1,20 +1,20 @@
-import type {
-  JSXOpeningElement,
-  JSXClosingElement,
-  JSXMemberExpression,
-  JSXIdentifier,
-  JSXFragment,
+import {
   Comment,
-  SourceLocation,
-  JSXElement,
   JSXAttribute,
+  JSXClosingElement,
+  JSXClosingFragment,
+  JSXElement,
+  JSXEmptyExpression,
   JSXExpressionContainer,
-  JSXText,
+  JSXFragment,
+  JSXIdentifier,
+  JSXMemberExpression,
+  JSXOpeningElement,
+  JSXOpeningFragment,
   JSXSpreadAttribute,
   JSXSpreadChild,
-  JSXOpeningFragment,
-  JSXClosingFragment,
-  JSXEmptyExpression,
+  JSXText,
+  SourceLocation,
 } from 'estree-jsx'
 import { DEFAULT_WHITESPACE } from './constants'
 

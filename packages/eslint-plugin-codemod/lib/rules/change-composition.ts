@@ -1,14 +1,14 @@
 import type { Rule } from 'eslint'
 import {
-  ImportDeclaration,
-  ImportDefaultSpecifier,
-  JSXAttribute,
-  JSXElement,
   identifier,
   importDeclaration,
+  ImportDeclaration,
+  ImportDefaultSpecifier,
   importSpecifier,
+  JSXAttribute,
   jsxClosingElement,
   jsxElement,
+  JSXElement,
   jsxExpressionContainer,
   jsxIdentifier,
   jsxOpeningElement,

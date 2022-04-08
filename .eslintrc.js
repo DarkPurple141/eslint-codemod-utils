@@ -15,8 +15,9 @@ module.exports = {
     'plugin:prettier/recommended',
     'prettier',
   ],
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['codemod', '@typescript-eslint', 'prettier'],
   rules: {
+    'codemod/sort-imports': 'error',
     'no-console': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
