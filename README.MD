@@ -214,3 +214,8 @@ context.report({
   },
 })
 ```
+
+## Similar projects
+
+- AST Types [https://github.com/benjamn/ast-types](https://github.com/benjamn/ast-types)
+- Codeshift Community [https://www.codeshiftcommunity.com/](https://www.codeshiftcommunity.com/)
