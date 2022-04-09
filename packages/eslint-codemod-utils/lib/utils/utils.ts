@@ -1,7 +1,10 @@
-import type { JSXElement } from 'estree-jsx'
-import type { EslintNode } from '../types'
+import type { JSXElement, JSXIdentifier } from 'estree-jsx'
+import type { EslintCodemodUtilsBaseNode, EslintNode } from '../types'
 
-export function isNode<T extends EslintNode>(node: T, type: unknown): boolean {
+export function isNode<
+  T extends EslintCodemodUtilsBaseNode,
+  K extends EslintCodemodUtilsBaseNode
+>(node: T, type: K['type']) {
   return node.type === type
 }
 
@@ -27,5 +30,29 @@ export function hasJSXAttribute(node: JSXElement, attributeName: string) {
 
   return node.openingElement.attributes.some(
     (attr) => attr.type === 'JSXAttribute' && attr.name.name === attributeName
+  )
+}
+
+function isJSXIdentifier(node: JSXIdentifier, id: string) {
+  return node.name === id
+}
+
+export function hasJSXChild(
+  node: JSXElement,
+  childIdentifier: string
+): boolean {
+  const jsxIdentifierMatch =
+    node.openingElement.name.type === 'JSXIdentifier' &&
+    node.openingElement.name.name &&
+    isJSXIdentifier(node.openingElement.name, childIdentifier)
+
+  return (
+    jsxIdentifierMatch ||
+    Boolean(
+      node.children &&
+        node.children
+          .filter((child): child is JSXElement => isNode(child, 'JSXElement'))
+          .find((child) => hasJSXChild(child, childIdentifier))
+    )
   )
 }
