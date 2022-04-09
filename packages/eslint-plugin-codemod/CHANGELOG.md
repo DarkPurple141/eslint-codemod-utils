@@ -2,6 +2,17 @@
 
 ## null
 
+### Minor Changes
+
+- d75cbdd: Adds additional rule for example purposes.
+
+### Patch Changes
+
+- Updated dependencies [d75cbdd]
+  - eslint-codemod-utils@0.1.2
+
+## null
+
 ### Patch Changes
 
 - Updated dependencies [ba82178]
