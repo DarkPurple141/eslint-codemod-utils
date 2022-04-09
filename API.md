@@ -21,8 +21,8 @@
  *
  * @returns {CallExpression}
  */
-export declare const callExpression: StringableASTNode<estree.SimpleCallExpression>
-export declare const binaryExpression: StringableASTNode<estree.BinaryExpression>
+export declare const callExpression: StringableASTNodeFn<estree.SimpleCallExpression>
+export declare const binaryExpression: StringableASTNodeFn<estree.BinaryExpression>
 /**
  * __ArrowFunctionExpression__
  *
@@ -33,10 +33,10 @@ export declare const binaryExpression: StringableASTNode<estree.BinaryExpression
  * ```
  * @returns {estree.ArrowFunctionExpression}
  */
-export declare const arrowFunctionExpression: StringableASTNode<estree.ArrowFunctionExpression>
-export declare const functionExpression: StringableASTNode<estree.FunctionExpression>
-export declare const blockStatement: StringableASTNode<estree.BlockStatement>
-export declare const returnStatement: StringableASTNode<estree.ReturnStatement>
+export declare const arrowFunctionExpression: StringableASTNodeFn<estree.ArrowFunctionExpression>
+export declare const functionExpression: StringableASTNodeFn<estree.FunctionExpression>
+export declare const blockStatement: StringableASTNodeFn<estree.BlockStatement>
+export declare const returnStatement: StringableASTNodeFn<estree.ReturnStatement>
 /**
  * __UnaryExpression__
  *
@@ -51,7 +51,7 @@ export declare const returnStatement: StringableASTNode<estree.ReturnStatement>
  *
  * @returns {estree.UnaryExpression}
  */
-export declare const unaryExpression: StringableASTNode<estree.UnaryExpression>
+export declare const unaryExpression: StringableASTNodeFn<estree.UnaryExpression>
 /**
  * __ThisExpression__
  *
@@ -65,19 +65,19 @@ export declare const unaryExpression: StringableASTNode<estree.UnaryExpression>
  *
  * @returns {estree.ThisExpression}
  */
-export declare const thisExpression: StringableASTNode<estree.ThisExpression>
-export declare const importDefaultSpecifier: StringableASTNode<estree.ImportDefaultSpecifier>
-export declare const exportNamedDeclaration: StringableASTNode<estree.ExportNamedDeclaration>
-export declare const exportDefaultDeclaration: StringableASTNode<estree.ExportDefaultDeclaration>
-export declare const exportAllDeclaration: StringableASTNode<estree.ExportAllDeclaration>
-export declare const exportSpecifier: StringableASTNode<estree.ExportSpecifier>
-export declare const importSpecifier: StringableASTNode<estree.ImportSpecifier>
-export declare const yieldExpression: StringableASTNode<estree.YieldExpression>
-export declare const arrayExpression: StringableASTNode<estree.ArrayExpression>
-export declare const updateExpression: StringableASTNode<estree.UpdateExpression>
-export declare const expressionStatement: StringableASTNode<estree.ExpressionStatement>
-export declare const newExpression: StringableASTNode<estree.NewExpression>
-export declare const property: StringableASTNode<estree.Property>
+export declare const thisExpression: StringableASTNodeFn<estree.ThisExpression>
+export declare const importDefaultSpecifier: StringableASTNodeFn<estree.ImportDefaultSpecifier>
+export declare const exportNamedDeclaration: StringableASTNodeFn<estree.ExportNamedDeclaration>
+export declare const exportDefaultDeclaration: StringableASTNodeFn<estree.ExportDefaultDeclaration>
+export declare const exportAllDeclaration: StringableASTNodeFn<estree.ExportAllDeclaration>
+export declare const exportSpecifier: StringableASTNodeFn<estree.ExportSpecifier>
+export declare const importSpecifier: StringableASTNodeFn<estree.ImportSpecifier>
+export declare const yieldExpression: StringableASTNodeFn<estree.YieldExpression>
+export declare const arrayExpression: StringableASTNodeFn<estree.ArrayExpression>
+export declare const updateExpression: StringableASTNodeFn<estree.UpdateExpression>
+export declare const expressionStatement: StringableASTNodeFn<estree.ExpressionStatement>
+export declare const newExpression: StringableASTNodeFn<estree.NewExpression>
+export declare const property: StringableASTNodeFn<estree.Property>
 /**
  * __ObjectPattern__
  *
@@ -88,7 +88,7 @@ export declare const property: StringableASTNode<estree.Property>
  * ```
  * @returns
  */
-export declare const objectPattern: StringableASTNode<estree.ObjectPattern>
+export declare const objectPattern: StringableASTNodeFn<estree.ObjectPattern>
 /**
  * __SpreadElement__
  *
@@ -102,24 +102,24 @@ export declare const objectPattern: StringableASTNode<estree.ObjectPattern>
  *
  * @returns {estree.SpreadElement}
  */
-export declare const spreadElement: StringableASTNode<estree.SpreadElement>
-export declare const objectExpression: StringableASTNode<estree.ObjectExpression>
-export declare const emptyStatement: StringableASTNode<estree.EmptyStatement>
-export declare const memberExpression: StringableASTNode<estree.MemberExpression>
-export declare const logicalExpression: StringableASTNode<estree.LogicalExpression>
-export declare const variableDeclarator: StringableASTNode<estree.VariableDeclarator>
-export declare const variableDeclaration: StringableASTNode<estree.VariableDeclaration>
-export declare const importDeclaration: StringableASTNode<estree.ImportDeclaration>
-export declare const literal: StringableASTNode<estree.Literal>
-export declare const identifier: StringableASTNode<estree.Identifier>
-export declare const whileStatement: StringableASTNode<estree.WhileStatement>
-export declare const switchCase: StringableASTNode<estree.SwitchCase>
-export declare const switchStatement: StringableASTNode<estree.SwitchStatement>
-export declare const forStatement: StringableASTNode<estree.ForStatement>
-export declare const continueStatement: StringableASTNode<estree.ContinueStatement>
-export declare const debuggerStatement: StringableASTNode<estree.DebuggerStatement>
-export declare const conditionalExpression: StringableASTNode<estree.ConditionalExpression>
-export declare const awaitExpression: StringableASTNode<estree.AwaitExpression>
+export declare const spreadElement: StringableASTNodeFn<estree.SpreadElement>
+export declare const objectExpression: StringableASTNodeFn<estree.ObjectExpression>
+export declare const emptyStatement: StringableASTNodeFn<estree.EmptyStatement>
+export declare const memberExpression: StringableASTNodeFn<estree.MemberExpression>
+export declare const logicalExpression: StringableASTNodeFn<estree.LogicalExpression>
+export declare const variableDeclarator: StringableASTNodeFn<estree.VariableDeclarator>
+export declare const variableDeclaration: StringableASTNodeFn<estree.VariableDeclaration>
+export declare const importDeclaration: StringableASTNodeFn<estree.ImportDeclaration>
+export declare const literal: StringableASTNodeFn<estree.Literal>
+export declare const identifier: StringableASTNodeFn<estree.Identifier>
+export declare const whileStatement: StringableASTNodeFn<estree.WhileStatement>
+export declare const switchCase: StringableASTNodeFn<estree.SwitchCase>
+export declare const switchStatement: StringableASTNodeFn<estree.SwitchStatement>
+export declare const forStatement: StringableASTNodeFn<estree.ForStatement>
+export declare const continueStatement: StringableASTNodeFn<estree.ContinueStatement>
+export declare const debuggerStatement: StringableASTNodeFn<estree.DebuggerStatement>
+export declare const conditionalExpression: StringableASTNodeFn<estree.ConditionalExpression>
+export declare const awaitExpression: StringableASTNodeFn<estree.AwaitExpression>
 /**
  * __StaticBlock__
  *
@@ -132,18 +132,18 @@ export declare const awaitExpression: StringableASTNode<estree.AwaitExpression>
  * }
  * ```
  */
-export declare const staticBlock: StringableASTNode<estree.StaticBlock>
-export declare const functionDeclaration: StringableASTNode<estree.FunctionDeclaration>
-export declare const classDeclaration: StringableASTNode<estree.ClassDeclaration>
-export declare const classExpression: StringableASTNode<estree.ClassExpression>
-export declare const program: StringableASTNode<estree.Program>
+export declare const staticBlock: StringableASTNodeFn<estree.StaticBlock>
+export declare const functionDeclaration: StringableASTNodeFn<estree.FunctionDeclaration>
+export declare const classDeclaration: StringableASTNodeFn<estree.ClassDeclaration>
+export declare const classExpression: StringableASTNodeFn<estree.ClassExpression>
+export declare const program: StringableASTNodeFn<estree.Program>
 ````
 
 ### JSX Nodes
 
 ````ts
-export declare const jsxIdentifier: StringableASTNode<JSXIdentifier>
-export declare const jsxMemberExpression: StringableASTNode<JSXMemberExpression>
+export declare const jsxIdentifier: StringableASTNodeFn<JSXIdentifier>
+export declare const jsxMemberExpression: StringableASTNodeFn<JSXMemberExpression>
 /**
  * __JSXElement__
  *
@@ -169,7 +169,7 @@ export declare const jsxMemberExpression: StringableASTNode<JSXMemberExpression>
  *
  * @returns {JSXElement}
  */
-export declare const jsxElement: StringableASTNode<JSXElement>
+export declare const jsxElement: StringableASTNodeFn<JSXElement>
 /**
  * __JSXSpreadAttribute__
  *
@@ -192,8 +192,8 @@ export declare const jsxElement: StringableASTNode<JSXElement>
  *
  * @returns {JSXSpreadAttribute}
  */
-export declare const jsxSpreadAttribute: StringableASTNode<JSXSpreadAttribute>
-export declare const jsxOpeningElement: StringableASTNode<JSXOpeningElement>
+export declare const jsxSpreadAttribute: StringableASTNodeFn<JSXSpreadAttribute>
+export declare const jsxOpeningElement: StringableASTNodeFn<JSXOpeningElement>
 /**
  * __JSXClosingElement__
  *
@@ -207,7 +207,7 @@ export declare const jsxOpeningElement: StringableASTNode<JSXOpeningElement>
  *
  * @returns {JSXClosingElement}
  */
-export declare const jsxClosingElement: StringableASTNode<JSXClosingElement>
+export declare const jsxClosingElement: StringableASTNodeFn<JSXClosingElement>
 /**
  * __JSXText__
  *
@@ -221,8 +221,8 @@ export declare const jsxClosingElement: StringableASTNode<JSXClosingElement>
  *
  * @returns {JSXText}
  */
-export declare const jsxText: StringableASTNode<JSXText>
-export declare const jsxExpressionContainer: StringableASTNode<JSXExpressionContainer>
+export declare const jsxText: StringableASTNodeFn<JSXText>
+export declare const jsxExpressionContainer: StringableASTNodeFn<JSXExpressionContainer>
 /**
  * __JSXAttribute__
  *
@@ -236,5 +236,5 @@ export declare const jsxExpressionContainer: StringableASTNode<JSXExpressionCont
  *
  * @returns {JSXAttribute}
  */
-export declare const jsxAttribute: StringableASTNode<JSXAttribute>
+export declare const jsxAttribute: StringableASTNodeFn<JSXAttribute>
 ````

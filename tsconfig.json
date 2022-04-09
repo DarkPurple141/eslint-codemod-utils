@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "strict": true,
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "target": "ES2020",
-      "noImplicitAny": true,
-      "moduleResolution": "node",
-      "declaration": true,
-      "types": ["vitest/globals"]
-  },
-  
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "declaration": true,
+    "types": ["vitest/globals"]
+  }
 }

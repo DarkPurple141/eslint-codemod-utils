@@ -4,7 +4,8 @@ import programFixture from './__fixtures__/program'
 
 describe('program', () => {
   test('basic', () => {
-    expect(String(program(programFixture as any))).eq(
+    // @ts-expect-error This is fine it's just JSON
+    expect(String(program(programFixture))).eq(
       `import A, { Welcome } from '@atlaskit/welcome'
 import { X } from './other'
 import tmm, * as x from 'thing'

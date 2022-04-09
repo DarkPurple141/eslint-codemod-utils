@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint'
 
-import rule from '../change-composition'
+import rule from '../rules/change-composition'
 
 const ruleTester = new RuleTester({
   parserOptions: {

@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "A collection of AST helper functions for more complex ESLint rule fixes.",
   "source": "lib/index.ts",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/DarkPurple141/eslint-codemod-utils.git"
@@ -25,9 +25,6 @@
   },
   "author": "Alex Hinds",
   "license": "ISC",
-  "dependencies": {
-    "eslint": "^8.9.0"
-  },
   "devDependencies": {
     "@types/eslint": "^8.4.1",
     "@types/estree-jsx": "^0.0.1",

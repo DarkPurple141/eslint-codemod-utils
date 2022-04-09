@@ -1,12 +1,13 @@
 {
-  "name": "eslint-plugin-example",
+  "name": "eslint-plugin-codemod",
   "version": null,
   "private": true,
   "dependencies": {
-    "eslint": "^8.9.0",
+    "eslint": "^7.0.0",
     "eslint-codemod-utils": "workspace:*"
   },
-  "main": "src/index.ts",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "vitest"

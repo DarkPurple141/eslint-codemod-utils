@@ -1,6 +1,6 @@
 import * as estree from 'estree'
 
-import { StringableASTNode } from './types'
+import { StringableASTNodeFn } from './types'
 import { node } from './utils/node'
 import { DEFAULT_WHITESPACE } from './constants'
 
@@ -24,12 +24,9 @@ import { DEFAULT_WHITESPACE } from './constants'
  *
  * @returns {CallExpression}
  */
-export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
-  arguments: calleeArgs,
-  callee,
-  optional,
-  ...other
-}) => {
+export const callExpression: StringableASTNodeFn<
+  estree.SimpleCallExpression
+> = ({ arguments: calleeArgs, callee, optional, ...other }) => {
   return {
     ...other,
     __pragma: 'ecu',
@@ -44,7 +41,7 @@ export const callExpression: StringableASTNode<estree.SimpleCallExpression> = ({
   }
 }
 
-export const chainExpression: StringableASTNode<estree.ChainExpression> = ({
+export const chainExpression: StringableASTNodeFn<estree.ChainExpression> = ({
   expression,
   ...other
 }) => {
@@ -66,7 +63,7 @@ export const chainExpression: StringableASTNode<estree.ChainExpression> = ({
  *           ^^^^^^^^^^^^^^^^
  * ```
  */
-export const binaryExpression: StringableASTNode<estree.BinaryExpression> = ({
+export const binaryExpression: StringableASTNodeFn<estree.BinaryExpression> = ({
   left,
   right,
   operator,
@@ -92,7 +89,7 @@ export const binaryExpression: StringableASTNode<estree.BinaryExpression> = ({
  *           ^^^^^^
  * ```
  */
-export const sequenceExpression: StringableASTNode<
+export const sequenceExpression: StringableASTNodeFn<
   estree.SequenceExpression
 > = ({ expressions, ...other }) => {
   return {
@@ -114,7 +111,7 @@ export const sequenceExpression: StringableASTNode<
  * ```
  * @returns {estree.ArrowFunctionExpression}
  */
-export const arrowFunctionExpression: StringableASTNode<
+export const arrowFunctionExpression: StringableASTNodeFn<
   estree.ArrowFunctionExpression
 > = ({ async, body, expression, params, ...other }) => {
   return {
@@ -142,7 +139,7 @@ export const arrowFunctionExpression: StringableASTNode<
  *                   ^^^^^^^^^^^
  * ```
  */
-export const taggedTemplateExpression: StringableASTNode<
+export const taggedTemplateExpression: StringableASTNodeFn<
   estree.TaggedTemplateExpression
 > = ({ quasi, tag, ...other }) => {
   return {
@@ -155,7 +152,7 @@ export const taggedTemplateExpression: StringableASTNode<
   }
 }
 
-export const functionExpression: StringableASTNode<
+export const functionExpression: StringableASTNodeFn<
   estree.FunctionExpression
 > = ({ async, generator, body, params, id, ...other }) => {
   return {
@@ -174,7 +171,7 @@ export const functionExpression: StringableASTNode<
   }
 }
 
-export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
+export const blockStatement: StringableASTNodeFn<estree.BlockStatement> = ({
   body,
   ...other
 }) => {
@@ -194,7 +191,7 @@ export const blockStatement: StringableASTNode<estree.BlockStatement> = ({
   }
 }
 
-export const returnStatement: StringableASTNode<estree.ReturnStatement> = ({
+export const returnStatement: StringableASTNodeFn<estree.ReturnStatement> = ({
   argument,
   ...other
 }) => {
@@ -214,7 +211,7 @@ export const returnStatement: StringableASTNode<estree.ReturnStatement> = ({
   }
 }
 
-export const throwStatement: StringableASTNode<estree.ThrowStatement> = ({
+export const throwStatement: StringableASTNodeFn<estree.ThrowStatement> = ({
   argument,
   ...other
 }) => {
@@ -249,7 +246,7 @@ export const throwStatement: StringableASTNode<estree.ThrowStatement> = ({
  *
  * @returns {estree.UnaryExpression}
  */
-export const unaryExpression: StringableASTNode<estree.UnaryExpression> = ({
+export const unaryExpression: StringableASTNodeFn<estree.UnaryExpression> = ({
   operator,
   ...other
 }) => {
@@ -275,7 +272,7 @@ export const unaryExpression: StringableASTNode<estree.UnaryExpression> = ({
  *
  * @returns {estree.ThisExpression}
  */
-export const thisExpression: StringableASTNode<estree.ThisExpression> = (
+export const thisExpression: StringableASTNodeFn<estree.ThisExpression> = (
   node
 ) => ({
   ...node,
@@ -300,7 +297,7 @@ export const thisExpression: StringableASTNode<estree.ThisExpression> = (
  *
  * @returns {estree.IfStatement}
  */
-export const ifStatement: StringableASTNode<estree.IfStatement> = ({
+export const ifStatement: StringableASTNodeFn<estree.IfStatement> = ({
   test,
   alternate,
   consequent,
@@ -331,7 +328,7 @@ export const ifStatement: StringableASTNode<estree.IfStatement> = ({
  *
  * @returns {estree.CatchClause}
  */
-export const catchClause: StringableASTNode<estree.CatchClause> = ({
+export const catchClause: StringableASTNodeFn<estree.CatchClause> = ({
   body,
   param,
   ...other
@@ -360,7 +357,7 @@ export const catchClause: StringableASTNode<estree.CatchClause> = ({
  *
  * @returns {estree.TryStatement}
  */
-export const tryStatement: StringableASTNode<estree.TryStatement> = ({
+export const tryStatement: StringableASTNodeFn<estree.TryStatement> = ({
   block,
   finalizer,
   handler,
@@ -393,7 +390,7 @@ export const tryStatement: StringableASTNode<estree.TryStatement> = ({
  *
  * @returns {estree.WithStatement}
  */
-export const withStatement: StringableASTNode<estree.WithStatement> = ({
+export const withStatement: StringableASTNodeFn<estree.WithStatement> = ({
   object,
   body,
   ...other
@@ -418,7 +415,7 @@ export const withStatement: StringableASTNode<estree.WithStatement> = ({
  *
  * @returns {estree.ImportExpression}
  */
-export const importExpression: StringableASTNode<estree.ImportExpression> = ({
+export const importExpression: StringableASTNodeFn<estree.ImportExpression> = ({
   source,
   ...other
 }) => ({
@@ -429,7 +426,7 @@ export const importExpression: StringableASTNode<estree.ImportExpression> = ({
   toString: () => `import(${node(source)})`,
 })
 
-export const importDefaultSpecifier: StringableASTNode<
+export const importDefaultSpecifier: StringableASTNodeFn<
   estree.ImportDefaultSpecifier
 > = ({ local, ...other }) => ({
   ...other,
@@ -439,7 +436,7 @@ export const importDefaultSpecifier: StringableASTNode<
   toString: () => local.name,
 })
 
-export const exportNamedDeclaration: StringableASTNode<
+export const exportNamedDeclaration: StringableASTNodeFn<
   estree.ExportNamedDeclaration
 > = ({ declaration, specifiers, source, ...other }) => {
   return {
@@ -458,7 +455,7 @@ export const exportNamedDeclaration: StringableASTNode<
   }
 }
 
-export const exportDefaultDeclaration: StringableASTNode<
+export const exportDefaultDeclaration: StringableASTNodeFn<
   estree.ExportDefaultDeclaration
 > = ({ declaration, ...other }) => {
   return {
@@ -470,7 +467,7 @@ export const exportDefaultDeclaration: StringableASTNode<
   }
 }
 
-export const exportAllDeclaration: StringableASTNode<
+export const exportAllDeclaration: StringableASTNodeFn<
   estree.ExportAllDeclaration
 > = ({ source, ...other }) => {
   return {
@@ -482,7 +479,7 @@ export const exportAllDeclaration: StringableASTNode<
   }
 }
 
-export const exportSpecifier: StringableASTNode<estree.ExportSpecifier> = ({
+export const exportSpecifier: StringableASTNodeFn<estree.ExportSpecifier> = ({
   exported,
   local,
   ...other
@@ -500,7 +497,7 @@ export const exportSpecifier: StringableASTNode<estree.ExportSpecifier> = ({
   }
 }
 
-export const importSpecifier: StringableASTNode<estree.ImportSpecifier> = ({
+export const importSpecifier: StringableASTNodeFn<estree.ImportSpecifier> = ({
   imported,
   local,
   ...other
@@ -530,7 +527,7 @@ export const importSpecifier: StringableASTNode<estree.ImportSpecifier> = ({
  *
  * @returns {estree.YieldExpression}
  */
-export const yieldExpression: StringableASTNode<estree.YieldExpression> = ({
+export const yieldExpression: StringableASTNodeFn<estree.YieldExpression> = ({
   argument,
   delegate,
   ...other
@@ -545,7 +542,7 @@ export const yieldExpression: StringableASTNode<estree.YieldExpression> = ({
   }
 }
 
-export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
+export const arrayExpression: StringableASTNodeFn<estree.ArrayExpression> = ({
   elements,
   ...other
 }) => {
@@ -565,7 +562,7 @@ export const arrayExpression: StringableASTNode<estree.ArrayExpression> = ({
   }
 }
 
-export const arrayPattern: StringableASTNode<estree.ArrayPattern> = ({
+export const arrayPattern: StringableASTNodeFn<estree.ArrayPattern> = ({
   elements,
   ...other
 }) => {
@@ -583,7 +580,7 @@ export const arrayPattern: StringableASTNode<estree.ArrayPattern> = ({
   }
 }
 
-export const updateExpression: StringableASTNode<estree.UpdateExpression> = ({
+export const updateExpression: StringableASTNodeFn<estree.UpdateExpression> = ({
   argument,
   operator,
   prefix,
@@ -603,7 +600,7 @@ export const updateExpression: StringableASTNode<estree.UpdateExpression> = ({
   }
 }
 
-export const expressionStatement: StringableASTNode<
+export const expressionStatement: StringableASTNodeFn<
   estree.ExpressionStatement
 > = ({ expression, ...other }) => ({
   __pragma: 'ecu',
@@ -622,7 +619,7 @@ export const expressionStatement: StringableASTNode<
  * ^^^^^^^^^^^^^^^
  * ```
  */
-export const newExpression: StringableASTNode<estree.NewExpression> = ({
+export const newExpression: StringableASTNodeFn<estree.NewExpression> = ({
   callee,
   arguments: argumentsParam,
   ...other
@@ -635,7 +632,7 @@ export const newExpression: StringableASTNode<estree.NewExpression> = ({
   toString: () => `new ${node(callee)}(${argumentsParam.map(node).join(', ')})`,
 })
 
-export const property: StringableASTNode<estree.Property> = ({
+export const property: StringableASTNodeFn<estree.Property> = ({
   kind,
   key,
   value,
@@ -671,7 +668,7 @@ export const property: StringableASTNode<estree.Property> = ({
  * ```
  * @returns
  */
-export const objectPattern: StringableASTNode<estree.ObjectPattern> = ({
+export const objectPattern: StringableASTNodeFn<estree.ObjectPattern> = ({
   properties,
   ...other
 }) => {
@@ -697,7 +694,7 @@ export const objectPattern: StringableASTNode<estree.ObjectPattern> = ({
  *
  * @returns {estree.SpreadElement}
  */
-export const spreadElement: StringableASTNode<estree.SpreadElement> = ({
+export const spreadElement: StringableASTNodeFn<estree.SpreadElement> = ({
   argument,
   ...other
 }) => {
@@ -710,7 +707,7 @@ export const spreadElement: StringableASTNode<estree.SpreadElement> = ({
   }
 }
 
-export const objectExpression: StringableASTNode<estree.ObjectExpression> = ({
+export const objectExpression: StringableASTNodeFn<estree.ObjectExpression> = ({
   properties,
   ...other
 }) => {
@@ -729,7 +726,7 @@ export const objectExpression: StringableASTNode<estree.ObjectExpression> = ({
   }
 }
 
-export const emptyStatement: StringableASTNode<estree.EmptyStatement> = ({
+export const emptyStatement: StringableASTNodeFn<estree.EmptyStatement> = ({
   ...other
 }) => ({
   ...other,
@@ -738,7 +735,7 @@ export const emptyStatement: StringableASTNode<estree.EmptyStatement> = ({
   toString: () => `;`,
 })
 
-export const memberExpression: StringableASTNode<estree.MemberExpression> = ({
+export const memberExpression: StringableASTNodeFn<estree.MemberExpression> = ({
   object,
   property,
   ...other
@@ -751,12 +748,9 @@ export const memberExpression: StringableASTNode<estree.MemberExpression> = ({
   toString: () => `${node(object)}.${node(property)}`,
 })
 
-export const logicalExpression: StringableASTNode<estree.LogicalExpression> = ({
-  left,
-  right,
-  operator,
-  ...other
-}) => {
+export const logicalExpression: StringableASTNodeFn<
+  estree.LogicalExpression
+> = ({ left, right, operator, ...other }) => {
   return {
     ...other,
     left,
@@ -768,7 +762,7 @@ export const logicalExpression: StringableASTNode<estree.LogicalExpression> = ({
   }
 }
 
-export const variableDeclarator: StringableASTNode<
+export const variableDeclarator: StringableASTNodeFn<
   estree.VariableDeclarator
 > = ({ id, init, ...other }) => {
   return {
@@ -781,7 +775,7 @@ export const variableDeclarator: StringableASTNode<
   }
 }
 
-export const variableDeclaration: StringableASTNode<
+export const variableDeclaration: StringableASTNodeFn<
   estree.VariableDeclaration
 > = ({ declarations, kind, ...other }) => {
   return {
@@ -798,7 +792,7 @@ export const variableDeclaration: StringableASTNode<
   }
 }
 
-export const importNamespaceSpecifier: StringableASTNode<
+export const importNamespaceSpecifier: StringableASTNodeFn<
   estree.ImportNamespaceSpecifier
 > = ({ local }) => {
   return {
@@ -809,7 +803,7 @@ export const importNamespaceSpecifier: StringableASTNode<
   }
 }
 
-export const templateElement: StringableASTNode<estree.TemplateElement> = ({
+export const templateElement: StringableASTNodeFn<estree.TemplateElement> = ({
   value,
   ...other
 }) => {
@@ -822,11 +816,9 @@ export const templateElement: StringableASTNode<estree.TemplateElement> = ({
   }
 }
 
-export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
-  specifiers,
-  source,
-  ...other
-}) => ({
+export const importDeclaration: StringableASTNodeFn<
+  estree.ImportDeclaration
+> = ({ specifiers, source, ...other }) => ({
   ...other,
   __pragma: 'ecu',
   type: 'ImportDeclaration',
@@ -874,7 +866,7 @@ export const importDeclaration: StringableASTNode<estree.ImportDeclaration> = ({
   },
 })
 
-export const bigIntLiteral: StringableASTNode<estree.BigIntLiteral> = ({
+export const bigIntLiteral: StringableASTNodeFn<estree.BigIntLiteral> = ({
   value,
   raw,
   bigint,
@@ -889,7 +881,7 @@ export const bigIntLiteral: StringableASTNode<estree.BigIntLiteral> = ({
   toString: () => raw || String(value),
 })
 
-export const regExpLiteral: StringableASTNode<estree.RegExpLiteral> = ({
+export const regExpLiteral: StringableASTNodeFn<estree.RegExpLiteral> = ({
   value,
   raw,
   regex,
@@ -904,7 +896,7 @@ export const regExpLiteral: StringableASTNode<estree.RegExpLiteral> = ({
   toString: () => raw || String(value),
 })
 
-export const literal: StringableASTNode<estree.Literal> = (n) => {
+export const literal: StringableASTNodeFn<estree.Literal> = (n) => {
   if ('bigint' in n) {
     return bigIntLiteral(n as estree.BigIntLiteral)
   } else if ('regex' in n) {
@@ -919,14 +911,16 @@ export const literal: StringableASTNode<estree.Literal> = (n) => {
   }
 }
 
-export const identifier: StringableASTNode<estree.Identifier> = ({ name }) => ({
+export const identifier: StringableASTNodeFn<estree.Identifier> = ({
+  name,
+}) => ({
   type: 'Identifier',
   __pragma: 'ecu',
   name,
   toString: () => name,
 })
 
-export const doWhileStatement: StringableASTNode<estree.DoWhileStatement> = ({
+export const doWhileStatement: StringableASTNodeFn<estree.DoWhileStatement> = ({
   test,
   body,
   ...other
@@ -941,7 +935,7 @@ export const doWhileStatement: StringableASTNode<estree.DoWhileStatement> = ({
   },
 })
 
-export const whileStatement: StringableASTNode<estree.WhileStatement> = ({
+export const whileStatement: StringableASTNodeFn<estree.WhileStatement> = ({
   test,
   body,
   ...other
@@ -956,7 +950,7 @@ export const whileStatement: StringableASTNode<estree.WhileStatement> = ({
   },
 })
 
-export const switchCase: StringableASTNode<estree.SwitchCase> = ({
+export const switchCase: StringableASTNodeFn<estree.SwitchCase> = ({
   consequent,
   test,
   ...other
@@ -975,7 +969,7 @@ export const switchCase: StringableASTNode<estree.SwitchCase> = ({
   }
 }
 
-export const switchStatement: StringableASTNode<estree.SwitchStatement> = ({
+export const switchStatement: StringableASTNodeFn<estree.SwitchStatement> = ({
   cases,
   discriminant,
   ...other
@@ -989,7 +983,7 @@ export const switchStatement: StringableASTNode<estree.SwitchStatement> = ({
   type: 'SwitchStatement',
 })
 
-export const templateLiteral: StringableASTNode<estree.TemplateLiteral> = ({
+export const templateLiteral: StringableASTNodeFn<estree.TemplateLiteral> = ({
   expressions,
   quasis,
   ...other
@@ -1025,7 +1019,7 @@ export const templateLiteral: StringableASTNode<estree.TemplateLiteral> = ({
   }
 }
 
-export const forStatement: StringableASTNode<estree.ForStatement> = ({
+export const forStatement: StringableASTNodeFn<estree.ForStatement> = ({
   body,
   init,
   test,
@@ -1045,7 +1039,7 @@ export const forStatement: StringableASTNode<estree.ForStatement> = ({
     }) ${node(body)}`,
 })
 
-export const forInStatement: StringableASTNode<estree.ForInStatement> = ({
+export const forInStatement: StringableASTNodeFn<estree.ForInStatement> = ({
   body,
   left,
   right,
@@ -1060,7 +1054,7 @@ export const forInStatement: StringableASTNode<estree.ForInStatement> = ({
   toString: () => `for (${node(left)} in ${node(right)}) ${node(body)}`,
 })
 
-export const forOfStatement: StringableASTNode<estree.ForOfStatement> = ({
+export const forOfStatement: StringableASTNodeFn<estree.ForOfStatement> = ({
   body,
   left,
   right,
@@ -1075,10 +1069,9 @@ export const forOfStatement: StringableASTNode<estree.ForOfStatement> = ({
   toString: () => `for (${node(left)} of ${node(right)}) ${node(body)}`,
 })
 
-export const continueStatement: StringableASTNode<estree.ContinueStatement> = ({
-  label,
-  ...other
-}) => ({
+export const continueStatement: StringableASTNodeFn<
+  estree.ContinueStatement
+> = ({ label, ...other }) => ({
   ...other,
   toString: () => `continue${label ? ` ${node(label)}` : ''}`,
   __pragma: 'ecu',
@@ -1086,7 +1079,7 @@ export const continueStatement: StringableASTNode<estree.ContinueStatement> = ({
   type: 'ContinueStatement',
 })
 
-export const breakStatement: StringableASTNode<estree.BreakStatement> = ({
+export const breakStatement: StringableASTNodeFn<estree.BreakStatement> = ({
   label,
   ...other
 }) => ({
@@ -1097,16 +1090,16 @@ export const breakStatement: StringableASTNode<estree.BreakStatement> = ({
   type: 'BreakStatement',
 })
 
-export const debuggerStatement: StringableASTNode<estree.DebuggerStatement> = (
-  node
-) => ({
+export const debuggerStatement: StringableASTNodeFn<
+  estree.DebuggerStatement
+> = (node) => ({
   ...node,
   toString: () => `debugger`,
   __pragma: 'ecu',
   type: 'DebuggerStatement',
 })
 
-export const conditionalExpression: StringableASTNode<
+export const conditionalExpression: StringableASTNodeFn<
   estree.ConditionalExpression
 > = ({ consequent, alternate, test, ...other }) => ({
   ...other,
@@ -1118,7 +1111,7 @@ export const conditionalExpression: StringableASTNode<
   type: 'ConditionalExpression',
 })
 
-export const assignmentExpression: StringableASTNode<
+export const assignmentExpression: StringableASTNodeFn<
   estree.AssignmentExpression
 > = ({ left, right, operator, ...other }) => {
   return {
@@ -1132,7 +1125,7 @@ export const assignmentExpression: StringableASTNode<
   }
 }
 
-export const awaitExpression: StringableASTNode<estree.AwaitExpression> = ({
+export const awaitExpression: StringableASTNodeFn<estree.AwaitExpression> = ({
   argument,
   ...other
 }) => ({
@@ -1155,7 +1148,7 @@ export const awaitExpression: StringableASTNode<estree.AwaitExpression> = ({
  * }
  * ```
  */
-export const staticBlock: StringableASTNode<estree.StaticBlock> = ({
+export const staticBlock: StringableASTNodeFn<estree.StaticBlock> = ({
   body,
   ...other
 }) => {
@@ -1169,7 +1162,7 @@ export const staticBlock: StringableASTNode<estree.StaticBlock> = ({
   }
 }
 
-export const functionDeclaration: StringableASTNode<
+export const functionDeclaration: StringableASTNodeFn<
   estree.FunctionDeclaration
 > = ({ body, async, id, generator, params, ...other }) => ({
   ...other,
@@ -1191,7 +1184,7 @@ export const methodOrPropertyFn = (fn: estree.FunctionExpression) => {
   return `(${fn.params.map(node).join(', ')}) ${node(fn.body)}`
 }
 
-export const methodDefinition: StringableASTNode<estree.MethodDefinition> = ({
+export const methodDefinition: StringableASTNodeFn<estree.MethodDefinition> = ({
   computed,
   key,
   kind,
@@ -1210,7 +1203,7 @@ export const methodDefinition: StringableASTNode<estree.MethodDefinition> = ({
   }
 }
 
-export const propertyDefinition: StringableASTNode<
+export const propertyDefinition: StringableASTNodeFn<
   estree.PropertyDefinition
 > = ({ computed, key, static: staticKeyWord, value, ...other }) => {
   return {
@@ -1225,7 +1218,7 @@ export const propertyDefinition: StringableASTNode<
   }
 }
 
-export const classBody: StringableASTNode<estree.ClassBody> = ({
+export const classBody: StringableASTNodeFn<estree.ClassBody> = ({
   body,
   ...other
 }) => {
@@ -1244,7 +1237,7 @@ export const classBody: StringableASTNode<estree.ClassBody> = ({
   }
 }
 
-export const classDeclaration: StringableASTNode<estree.ClassDeclaration> = ({
+export const classDeclaration: StringableASTNodeFn<estree.ClassDeclaration> = ({
   superClass,
   id,
   body,
@@ -1264,7 +1257,7 @@ export const classDeclaration: StringableASTNode<estree.ClassDeclaration> = ({
   }
 }
 
-export const classExpression: StringableASTNode<estree.ClassExpression> = ({
+export const classExpression: StringableASTNodeFn<estree.ClassExpression> = ({
   superClass,
   id,
   body,
@@ -1282,7 +1275,7 @@ export const classExpression: StringableASTNode<estree.ClassExpression> = ({
   }
 }
 
-export const program: StringableASTNode<estree.Program> = ({
+export const program: StringableASTNodeFn<estree.Program> = ({
   body,
   ...other
 }) => ({

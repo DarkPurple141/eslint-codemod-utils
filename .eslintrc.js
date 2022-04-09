@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
@@ -6,9 +7,20 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
+    project: ['./packages/*/tsconfig.json'],
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  ignorePatterns: ['dist', '*.js'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
+  ],
+  plugins: ['codemod', '@typescript-eslint', 'prettier'],
   rules: {
+    'codemod/sort-imports': 'error',
+    'no-console': 'error',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
     'prettier/prettier': 'error',
   },

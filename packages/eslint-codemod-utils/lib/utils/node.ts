@@ -1,25 +1,15 @@
 import { typeToHelperLookup } from '../constants'
-import * as estree from 'estree'
+import type { EslintCodemodUtilsBaseNode, StringableASTNode } from '../types'
 
-type NodeMap = typeof typeToHelperLookup
-type NodeType = keyof NodeMap
-
-interface ESTreeNode {
-  type: NodeType
+export type NodeMap<
+  T extends EslintCodemodUtilsBaseNode = EslintCodemodUtilsBaseNode
+> = {
+  [E in T as E['type']]: (eventNodeListener: E) => StringableASTNode<E>
 }
 
-export const node = <
-  Node extends
-    | ESTreeNode
-    | estree.Expression
-    | estree.Statement
-    | estree.Pattern
->(
-  node: Node
-): NodeMap[NodeType] => {
-  if (!node) {
-    return node
-  }
-  // @ts-expect-error
-  return typeToHelperLookup[node.type](node)
+export const node = <EstreeNodeType extends EslintCodemodUtilsBaseNode>(
+  estNode: EstreeNodeType
+): StringableASTNode<EstreeNodeType> => {
+  // @ts-ignore
+  return typeToHelperLookup[estNode.type](estNode)
 }
