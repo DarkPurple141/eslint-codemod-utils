@@ -27,11 +27,13 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+      - name: Build
+        run: pnpm build -r
       - name: Run tests
         run: pnpm test:ci
   lint:
     runs-on: ubuntu-latest
-    name: 'Lint'
+    name: Lint
     steps:
       - uses: actions/checkout@v2
         with:
@@ -50,6 +52,9 @@ jobs:
 
       - name: Install deps
         run: pnpm install
+
+      - name: Build
+        run: pnpm build -r
 
       - name: Lint
         run: pnpm run lint
