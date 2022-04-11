@@ -1,6 +1,10 @@
-import * as estree from 'estree'
+import type * as estree from 'estree-jsx'
 
-import { StringableASTNodeFn } from './types'
+import type {
+  StringableASTNode,
+  StringableASTNodeFn,
+  WithoutType,
+} from './types'
 import { node } from './utils/node'
 import { DEFAULT_WHITESPACE } from './constants'
 
@@ -896,7 +900,9 @@ export const regExpLiteral: StringableASTNodeFn<estree.RegExpLiteral> = ({
   toString: () => raw || String(value),
 })
 
-export const literal: StringableASTNodeFn<estree.Literal> = (n) => {
+export const literal: StringableASTNodeFn<estree.Literal> = (
+  n
+): StringableASTNode<estree.Literal> => {
   if ('bigint' in n) {
     return bigIntLiteral(n as estree.BigIntLiteral)
   } else if ('regex' in n) {
@@ -905,20 +911,21 @@ export const literal: StringableASTNodeFn<estree.Literal> = (n) => {
     return {
       ...(n as estree.SimpleLiteral),
       type: 'Literal',
-      __pragma: 'ecu',
       toString: () => n.raw || String(n.value),
     }
   }
 }
 
-export const identifier: StringableASTNodeFn<estree.Identifier> = ({
-  name,
-}) => ({
-  type: 'Identifier',
-  __pragma: 'ecu',
-  name,
-  toString: () => name,
-})
+export const identifier = (
+  param: WithoutType<estree.Identifier> | string
+): StringableASTNode<estree.Identifier> => {
+  const name = typeof param === 'string' ? param : param.name
+  return {
+    type: 'Identifier',
+    name,
+    toString: () => name,
+  }
+}
 
 export const doWhileStatement: StringableASTNodeFn<estree.DoWhileStatement> = ({
   test,
@@ -926,7 +933,6 @@ export const doWhileStatement: StringableASTNodeFn<estree.DoWhileStatement> = ({
   ...other
 }) => ({
   ...other,
-  __pragma: 'ecu',
   test,
   body,
   type: 'DoWhileStatement',

@@ -1,75 +1,67 @@
-import {
-  Comment,
-  JSXAttribute,
-  JSXClosingElement,
-  JSXClosingFragment,
-  JSXElement,
-  JSXEmptyExpression,
-  JSXExpressionContainer,
-  JSXFragment,
-  JSXIdentifier,
-  JSXMemberExpression,
-  JSXOpeningElement,
-  JSXOpeningFragment,
-  JSXSpreadAttribute,
-  JSXSpreadChild,
-  JSXText,
-  SourceLocation,
-} from 'estree-jsx'
+import type * as estree from 'estree-jsx'
 import { DEFAULT_WHITESPACE } from './constants'
 
-import type { StringableASTNodeFn } from './types'
+import type {
+  StringableASTNode,
+  StringableASTNodeFn,
+  WithoutType,
+} from './types'
 import { node } from './utils/node'
 
-export const whiteSpace = (loc?: SourceLocation) =>
+export const whiteSpace = (loc?: estree.SourceLocation) =>
   ''.padStart(loc?.start?.column || 0, ' ')
 
-export const comments = (comments: Comment[] = []) => ({
+export const comments = (comments: estree.Comment[] = []) => ({
   comments,
   toString: () =>
     comments.length ? `${comments.map(comment).join('\n')}\n` : '',
 })
 
-export const comment = ({ value, type, loc }: Comment) => ({
+export const comment = ({ value, type, loc }: estree.Comment) => ({
   value,
   type,
-  __pragma: 'ecu',
   toString: () =>
     whiteSpace(loc!) + (type === 'Line' ? `// ${value}` : `/* ${value} */`),
 })
 
-export const jsxIdentifier: StringableASTNodeFn<JSXIdentifier> = ({
-  name,
-}) => ({
-  name,
-  type: 'JSXIdentifier',
-  __pragma: 'ecu',
-  toString: () => name,
-})
+/**
+ * __JSXIdentifier__
+ *
+ * @param param Takes a string or the shape of a {estree.JSXIdentifier} node
+ * @returns {estree.JSXIdentifier} node
+ */
+export const jsxIdentifier = (
+  param: WithoutType<estree.JSXIdentifier> | string
+): StringableASTNode<estree.JSXIdentifier> => {
+  const name = typeof param === 'string' ? param : param.name
+  return {
+    name,
+    type: 'JSXIdentifier',
+    toString: () => name,
+  }
+}
 
-export const jsxOpeningFragment: StringableASTNodeFn<JSXOpeningFragment> = ({
-  ...other
-}) => {
+export const jsxOpeningFragment: StringableASTNodeFn<
+  estree.JSXOpeningFragment
+> = ({ ...other }) => {
   return {
     ...other,
-    __pragma: 'ecu',
     type: 'JSXOpeningFragment',
     toString: () => `<>`,
   }
 }
 
-export const jsxClosingFragment: StringableASTNodeFn<JSXClosingFragment> = ({
-  ...other
-}) => {
+export const jsxClosingFragment: StringableASTNodeFn<
+  estree.JSXClosingFragment
+> = ({ ...other }) => {
   return {
     ...other,
-    __pragma: 'ecu',
     type: 'JSXClosingFragment',
     toString: () => `</>`,
   }
 }
 
-export const jsxFragment: StringableASTNodeFn<JSXFragment> = ({
+export const jsxFragment: StringableASTNodeFn<estree.JSXFragment> = ({
   openingFragment,
   closingFragment,
   children,
@@ -80,7 +72,6 @@ export const jsxFragment: StringableASTNodeFn<JSXFragment> = ({
   closingFragment,
   children,
   type: 'JSXFragment',
-  __pragma: 'ecu',
   toString: () => {
     return `${node(openingFragment)}${children
       .map(node)
@@ -89,25 +80,22 @@ export const jsxFragment: StringableASTNodeFn<JSXFragment> = ({
   },
 })
 
-export const jsxSpreadChild: StringableASTNodeFn<JSXSpreadChild> = ({
+export const jsxSpreadChild: StringableASTNodeFn<estree.JSXSpreadChild> = ({
   expression,
   ...other
 }) => {
   return {
     ...other,
     expression,
-    __pragma: 'ecu',
     type: 'JSXSpreadChild',
     toString: () => `{...${node(expression)}}`,
   }
 }
 
-export const jsxMemberExpression: StringableASTNodeFn<JSXMemberExpression> = ({
-  object,
-  property,
-}) => ({
+export const jsxMemberExpression: StringableASTNodeFn<
+  estree.JSXMemberExpression
+> = ({ object, property }) => ({
   type: 'JSXMemberExpression',
-  __pragma: 'ecu',
   object,
   property,
   toString: () =>
@@ -118,7 +106,7 @@ export const jsxMemberExpression: StringableASTNodeFn<JSXMemberExpression> = ({
     }.${jsxIdentifier(property)}`,
 })
 
-const DEFAULT_LOC: SourceLocation = {
+const DEFAULT_LOC: estree.SourceLocation = {
   start: {
     column: 0,
     line: 0,
@@ -154,7 +142,7 @@ const DEFAULT_LOC: SourceLocation = {
  *
  * @returns {JSXElement}
  */
-export const jsxElement: StringableASTNodeFn<JSXElement> = ({
+export const jsxElement: StringableASTNodeFn<estree.JSXElement> = ({
   openingElement,
   closingElement,
   children = [],
@@ -165,7 +153,6 @@ export const jsxElement: StringableASTNodeFn<JSXElement> = ({
   children,
   loc,
   type: 'JSXElement',
-  __pragma: 'ecu',
   toString: (): string => {
     const indent = whiteSpace(loc!)
     const spacing = DEFAULT_WHITESPACE + indent
@@ -199,26 +186,21 @@ export const jsxElement: StringableASTNodeFn<JSXElement> = ({
  *
  * @returns {JSXSpreadAttribute}
  */
-export const jsxSpreadAttribute: StringableASTNodeFn<JSXSpreadAttribute> = ({
-  argument,
-}) => ({
-  __pragma: 'ecu',
+export const jsxSpreadAttribute: StringableASTNodeFn<
+  estree.JSXSpreadAttribute
+> = ({ argument }) => ({
   type: 'JSXSpreadAttribute',
   argument,
   toString: () => `{...${node(argument)}}`,
 })
 
-export const jsxOpeningElement: StringableASTNodeFn<JSXOpeningElement> = ({
-  name,
-  attributes = [],
-  selfClosing = false,
-  leadingComments = [],
-}) => ({
+export const jsxOpeningElement: StringableASTNodeFn<
+  estree.JSXOpeningElement
+> = ({ name, attributes = [], selfClosing = false, leadingComments = [] }) => ({
   type: 'JSXOpeningElement',
   name,
   attributes,
   selfClosing,
-  __pragma: 'ecu',
   toString: () =>
     `${comments(leadingComments)}<${
       name.type === 'JSXIdentifier'
@@ -257,12 +239,12 @@ export const jsxOpeningElement: StringableASTNodeFn<JSXOpeningElement> = ({
  *
  * @returns {JSXClosingElement}
  */
-export const jsxClosingElement: StringableASTNodeFn<JSXClosingElement> = ({
-  name,
-}) => {
+export const jsxClosingElement: StringableASTNodeFn<
+  estree.JSXClosingElement
+> = ({ name }) => {
   return {
     type: 'JSXClosingElement',
-    __pragma: 'ecu',
+
     name,
     toString: () => `</${node(name)}>`,
   }
@@ -281,31 +263,31 @@ export const jsxClosingElement: StringableASTNodeFn<JSXClosingElement> = ({
  *
  * @returns {JSXText}
  */
-export const jsxText: StringableASTNodeFn<JSXText> = ({ value, raw }) => ({
+export const jsxText: StringableASTNodeFn<estree.JSXText> = ({
+  value,
+  raw,
+}) => ({
   type: 'JSXText',
   value,
   raw,
-  __pragma: 'ecu',
   toString: () => value,
 })
 
-export const jsxEmptyExpression: StringableASTNodeFn<JSXEmptyExpression> = (
-  node
-) => {
+export const jsxEmptyExpression: StringableASTNodeFn<
+  estree.JSXEmptyExpression
+> = (node) => {
   return {
     ...node,
     type: 'JSXEmptyExpression',
-    __pragma: 'ecu',
     toString: () => `{}`,
   }
 }
 
 export const jsxExpressionContainer: StringableASTNodeFn<
-  JSXExpressionContainer
+  estree.JSXExpressionContainer
 > = ({ expression }) => ({
   expression,
   type: 'JSXExpressionContainer',
-  __pragma: 'ecu',
   toString: () => {
     if (expression.type === 'JSXEmptyExpression') {
       return '{}'
@@ -333,12 +315,11 @@ export const jsxExpressionContainer: StringableASTNodeFn<
  *
  * @returns {JSXAttribute}
  */
-export const jsxAttribute: StringableASTNodeFn<JSXAttribute> = ({
+export const jsxAttribute: StringableASTNodeFn<estree.JSXAttribute> = ({
   name,
   value,
 }) => ({
   type: 'JSXAttribute',
-  __pragma: 'ecu',
   name,
   value,
   toString: () =>
@@ -349,7 +330,7 @@ export const jsxAttribute: StringableASTNodeFn<JSXAttribute> = ({
               ? node(value)
               : value.type === 'JSXElement'
               ? jsxElement(value)
-              : jsxExpressionContainer(value as JSXExpressionContainer)
+              : jsxExpressionContainer(value as estree.JSXExpressionContainer)
           }`
         : ''
     }`,
