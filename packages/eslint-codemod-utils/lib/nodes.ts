@@ -850,7 +850,10 @@ export const importDeclaration: StringableASTNodeFn<
       otherSpecifiers.length > 4 ? `,${DEFAULT_WHITESPACE}` : ', '
     const leadOrEndSpecifier = otherSpecifiers.length > 4 ? '\n' : ' '
 
-    return `import ${defaultSpecifier ? defaultSpecifier.local.name : ''}${
+    // @ts-ignore technically not part of espree but the typescript parser does inject it - will support it for now
+    return `import ${other['importKind'] === 'type' ? 'type ' : ''}${
+      defaultSpecifier ? defaultSpecifier.local.name : ''
+    }${
       otherSpecifiers.length
         ? defaultSpecifier
           ? `, {${leadOrEndSpecifier}${otherSpecifiers
@@ -900,9 +903,24 @@ export const regExpLiteral: StringableASTNodeFn<estree.RegExpLiteral> = ({
   toString: () => raw || String(value),
 })
 
-export const literal: StringableASTNodeFn<estree.Literal> = (
-  n
+export const literal = (
+  n: WithoutType<estree.Literal> | (string | number | boolean | null)
 ): StringableASTNode<estree.Literal> => {
+  if (
+    typeof n === 'string' ||
+    typeof n === 'boolean' ||
+    typeof n === 'number' ||
+    typeof n === 'undefined' ||
+    n === null
+  ) {
+    return {
+      raw: String(n),
+      value: n,
+      type: 'Literal',
+      toString: () => String(n),
+    }
+  }
+
   if ('bigint' in n) {
     return bigIntLiteral(n as estree.BigIntLiteral)
   } else if ('regex' in n) {

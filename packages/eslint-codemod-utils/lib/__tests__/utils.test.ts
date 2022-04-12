@@ -1,5 +1,10 @@
 import * as espree from 'espree'
-import { closestOfType, hasJSXAttribute } from '../utils/utils'
+import {
+  closestOfType,
+  hasJSXAttribute,
+  insertImportSpecifier,
+  removeImportSpecifier,
+} from '../utils/utils'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
@@ -36,5 +41,53 @@ describe('hasJSXAttribute', () => {
   test('is not jsx', () => {
     const { body } = espree.parse('1 + 1', ESPREE_OPTIONS)
     expect(hasJSXAttribute(body[0].expression, 'name')).to.be.false
+  })
+})
+
+describe('insertImportSpecifier', () => {
+  test('basic', () => {
+    const { body } = espree.parse(`import x from 'place'`, ESPREE_OPTIONS)
+    expect(insertImportSpecifier(body[0], 'name').toString()).eq(
+      `import x, { name } from 'place'`
+    )
+  })
+
+  test('no default', () => {
+    const { body } = espree.parse(
+      `import { nothing } from 'place'`,
+      ESPREE_OPTIONS
+    )
+    expect(insertImportSpecifier(body[0], 'name').toString()).eq(
+      `import { nothing, name } from 'place'`
+    )
+  })
+
+  test('with alias', () => {
+    const { body } = espree.parse(`import x from 'place'`, ESPREE_OPTIONS)
+    expect(insertImportSpecifier(body[0], 'name', 'alias').toString()).eq(
+      `import x, { name as alias } from 'place'`
+    )
+  })
+})
+
+describe('removeImportSpecifier', () => {
+  test('no default', () => {
+    const { body } = espree.parse(
+      `import { nothing, name } from 'place'`,
+      ESPREE_OPTIONS
+    )
+    expect(removeImportSpecifier(body[0], 'name').toString()).eq(
+      `import { nothing } from 'place'`
+    )
+  })
+
+  test('with alias', () => {
+    const { body } = espree.parse(
+      `import x, { name as alias } from 'place'`,
+      ESPREE_OPTIONS
+    )
+    expect(removeImportSpecifier(body[0], 'name').toString()).eq(
+      `import x from 'place'`
+    )
   })
 })
