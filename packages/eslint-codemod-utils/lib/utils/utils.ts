@@ -72,6 +72,20 @@ export function hasJSXChild(
 }
 
 /**
+ * Whether a declaration does or does not include a specified source.
+ *
+ * @param declaration
+ * @param source
+ * @returns
+ */
+export function hasImportDeclaration(
+  declaration: ImportDeclaration,
+  source: string
+): boolean {
+  return declaration.source.value === source
+}
+
+/**
  * Appends or adds an import specifier to an existing import declaration.
  *
  * @param declaration
