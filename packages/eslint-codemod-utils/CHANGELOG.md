@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 0.1.3
+
+### Patch Changes
+
+- dd41354: Updates literal and identifiers to support primitive types being passed directly as arguments to AST utility functions.
+
 ## 0.1.2
 
 ### Patch Changes
