@@ -1,12 +1,19 @@
 import type { Rule } from 'eslint'
 import {
+  ImportDeclaration,
   jsxAttribute,
+  JSXAttribute,
   jsxIdentifier,
-  jsxOpeningElement,
+  JSXOpeningElement,
   RuleListener,
 } from 'eslint-codemod-utils'
 
-const TO_RENAME = 'open'
+export interface UpdatePropNameOptions {
+  source: string
+  specifier: string
+  oldProp: string
+  newProp: string
+}
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -17,61 +24,119 @@ const rule: Rule.RuleModule = {
       recommended: true,
     },
     fixable: 'code',
+    schema: {
+      description:
+        'A representation of a person, company, organization, or place',
+      type: 'array',
+      items: { $ref: '#/$defs/specifier' },
+      $defs: {
+        specifier: {
+          type: 'object',
+          required: ['source', 'specifier'],
+          properties: {
+            source: {
+              type: 'string',
+              description: 'The name of the vegetable.',
+            },
+            specifier: {
+              type: 'string',
+              description: 'Do I like this vegetable?',
+            },
+            oldProp: {
+              type: 'string',
+              description: 'Do I like this vegetable?',
+            },
+            newProp: {
+              type: 'string',
+              description: 'Do I like this vegetable?',
+            },
+          },
+        },
+      },
+    },
   },
   // @ts-ignore
   create(context): RuleListener {
-    return {
-      JSXOpeningElement(node) {
-        if (
-          !(node.name.type === 'JSXIdentifier' && node.name.name === 'AKModal')
-        ) {
-          return
-        }
+    const config = context.options as UpdatePropNameOptions[]
+    let importDecs: ImportDeclaration[] | null[] = config.map(() => null)
 
-        const openAttribute = node.attributes.find((attr) => {
+    function renameProp(
+      node: JSXOpeningElement,
+      importDec: ImportDeclaration,
+      option: UpdatePropNameOptions
+    ) {
+      const specifier = importDec.specifiers.find(
+        (spec) =>
+          (spec.type === 'ImportSpecifier' &&
+            spec.imported.name === option.specifier) ||
+          (spec.type === 'ImportDefaultSpecifier' &&
+            option.specifier === 'default')
+      )
+
+      // The element is imported for a different reason
+      if (!specifier) {
+        return
+      }
+
+      if (
+        !(
+          node.name.type === 'JSXIdentifier' &&
+          node.name.name === specifier.local.name
+        )
+      ) {
+        return
+      }
+
+      const toChangeAttr = node.attributes.find(
+        (attr): attr is JSXAttribute => {
           if (attr.type === 'JSXAttribute') {
-            return attr.name.name === TO_RENAME
+            return attr.name.name === option.oldProp
           }
 
           return false
-        })
-
-        if (!openAttribute) {
-          return
         }
+      )
 
-        // Error cases after this point
-        context.report({
-          node: node as any,
-          message: 'error',
-          fix(fixer) {
-            const fixed = String(
-              jsxOpeningElement({
-                name: node.name,
-                selfClosing: node.selfClosing,
-                attributes: node.attributes.map((attr) => {
-                  if (
-                    attr.type === 'JSXAttribute' &&
-                    attr.name.name === 'open'
-                  ) {
-                    const internal = jsxAttribute({
-                      ...attr,
-                      name: jsxIdentifier({
-                        ...attr.name,
-                        name: 'isOpen',
-                      }),
-                    })
-                    return internal
-                  }
+      if (!toChangeAttr) {
+        return
+      }
 
-                  return attr
-                }),
-              })
-            )
+      // Error cases after this point
+      context.report({
+        node: node as any,
+        message: 'error',
+        fix(fixer) {
+          const fixed = jsxAttribute({
+            ...toChangeAttr,
+            name: jsxIdentifier({ name: option.newProp }),
+          })
 
-            // @ts-ignore node doesn't have correct type infererence
-            return fixer.replaceText(node, fixed)
-          },
+          // @ts-ignore node doesn't have correct type infererence
+          return fixer.replaceText(toChangeAttr, `${fixed}`)
+        },
+      })
+    }
+
+    return {
+      // @ts-ignore
+      'Program:exit': () => {
+        config.forEach((_, index) => {
+          importDecs[index] = null
+        })
+        importDecs = []
+      },
+      ImportDeclaration(node) {
+        config.forEach((c, i) => {
+          if (c.source === node.source.value) {
+            importDecs[i] = node
+          }
+        })
+      },
+      JSXOpeningElement(node) {
+        config.forEach((c, i) => {
+          if (importDecs[i]) {
+            renameProp(node, importDecs[i]!, config[i])
+          }
         })
       },
     }
