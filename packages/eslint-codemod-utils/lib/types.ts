@@ -9,7 +9,6 @@ export type RuleListener<T extends EslintNode = EslintNode> = {
 }
 
 export type StringableASTNode<T extends EslintCodemodUtilsBaseNode> = T & {
-  // __pragma: 'ecu'
   toString(): string
 }
 

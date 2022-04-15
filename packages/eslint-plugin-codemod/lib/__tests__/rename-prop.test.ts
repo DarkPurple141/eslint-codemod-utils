@@ -1,9 +1,10 @@
 import { RuleTester } from 'eslint'
 
-import rule from '../rules/rename-prop'
+import rule, { UpdatePropNameOptions } from '../rules/rename-prop'
 
 const ruleTester = new RuleTester({
   parserOptions: {
+    sourceType: 'module',
     ecmaVersion: 'latest',
     ecmaFeatures: {
       jsx: true,
@@ -14,29 +15,150 @@ const ruleTester = new RuleTester({
 ruleTester.run('jsx/update-prop-name', rule, {
   valid: [
     {
-      code: '<Hello />',
+      options: [
+        {
+          source: '@atlaskit/modal-dialog',
+          specifier: 'Modal',
+          oldProp: 'open',
+          newProp: 'isOpen',
+        },
+      ] as UpdatePropNameOptions[],
+      code: `
+      import { Modal as AKModal } from  '@atlaskit/modal-dialog'
+
+      const App = () => (
+        <Hello>
+          <AKModal isOpen={false} />
+        </Hello>
+      )
+`,
+    },
+    {
+      code: `
+const App = () => (
+  <Hello>
+    <AKModal open={false} />
+  </Hello>
+)
+`,
     },
   ],
   invalid: [
     {
+      options: [
+        {
+          source: '@atlaskit/modal-dialog',
+          specifier: 'Modal',
+          oldProp: 'open',
+          newProp: 'isOpen',
+        },
+      ] as UpdatePropNameOptions[],
       code: `
-<Hello>
-  <AKModal open={false} />
-</Hello>
+import { Modal } from  '@atlaskit/modal-dialog'
+
+const App = () => (
+  <Hello>
+    <Modal open={false} />
+  </Hello>
+)
 `,
       errors: ['error'],
       output: `
-<Hello>
-  <AKModal isOpen={false} />
-</Hello>
+import { Modal } from  '@atlaskit/modal-dialog'
+
+const App = () => (
+  <Hello>
+    <Modal isOpen={false} />
+  </Hello>
+)
 `,
     },
     {
+      options: [
+        {
+          source: '@atlaskit/modal-dialog',
+          specifier: 'Modal',
+          oldProp: 'open',
+          newProp: 'isOpen',
+        },
+      ] as UpdatePropNameOptions[],
       code: `
-<AKModal open={false} />`,
+import { Modal as AKModal } from  '@atlaskit/modal-dialog'
+
+const App = () => (
+  <Hello>
+    <AKModal open={false} />
+  </Hello>
+)
+`,
       errors: ['error'],
       output: `
-<AKModal isOpen={false} />`,
+import { Modal as AKModal } from  '@atlaskit/modal-dialog'
+
+const App = () => (
+  <Hello>
+    <AKModal isOpen={false} />
+  </Hello>
+)
+`,
+    },
+    {
+      options: [
+        {
+          source: '@example/thing',
+          specifier: 'Checkbox',
+          oldProp: 'selected',
+          newProp: 'checked',
+        },
+      ] as UpdatePropNameOptions[],
+      code: `
+import { Checkbox } from  '@example/thing'
+
+const App = () => (
+  <Hello>
+    <Checkbox selected={false} />
+  </Hello>
+)
+`,
+      errors: ['error'],
+      output: `
+import { Checkbox } from  '@example/thing'
+
+const App = () => (
+  <Hello>
+    <Checkbox checked={false} />
+  </Hello>
+)
+`,
+    },
+    {
+      options: [
+        {
+          source: '@example/thing',
+          specifier: 'default',
+          oldProp: 'selected',
+          newProp: 'checked',
+        },
+      ] as UpdatePropNameOptions[],
+      code: `
+import Checkbox from  '@example/thing'
+
+const App = () => (
+  <Hello>
+    <Checkbox selected={false} />
+  </Hello>
+)
+`,
+      errors: ['error'],
+      output: `
+import Checkbox from  '@example/thing'
+
+const App = () => (
+  <Hello>
+    <Checkbox checked={false} />
+  </Hello>
+)
+`,
     },
   ],
 })
