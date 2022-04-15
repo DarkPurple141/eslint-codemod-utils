@@ -23,33 +23,34 @@ const rule: Rule.RuleModule = {
         'Dummy rule that changes a prop name in a dummy component using ast-helpers',
       recommended: true,
     },
+    messages: {
+      renameProp:
+        'The prop "{{ oldProp }}" in <{{ local }} /> has been renamed to "{{ newProp }}".',
+    },
     fixable: 'code',
     schema: {
-      description:
-        'A representation of a person, company, organization, or place',
+      description: 'Change any prop to another prop using eslint',
       type: 'array',
-      items: { $ref: '#/$defs/specifier' },
-      $defs: {
-        specifier: {
-          type: 'object',
-          required: ['source', 'specifier'],
-          properties: {
-            source: {
-              type: 'string',
-              description: 'The name of the vegetable.',
-            },
-            specifier: {
-              type: 'string',
-              description: 'Do I like this vegetable?',
-            },
-            oldProp: {
-              type: 'string',
-              description: 'Do I like this vegetable?',
-            },
-            newProp: {
-              type: 'string',
-              description: 'Do I like this vegetable?',
-            },
+      items: {
+        type: 'object',
+        required: ['source', 'specifier', 'oldProp', 'newProp'],
+        properties: {
+          source: {
+            type: 'string',
+            description: 'The source path of the JSXElement import.',
+          },
+          specifier: {
+            type: 'string',
+            description:
+              "The import specifier of the JSXElement being targeted - can also be simply 'default'.",
+          },
+          oldProp: {
+            type: 'string',
+            description: 'The old name of the JSX attribute',
+          },
+          newProp: {
+            type: 'string',
+            description: 'The new name of the JSX attribute',
           },
         },
       },
@@ -103,8 +104,10 @@ const rule: Rule.RuleModule = {
 
       // Error cases after this point
       context.report({
-        node: node as any,
-        message: 'error',
+        // @ts-ignore
+        node: toChangeAttr,
+        messageId: 'renameProp',
+        data: { ...option, local: specifier.local.name },
         fix(fixer) {
           const fixed = jsxAttribute({
             ...toChangeAttr,

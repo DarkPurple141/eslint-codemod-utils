@@ -17,6 +17,22 @@ module.exports = {
   ],
   plugins: ['codemod', '@typescript-eslint', 'prettier'],
   rules: {
+    'codemod/jsx/update-prop-name': [
+      'error',
+      {
+        source: '@atlaskit/button',
+        specifier: 'default',
+        oldProp: 'data-testid',
+        newProp: 'testId',
+      },
+      // this is just a dummy additional config as an example
+      {
+        source: 'url',
+        specifier: 'default',
+        oldProp: 'data-testid',
+        newProp: 'testId',
+      },
+    ],
     'codemod/sort-imports': 'error',
     'no-console': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
