@@ -46,6 +46,7 @@ export type {
   Literal,
   Program,
   Function,
+  FunctionDeclaration,
   SwitchCase,
   CatchClause,
   VariableDeclarator,
