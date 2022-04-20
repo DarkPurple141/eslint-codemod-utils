@@ -2,6 +2,12 @@
 
 ## null
 
+### Minor Changes
+
+- c9f2a5b: Adds additional config option to example rule/
+
+## null
+
 ### Patch Changes
 
 - Updated dependencies [dd41354]
