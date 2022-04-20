@@ -1,5 +1,15 @@
 # eslint-codemod-utils
 
+## 1.0.0
+
+### Major Changes
+
+- 0876a8d: Initial stable release. Additionally adds additional util `hasImportSpecifier`.
+
+### Patch Changes
+
+- 41f7c0f: Fixes build target to better match desired compatibility across older node / typescript versions.
+
 ## 0.1.3
 
 ### Patch Changes
