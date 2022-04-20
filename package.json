@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint --ext .ts packages/**",
+    "lint": "eslint --ext .ts,.tsx packages/**",
     "check:format": "prettier packages/** --list-different",
     "test": "vitest",
     "test:ci": "vitest --run",

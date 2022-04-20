@@ -62,7 +62,7 @@ const App = () => (
   </Hello>
 )
 `,
-      errors: ['error'],
+      errors: [{ messageId: 'renameProp' }],
       output: `
 import { Modal } from  '@atlaskit/modal-dialog'
 
@@ -91,7 +91,7 @@ const App = () => (
   </Hello>
 )
 `,
-      errors: ['error'],
+      errors: [{ messageId: 'renameProp' }],
       output: `
 import { Modal as AKModal } from  '@atlaskit/modal-dialog'
 
@@ -120,7 +120,7 @@ const App = () => (
   </Hello>
 )
 `,
-      errors: ['error'],
+      errors: [{ messageId: 'renameProp' }],
       output: `
 import { Checkbox } from  '@example/thing'
 
@@ -149,7 +149,7 @@ const App = () => (
   </Hello>
 )
 `,
-      errors: ['error'],
+      errors: [{ messageId: 'renameProp' }],
       output: `
 import Checkbox from  '@example/thing'
 
