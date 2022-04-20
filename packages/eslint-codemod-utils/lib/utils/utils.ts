@@ -1,5 +1,6 @@
 import type {
   ImportDeclaration,
+  ImportSpecifier,
   JSXAttribute,
   JSXElement,
   JSXIdentifier,
@@ -83,6 +84,26 @@ export function hasImportDeclaration(
   source: string
 ): boolean {
   return declaration.source.value === source
+}
+
+/**
+ *
+ * @param declaration
+ * @param specifierId
+ */
+export function hasImportSpecifier(
+  declaration: ImportDeclaration,
+  specifierId: string | 'default'
+) {
+  if (specifierId === 'default') {
+    return declaration.specifiers.some(
+      (spec) => spec.type === 'ImportDefaultSpecifier'
+    )
+  }
+
+  return declaration.specifiers
+    .filter((spec): spec is ImportSpecifier => spec.type === 'ImportSpecifier')
+    .some((node) => node.imported.name === specifierId)
 }
 
 /**
