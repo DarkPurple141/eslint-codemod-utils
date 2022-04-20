@@ -1,6 +1,6 @@
 {
   "name": "eslint-codemod-utils",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "A collection of AST helper functions for more complex ESLint rule fixes.",
   "source": "lib/index.ts",
   "main": "dist/index.js",

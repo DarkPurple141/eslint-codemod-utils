@@ -2,6 +2,14 @@
 
 ## null
 
+### Patch Changes
+
+- Updated dependencies [0876a8d]
+- Updated dependencies [41f7c0f]
+  - eslint-codemod-utils@1.0.0
+
+## null
+
 ### Minor Changes
 
 - c9f2a5b: Adds additional config option to example rule/
