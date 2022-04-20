@@ -3,10 +3,12 @@
     "strict": true,
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "ES2020",
+    "target": "ES2019",
     "noImplicitAny": true,
     "moduleResolution": "node",
     "declaration": true,
-    "types": ["vitest/globals"]
+    "types": [
+      "vitest/globals"
+    ]
   }
 }
