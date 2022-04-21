@@ -5,7 +5,12 @@ import type {
   JSXElement,
   JSXIdentifier,
 } from 'estree-jsx'
-import { identifier, importDeclaration, importSpecifier } from '../nodes'
+import {
+  identifier,
+  importDeclaration,
+  importDefaultSpecifier,
+  importSpecifier,
+} from '../nodes'
 import type {
   EslintCodemodUtilsBaseNode,
   EslintNode,
@@ -16,6 +21,10 @@ export function isNodeOfType<T extends EslintCodemodUtilsBaseNode>(
   node: EslintCodemodUtilsBaseNode,
   type: T['type']
 ): node is T {
+  if (!(node && node['type'])) {
+    return false
+  }
+
   return node.type === type
 }
 
@@ -93,9 +102,9 @@ export function hasImportDeclaration(
  */
 export function hasImportSpecifier(
   declaration: ImportDeclaration,
-  specifierId: string | 'default'
+  importName: string | 'default'
 ) {
-  if (specifierId === 'default') {
+  if (importName === 'default') {
     return declaration.specifiers.some(
       (spec) => spec.type === 'ImportDefaultSpecifier'
     )
@@ -103,30 +112,44 @@ export function hasImportSpecifier(
 
   return declaration.specifiers
     .filter((spec): spec is ImportSpecifier => spec.type === 'ImportSpecifier')
-    .some((node) => node.imported.name === specifierId)
+    .some((node) => node.imported.name === importName)
 }
 
 /**
  * Appends or adds an import specifier to an existing import declaration.
  *
+ * Does not validate whether the insertion is already present.
+ *
  * @param declaration
- * @param specifierId
+ * @param importName
  * @param specifierAlias
  * @returns {StringableASTNode<ImportDeclaration>}
  */
 export function insertImportSpecifier(
   declaration: ImportDeclaration,
-  specifierId: string,
+  importName: string | 'default',
   specifierAlias?: string
 ): StringableASTNode<ImportDeclaration> {
-  const id = identifier(specifierId)
+  if (importName === 'default' && !specifierAlias) {
+    throw new Error(
+      'A specifier name must be provided when inserting the default import.'
+    )
+  }
+
+  const id = identifier(importName)
+
   return importDeclaration({
     ...declaration,
     specifiers: declaration.specifiers.concat(
-      importSpecifier({
-        imported: identifier(specifierId),
-        local: specifierAlias ? identifier(specifierAlias) : id,
-      })
+      importName === 'default'
+        ? importDefaultSpecifier({
+            // @ts-ignore
+            local: identifier(specifierAlias),
+          })
+        : importSpecifier({
+            imported: identifier(importName),
+            local: specifierAlias ? identifier(specifierAlias) : id,
+          })
     ),
   })
 }
@@ -135,19 +158,21 @@ export function insertImportSpecifier(
  * Removes an import specifier to an existing import declaration.
  *
  * @param declaration
- * @param specifierId
- * @param specifierAlias
+ * @param importName
  * @returns {StringableASTNode<ImportDeclaration>}
  */
 export function removeImportSpecifier(
   declaration: ImportDeclaration,
-  specifierId: string
+  importName: string | 'default'
 ): StringableASTNode<ImportDeclaration> {
   return importDeclaration({
     ...declaration,
-    specifiers: declaration.specifiers.filter(
-      (spec) =>
-        !(spec.type === 'ImportSpecifier' && spec.imported.name === specifierId)
+    specifiers: declaration.specifiers.filter((spec) =>
+      importName === 'default'
+        ? spec.type !== 'ImportDefaultSpecifier'
+        : !(
+            spec.type === 'ImportSpecifier' && spec.imported.name === importName
+          )
     ),
   })
 }
