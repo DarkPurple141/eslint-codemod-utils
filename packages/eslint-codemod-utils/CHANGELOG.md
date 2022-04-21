@@ -1,5 +1,12 @@
 # eslint-codemod-utils
 
+## 1.0.1
+
+### Patch Changes
+
+- 064d923: Fixes an issue with the types not being included in the package for some functions.
+- 064d923: Fixes the behaviour of some of the utils when interacting with the default import of an ImportDeclaration.
+
 ## 1.0.0
 
 ### Major Changes
