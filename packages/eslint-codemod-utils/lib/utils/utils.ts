@@ -31,8 +31,10 @@ export function hasJSXChild(
   node: JSXElement,
   childIdentifier: string
 ): boolean {
-  const jsxIdentifierMatch = isNodeOfType<JSXIdentifier>(node.openingElement.name, 'JSXIdentifier') &&
-    node.openingElement.name.name && node.openingElement.name.name === childIdentifier
+  const jsxIdentifierMatch =
+    isNodeOfType<JSXIdentifier>(node.openingElement.name, 'JSXIdentifier') &&
+    node.openingElement.name.name &&
+    node.openingElement.name.name === childIdentifier
 
   return (
     jsxIdentifierMatch ||
