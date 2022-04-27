@@ -1,3 +1,97 @@
+### Utility Functions
+
+````ts
+export declare function isNodeOfType<T extends EslintCodemodUtilsBaseNode>(
+  node: EslintCodemodUtilsBaseNode,
+  type: T['type']
+): node is T
+export declare function closestOfType<T extends EslintNode>(
+  node: EslintNode,
+  type: T['type']
+): EslintNode | null
+export declare function hasJSXAttribute(
+  node: JSXElement,
+  attributeName: string
+): boolean
+export declare function hasJSXChild(
+  node: JSXElement,
+  childIdentifier: string
+): boolean
+/**
+ * Whether a declaration does or does not include a specified source.
+ *
+ * @param declaration
+ * @param source
+ * @returns
+ */
+export declare function hasImportDeclaration(
+  declaration: ImportDeclaration,
+  source: string
+): boolean
+/**
+ *
+ * @param declaration
+ * @param specifierId
+ */
+export declare function hasImportSpecifier(
+  declaration: ImportDeclaration,
+  importName: string | 'default'
+): boolean
+/**
+ * Appends or adds an import specifier to an existing import declaration.
+ *
+ * Does not validate whether the insertion is already present.
+ *
+ * @param declaration
+ * @param importName
+ * @param specifierAlias
+ * @returns {StringableASTNode<ImportDeclaration>}
+ */
+export declare function insertImportSpecifier(
+  declaration: ImportDeclaration,
+  importName: string | 'default',
+  specifierAlias?: string
+): StringableASTNode<ImportDeclaration>
+/**
+ * @example
+ * ```tsx
+ * insertImportDeclaration('source', ['specifier', 'second'])
+ *
+ * // produces
+ * import {  specifier, second } from 'source'
+ * ```
+ *
+ * @example
+ * ```tsx
+ *  * insertImportDeclaration('source', ['specifier', { imported: 'second', local: 'other' }])
+ *
+ * // produces
+ * import { specifier, second as other } from 'source'
+ * ```
+ */
+export declare function insertImportDeclaration(
+  source: string,
+  specifiers: (
+    | string
+    | {
+        local: string
+        imported: string
+      }
+  )[]
+): StringableASTNode<ImportDeclaration>
+/**
+ * Removes an import specifier to an existing import declaration.
+ *
+ * @param declaration
+ * @param importName
+ * @returns {StringableASTNode<ImportDeclaration>}
+ */
+export declare function removeImportSpecifier(
+  declaration: ImportDeclaration,
+  importName: string | 'default'
+): StringableASTNode<ImportDeclaration>
+````
+
 ### Nodes
 
 ````ts

@@ -273,6 +273,18 @@ export const jsxText: StringableASTNodeFn<estree.JSXText> = ({
   toString: () => value,
 })
 
+/**
+ * __JSXEmptyExpression__
+ *
+ * @example
+ *
+ * ```tsx
+ * <SomeJSX attribute={} />
+ *                    ^^
+ * ```
+ *
+ * @returns {estree.JSXEmptyExpression}
+ */
 export const jsxEmptyExpression: StringableASTNodeFn<
   estree.JSXEmptyExpression
 > = (node) => {
