@@ -12,37 +12,8 @@ import {
   importSpecifier,
   literal,
 } from '../nodes'
-import type {
-  EslintCodemodUtilsBaseNode,
-  EslintNode,
-  StringableASTNode,
-} from '../types'
-
-export function isNodeOfType<T extends EslintCodemodUtilsBaseNode>(
-  node: EslintCodemodUtilsBaseNode,
-  type: T['type']
-): node is T {
-  if (!(node && node['type'])) {
-    return false
-  }
-
-  return node.type === type
-}
-
-export function closestOfType<T extends EslintNode>(
-  node: EslintNode,
-  type: T['type']
-): EslintNode | null {
-  if (isNodeOfType(node, type)) {
-    return node
-  }
-
-  if (node.parent) {
-    return closestOfType(node.parent, type)
-  }
-
-  return null
-}
+import type { StringableASTNode } from '../types'
+import { isNodeOfType } from './is-node-of-type'
 
 export function hasJSXAttribute(node: JSXElement, attributeName: string) {
   if (!node.openingElement) return false
@@ -56,18 +27,14 @@ export function hasJSXAttribute(node: JSXElement, attributeName: string) {
   )
 }
 
-function isJSXIdentifier(node: JSXIdentifier, id: string) {
-  return node.name === id
-}
-
 export function hasJSXChild(
   node: JSXElement,
   childIdentifier: string
 ): boolean {
   const jsxIdentifierMatch =
-    node.openingElement.name.type === 'JSXIdentifier' &&
+    isNodeOfType<JSXIdentifier>(node.openingElement.name, 'JSXIdentifier') &&
     node.openingElement.name.name &&
-    isJSXIdentifier(node.openingElement.name, childIdentifier)
+    node.openingElement.name.name === childIdentifier
 
   return (
     jsxIdentifierMatch ||

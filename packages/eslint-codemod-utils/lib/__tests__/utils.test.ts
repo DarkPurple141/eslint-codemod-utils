@@ -4,7 +4,7 @@ import {
   hasJSXAttribute,
   insertImportSpecifier,
   removeImportSpecifier,
-} from '../utils/utils'
+} from '../utils'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,

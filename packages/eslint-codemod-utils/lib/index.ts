@@ -2,7 +2,7 @@
 export * from './constants'
 export * from './nodes'
 export * from './jsx-nodes'
-export * from './utils/utils'
+export * from './utils'
 export * from './types'
 
 // re-export estree-jsx - unfortunatley can't export *
