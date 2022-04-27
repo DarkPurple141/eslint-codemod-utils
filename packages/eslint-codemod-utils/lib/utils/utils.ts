@@ -10,6 +10,7 @@ import {
   importDeclaration,
   importDefaultSpecifier,
   importSpecifier,
+  literal,
 } from '../nodes'
 import type {
   EslintCodemodUtilsBaseNode,
@@ -151,6 +152,46 @@ export function insertImportSpecifier(
             local: specifierAlias ? identifier(specifierAlias) : id,
           })
     ),
+  })
+}
+
+/**
+ * @example
+ * ```tsx
+ * insertImportDeclaration('source', ['specifier', 'second'])
+ *
+ * // produces
+ * import {  specifier, second } from 'source'
+ * ```
+ *
+ * @example
+ * ```tsx
+ *  * insertImportDeclaration('source', ['specifier', { imported: 'second', local: 'other' }])
+ *
+ * // produces
+ * import { specifier, second as other } from 'source'
+ * ```
+ */
+export function insertImportDeclaration(
+  source: string,
+  specifiers: (string | { local: string; imported: string })[]
+): StringableASTNode<ImportDeclaration> {
+  return importDeclaration({
+    source: literal(source),
+    specifiers: specifiers.map((spec) => {
+      return spec === 'default'
+        ? importDefaultSpecifier({ local: identifier('__default') })
+        : importSpecifier({
+            imported:
+              typeof spec === 'string'
+                ? identifier(spec)
+                : identifier(spec.imported),
+            local:
+              typeof spec === 'string'
+                ? identifier(spec)
+                : identifier(spec.local),
+          })
+    }),
   })
 }
 
