@@ -1,0 +1,7 @@
+{
+  "name": "@thing/button",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "tsc"
+  }
+}

@@ -26,6 +26,7 @@ module.exports = {
         newProp: 'testId',
       },
     ],
+    'codemod/test-rule': 'error',
     'codemod/sort-imports': 'error',
     'no-console': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
