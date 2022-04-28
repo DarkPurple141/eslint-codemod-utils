@@ -1,5 +1,15 @@
 # eslint-codemod-utils
 
+## 1.2.0
+
+### Minor Changes
+
+- cd793bb: Correct minor as previous change didn't export new functionality.
+
+### Patch Changes
+
+- e030ba2: Updates type to be correctly inferred in `isNodeOfType`
+
 ## 1.1.0
 
 ### Minor Changes
