@@ -1,10 +1,4 @@
-import type {
-  ImportDeclaration,
-  ImportSpecifier,
-  JSXAttribute,
-  JSXElement,
-  JSXIdentifier,
-} from 'estree-jsx'
+import type { ImportDeclaration, ImportSpecifier, JSXElement } from 'estree-jsx'
 import {
   identifier,
   importDeclaration,
@@ -22,8 +16,7 @@ export function hasJSXAttribute(node: JSXElement, attributeName: string) {
 
   return node.openingElement.attributes.some(
     (attr) =>
-      isNodeOfType<JSXAttribute>(attr, 'JSXAttribute') &&
-      attr.name.name === attributeName
+      isNodeOfType(attr, 'JSXAttribute') && attr.name.name === attributeName
   )
 }
 
@@ -32,7 +25,7 @@ export function hasJSXChild(
   childIdentifier: string
 ): boolean {
   const jsxIdentifierMatch =
-    isNodeOfType<JSXIdentifier>(node.openingElement.name, 'JSXIdentifier') &&
+    isNodeOfType(node.openingElement.name, 'JSXIdentifier') &&
     node.openingElement.name.name &&
     node.openingElement.name.name === childIdentifier
 
