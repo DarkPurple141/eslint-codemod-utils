@@ -51,6 +51,7 @@ const rule: Rule.RuleModule = {
 
           if (currentHashValue !== expectedHashValue) {
             context.report({
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               loc: com.loc!,
               messageId: 'noHashMatch',
               data: {
@@ -61,6 +62,7 @@ const rule: Rule.RuleModule = {
             })
           } else {
             context.report({
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               loc: com.loc!,
               messageId: 'noHashInSource',
               data: {
