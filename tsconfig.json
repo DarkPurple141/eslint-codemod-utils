@@ -10,8 +10,5 @@
     "types": [
       "vitest/globals"
     ],
-  },
-  "exclude": [
-    "**/__tests__/**"
-  ]
+  }
 }
