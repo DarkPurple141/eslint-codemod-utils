@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.2.1
+
+### Patch Changes
+
+- 2e222e0: Removes src from being published in dist which was bloating bundle.
+
 ## 1.2.0
 
 ### Minor Changes
