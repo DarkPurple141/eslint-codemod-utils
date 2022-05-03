@@ -6,5 +6,8 @@
   "compilerOptions": {
     "module": "ES2020",
     "outDir": "dist/esm"
-  }
+  },
+  "exclude": [
+    "**/__tests__/**"
+  ]
 }
