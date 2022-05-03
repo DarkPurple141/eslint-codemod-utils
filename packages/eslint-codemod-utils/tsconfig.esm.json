@@ -4,6 +4,7 @@
     "lib/**/*"
   ],
   "compilerOptions": {
-    "outDir": "dist/cjs"
+    "module": "ES2020",
+    "outDir": "dist/esm"
   }
 }
