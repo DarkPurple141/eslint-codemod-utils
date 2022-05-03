@@ -21,6 +21,7 @@ export const comment = ({ value, type, loc }: estree.Comment) => ({
   value,
   type,
   toString: () =>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     whiteSpace(loc!) + (type === 'Line' ? `// ${value}` : `/* ${value} */`),
 })
 
@@ -154,6 +155,7 @@ export const jsxElement: StringableASTNodeFn<estree.JSXElement> = ({
   loc,
   type: 'JSXElement',
   toString: (): string => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const indent = whiteSpace(loc!)
     const spacing = DEFAULT_WHITESPACE + indent
     return `${jsxOpeningElement(openingElement)}${

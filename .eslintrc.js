@@ -7,7 +7,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    project: ['./packages/*/tsconfig.json'],
+    project: ['./packages/*/tsconfig.eslint.json'],
   },
   ignorePatterns: ['dist', '*.js'],
   extends: [
@@ -31,6 +31,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'error',
     'prettier/prettier': 'error',
   },
   overrides: [

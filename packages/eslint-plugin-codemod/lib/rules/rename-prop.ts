@@ -138,6 +138,7 @@ const rule: Rule.RuleModule = {
       JSXOpeningElement(node) {
         config.forEach((c, i) => {
           if (importDecs[i]) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             renameProp(node, importDecs[i]!, config[i])
           }
         })

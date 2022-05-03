@@ -116,6 +116,7 @@ const rule: Rule.RuleModule = {
                           ? jsxElement(headingAttribute.value)
                           : jsxExpressionContainer({
                               // @ts-expect-error TODO this shouldn't error
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                               expression: headingAttribute.value!,
                             }),
                       ],
@@ -123,6 +124,7 @@ const rule: Rule.RuleModule = {
                   ),
                 })
               ) +
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               `\n${whiteSpace(node.loc!)})`
 
             // @ts-expect-error

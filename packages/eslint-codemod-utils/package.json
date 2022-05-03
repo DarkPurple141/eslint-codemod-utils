@@ -2,9 +2,10 @@
   "name": "eslint-codemod-utils",
   "version": "1.2.1",
   "description": "A collection of AST helper functions for more complex ESLint rule fixes.",
+  "author": "Alex Hinds",
   "source": "lib/index.ts",
-  "main": "dist/index.js",
-  "readme": "",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/DarkPurple141/eslint-codemod-utils.git"
@@ -16,15 +17,19 @@
     "espree"
   ],
   "publishConfig": {
-    "main": "dist/index.js",
-    "typings": "dist/index.d.ts"
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "typings": "dist/esm/index.d.ts"
   },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc --project tsconfig.esm.json",
     "test": "vitest",
     "prepublish": "pnpm build"
   },
-  "author": "Alex Hinds",
   "license": "ISC",
   "dependencies": {
     "@types/estree-jsx": "^0.0.1"

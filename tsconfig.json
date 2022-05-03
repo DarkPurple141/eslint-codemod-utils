@@ -7,6 +7,11 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "declaration": true,
-    "types": ["vitest/globals"]
-  }
+    "types": [
+      "vitest/globals"
+    ],
+  },
+  "exclude": [
+    "**/__tests__/**"
+  ]
 }
