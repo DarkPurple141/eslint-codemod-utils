@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.3.1
+
+### Patch Changes
+
+- 8cb50d3: Corrects the type inference of the `closestOfType` utility function.
+
 ## 1.3.0
 
 ### Minor Changes
