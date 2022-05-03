@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.3.0
+
+### Minor Changes
+
+- 75d4cef: Adds files key in package.json.
+
 ## 1.2.1
 
 ### Patch Changes
