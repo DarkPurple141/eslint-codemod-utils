@@ -16,4 +16,5 @@ export type StringableASTNodeFn<
   EstreeNodeType extends EslintCodemodUtilsBaseNode
 > = (node: WithoutType<EstreeNodeType>) => StringableASTNode<EstreeNodeType>
 
-export type EslintNode = Rule.NodeParentExtension & EslintCodemodUtilsBaseNode
+export type EslintNode = Partial<Rule.NodeParentExtension> &
+  EslintCodemodUtilsBaseNode
