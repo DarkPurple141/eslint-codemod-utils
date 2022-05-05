@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.3.2
+
+### Patch Changes
+
+- 1a18bf6: Updates to correct type coercion in `isNodeOfType`
+
 ## 1.3.1
 
 ### Patch Changes
