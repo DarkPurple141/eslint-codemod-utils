@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Updated dependencies [1a18bf6]
+  - eslint-codemod-utils@1.3.2
+
+## null
+
+### Patch Changes
+
 - Updated dependencies [8cb50d3]
   - eslint-codemod-utils@1.3.1
 
