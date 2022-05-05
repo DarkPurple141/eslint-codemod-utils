@@ -1,12 +1,9 @@
-import type { EslintCodemodUtilsBaseNode } from '../types'
+import type { EslintNode } from '../types'
 
-export function isNodeOfType<
-  T extends EslintCodemodUtilsBaseNode,
-  K extends T['type']
->(
-  node: EslintCodemodUtilsBaseNode,
+export function isNodeOfType<T extends EslintNode, K extends T['type']>(
+  node: EslintNode,
   type: K
-): node is EslintCodemodUtilsBaseNode & { type: K } {
+): node is Extract<EslintNode, { type: K }> {
   if (!(node && node['type'])) {
     return false
   }
