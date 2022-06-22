@@ -252,14 +252,17 @@ export const throwStatement: StringableASTNodeFn<estree.ThrowStatement> = ({
  */
 export const unaryExpression: StringableASTNodeFn<estree.UnaryExpression> = ({
   operator,
+  argument,
+  prefix,
   ...other
 }) => {
   return {
     ...other,
-
     operator,
+    prefix,
+    argument,
     type: 'UnaryExpression',
-    toString: () => operator,
+    toString: () => `${operator} ${node(argument)}`,
   }
 }
 

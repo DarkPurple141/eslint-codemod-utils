@@ -19,6 +19,7 @@ import {
   literal,
   staticBlock,
   throwStatement,
+  unaryExpression,
   variableDeclaration,
 } from '..'
 
@@ -181,6 +182,18 @@ describe('jsxMemberExpression', () => {
         property: jsxIdentifier({ name: 'Modal' }),
       }).toString()
     ).eq('AK.Modal')
+  })
+})
+
+describe('unaryExpression', () => {
+  test('basic', () => {
+    expect(
+      unaryExpression({
+        operator: 'typeof',
+        argument: identifier('x'),
+        prefix: true,
+      }).toString()
+    ).eq('typeof x')
   })
 })
 
