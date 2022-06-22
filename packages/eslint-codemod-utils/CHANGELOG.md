@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.3.4
+
+### Patch Changes
+
+- f003b75: Fixes the parsing of computed properties on the `memberExpression` transformer.
+
 ## 1.3.3
 
 ### Patch Changes
