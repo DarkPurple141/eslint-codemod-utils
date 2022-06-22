@@ -17,6 +17,7 @@ import {
   jsxSpreadAttribute,
   jsxText,
   literal,
+  memberExpression,
   staticBlock,
   throwStatement,
   unaryExpression,
@@ -194,6 +195,30 @@ describe('unaryExpression', () => {
         prefix: true,
       }).toString()
     ).eq('typeof x')
+  })
+})
+
+describe('memberExpression', () => {
+  test('basic', () => {
+    expect(
+      memberExpression({
+        object: identifier('hello'),
+        property: identifier('x'),
+        computed: false,
+        optional: false,
+      }).toString()
+    ).eq('hello.x')
+  })
+
+  test('computed', () => {
+    expect(
+      memberExpression({
+        object: identifier('hello'),
+        property: identifier('x'),
+        computed: true,
+        optional: false,
+      }).toString()
+    ).eq('hello[x]')
   })
 })
 
