@@ -53,7 +53,6 @@ export const chainExpression: StringableASTNodeFn<estree.ChainExpression> = ({
     ...other,
     expression,
     type: 'ChainExpression',
-
     toString: () => `${node(expression)}`,
   }
 }
@@ -98,7 +97,6 @@ export const sequenceExpression: StringableASTNodeFn<
 > = ({ expressions, ...other }) => {
   return {
     ...other,
-
     expressions,
     type: 'SequenceExpression',
     toString: () => `(${expressions.map(node).map(String).join(', ')})`,
@@ -120,7 +118,6 @@ export const arrowFunctionExpression: StringableASTNodeFn<
 > = ({ async, body, expression, params, ...other }) => {
   return {
     ...other,
-
     async,
     expression,
     body,
@@ -150,7 +147,6 @@ export const taggedTemplateExpression: StringableASTNodeFn<
     ...other,
     quasi,
     tag,
-
     type: 'TaggedTemplateExpression',
     toString: () => `${node(tag)}${node(quasi)}`,
   }
@@ -166,7 +162,6 @@ export const functionExpression: StringableASTNodeFn<
     generator,
     body,
     params,
-
     type: 'FunctionExpression',
     toString: () =>
       `${async ? 'async ' : ''}function ${id ? node(id) : ''}(${params
@@ -201,7 +196,6 @@ export const returnStatement: StringableASTNodeFn<estree.ReturnStatement> = ({
 }) => {
   return {
     ...other,
-
     type: 'ReturnStatement',
     toString: () =>
       `return${
@@ -734,13 +728,20 @@ export const emptyStatement: StringableASTNodeFn<estree.EmptyStatement> = ({
 export const memberExpression: StringableASTNodeFn<estree.MemberExpression> = ({
   object,
   property,
+  computed,
   ...other
 }) => ({
   ...other,
   type: 'MemberExpression',
+  computed,
   object,
   property,
-  toString: () => `${node(object)}.${node(property)}`,
+  toString: () => {
+    const translatedNode = node(property)
+    return `${node(object)}${
+      computed ? `[${translatedNode}]` : `.${translatedNode}`
+    }`
+  },
 })
 
 export const logicalExpression: StringableASTNodeFn<
