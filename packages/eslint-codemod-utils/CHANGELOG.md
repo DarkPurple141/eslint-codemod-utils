@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.3.3
+
+### Patch Changes
+
+- ea8a017: Fixes the way unaryExpressions were stringified.
+
 ## 1.3.2
 
 ### Patch Changes
