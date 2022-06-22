@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "eslint": "^7.0.0",
-    "eslint-codemod-utils": "workspace:*"
+    "eslint-codemod-utils": "workspace:*",
+    "@thing/button": "workspace:*"
   },
   "source": "src/index.ts",
   "main": "dist/index.js",

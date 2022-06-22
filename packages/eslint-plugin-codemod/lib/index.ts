@@ -2,6 +2,7 @@ import renameProp from './rules/rename-prop'
 import changeComposition from './rules/change-composition'
 import sortImports from './rules/sort-imports'
 import noCodemodComment from './rules/no-codemod-comment'
+import rule from '@thing/button/rule'
 
 export const rules = {
   /**
@@ -22,6 +23,7 @@ export const rules = {
   'no-codemod-comment': noCodemodComment,
   'change-composition': changeComposition,
   'sort-imports': sortImports,
+  'test-rule': rule,
 }
 
 export { hash } from './hash'
