@@ -14,6 +14,7 @@ importers:
       c8: ^7.11.0
       eslint: ^7.0.0
       eslint-config-prettier: ^8.5.0
+      eslint-formatter-codemod: workspace:*
       eslint-plugin-codemod: workspace:*
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.5.1
@@ -31,12 +32,13 @@ importers:
       c8: 7.11.0
       eslint: 7.32.0
       eslint-config-prettier: 8.5.0_eslint@7.32.0
+      eslint-formatter-codemod: link:packages/eslint-formatter-codemod
       eslint-plugin-codemod: link:packages/eslint-plugin-codemod
       eslint-plugin-prettier: 4.0.0_cfc9253cc6cf8e63ed6f63a6b600e6b9
       prettier: 2.5.1
       typescript: 4.5.5
       vite: 2.8.6
-      vitest: 0.9.3_c8@7.11.0
+      vitest: 0.18.0_c8@7.11.0
 
   packages/eslint-codemod-utils:
     specifiers:
@@ -53,7 +55,26 @@ importers:
       '@types/node': 17.0.18
       espree: 9.3.1
       typescript: 4.5.5
-      vitest: 0.9.3_c8@7.11.0
+      vitest: 0.18.0_c8@7.11.0
+
+  packages/eslint-formatter-codemod:
+    specifiers:
+      '@atlaskit/modal-dialog': ^12.2.3
+      '@types/eslint': ^8.4.1
+      '@types/estree-jsx': ^0.0.1
+      eslint: ^7.0.0
+      eslint-codemod-utils: workspace:*
+      typescript: ^4.5.5
+      vitest: latest
+    dependencies:
+      eslint: 7.32.0
+      eslint-codemod-utils: link:../eslint-codemod-utils
+    devDependencies:
+      '@atlaskit/modal-dialog': 12.2.3
+      '@types/eslint': 8.4.1
+      '@types/estree-jsx': 0.0.1
+      typescript: 4.5.5
+      vitest: 0.18.0_c8@7.11.0
 
   packages/eslint-plugin-codemod:
     specifiers:
@@ -72,7 +93,7 @@ importers:
       '@types/eslint': 8.4.1
       '@types/estree-jsx': 0.0.1
       typescript: 4.5.5
-      vitest: 0.9.3_c8@7.11.0
+      vitest: 0.18.0_c8@7.11.0
 
 packages:
 
@@ -676,11 +697,11 @@ packages:
   /@types/chai-subset/1.3.3:
     resolution: {integrity: sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/chai-subset/-/chai-subset-1.3.3.tgz}
     dependencies:
-      '@types/chai': 4.3.0
+      '@types/chai': 4.3.1
     dev: true
 
-  /@types/chai/4.3.0:
-    resolution: {integrity: sha512-/ceqdqeRraGolFTcfoXNiqjyQhZzbINDngeoAq9GoHa8PPK1yNzTaxWjA6BFWp5Ua9JpXEMSS4s5i9tS0hOJtw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/chai/-/chai-4.3.0.tgz}
+  /@types/chai/4.3.1:
+    resolution: {integrity: sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/chai/-/chai-4.3.1.tgz}
     dev: true
 
   /@types/eslint/8.4.1:
@@ -1087,7 +1108,7 @@ packages:
     dev: true
 
   /check-error/1.0.2:
-    resolution: {integrity: sha1-V00xLt2Iu13YkS6Sht1sCu1KrII=, tarball: https://packages.atlassian.com/api/npm/npm-remote/check-error/-/check-error-1.0.2.tgz}
+    resolution: {integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/check-error/-/check-error-1.0.2.tgz}
     dev: true
 
   /ci-info/3.3.0:
@@ -1204,6 +1225,18 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+
+  /debug/4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/debug/-/debug-4.3.4.tgz}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+    dev: true
 
   /decamelize-keys/1.1.0:
     resolution: {integrity: sha1-0XGoeTMlKAfrPLYdwcFEXQeN8tk=}
@@ -1802,7 +1835,7 @@ packages:
     dev: true
 
   /get-func-name/2.0.0:
-    resolution: {integrity: sha1-6td0q+5y4gQJQzoGY2YCPdaIekE=, tarball: https://packages.atlassian.com/api/npm/npm-remote/get-func-name/-/get-func-name-2.0.0.tgz}
+    resolution: {integrity: sha512-Hm0ixYtaSZ/V7C8FJrtZIuBBI+iSgL+1Aq82zSu8VQNB4S3Gk8e7Qs3VwBDJAhmRZcFqkl3tQu36g/Foh5I5ig==, tarball: https://packages.atlassian.com/api/npm/npm-remote/get-func-name/-/get-func-name-2.0.0.tgz}
     dev: true
 
   /glob-parent/5.1.2:
@@ -2199,6 +2232,12 @@ packages:
     hasBin: true
     dev: true
 
+  /nanoid/3.3.4:
+    resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/nanoid/-/nanoid-3.3.4.tgz}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: true
+
   /natural-compare/1.4.0:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}
 
@@ -2354,6 +2393,15 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.2
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+    dev: true
+
+  /postcss/8.4.14:
+    resolution: {integrity: sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==, tarball: https://packages.atlassian.com/api/npm/npm-remote/postcss/-/postcss-8.4.14.tgz}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
     dev: true
@@ -2780,13 +2828,13 @@ packages:
   /text-table/0.2.0:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
 
-  /tinypool/0.1.2:
-    resolution: {integrity: sha512-fvtYGXoui2RpeMILfkvGIgOVkzJEGediv8UJt7TxdAOY8pnvUkFg/fkvqTfXG9Acc9S17Cnn1S4osDc2164guA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tinypool/-/tinypool-0.1.2.tgz}
+  /tinypool/0.2.2:
+    resolution: {integrity: sha512-tp4n5OARNL3v8ntdJUyo5NsDfwvUtu8isB43USjrsQxQrADDKY6UGBkmFaw/2vNmEt8S/uSm2U5FhkiK1eAFGw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tinypool/-/tinypool-0.2.2.tgz}
     engines: {node: '>=14.0.0'}
     dev: true
 
-  /tinyspy/0.3.2:
-    resolution: {integrity: sha512-2+40EP4D3sFYy42UkgkFFB+kiX2Tg3URG/lVvAZFfLxgGpnWl5qQJuBw1gaLttq8UOS+2p3C0WrhJnQigLTT2Q==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tinyspy/-/tinyspy-0.3.2.tgz}
+  /tinyspy/0.3.3:
+    resolution: {integrity: sha512-gRiUR8fuhUf0W9lzojPf1N1euJYA30ISebSfgca8z76FOvXtVXqd5ojEIaKLWbDQhAaC3ibxZIjqbyi4ybjcTw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tinyspy/-/tinyspy-0.3.3.tgz}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -2961,8 +3009,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vite/2.9.1:
-    resolution: {integrity: sha512-vSlsSdOYGcYEJfkQ/NeLXgnRv5zZfpAsdztkIrs7AZHV8RCMZQkwjo4DS5BnrYTqoWqLoUe1Cah4aVO4oNNqCQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/vite/-/vite-2.9.1.tgz}
+  /vite/2.9.14:
+    resolution: {integrity: sha512-P/UCjSpSMcE54r4mPak55hWAZPlyfS369svib/gpmz8/01L822lMPOJ/RYW6tLCe1RPvMvOsJ17erf55bKp4Hw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/vite/-/vite-2.9.14.tgz}
     engines: {node: '>=12.2.0'}
     hasBin: true
     peerDependencies:
@@ -2978,23 +3026,26 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.14.34
-      postcss: 8.4.12
+      postcss: 8.4.14
       resolve: 1.22.0
       rollup: 2.67.2
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.9.3_c8@7.11.0:
-    resolution: {integrity: sha512-hKjqdBI732cV5giNLERyAsaJBebstrX5mvTbZr+jUDYUHnX1O4DpAJcHtqBOutuBi7lVIGQ5IF8eWvHHqbCHBA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/vitest/-/vitest-0.9.3.tgz}
+  /vitest/0.18.0_c8@7.11.0:
+    resolution: {integrity: sha512-ryAtlh5Gvg3+aLNuOQ8YOHxgQCCu46jx40X5MBL0K0/ejB9i5zsr8fV8LTGXbXex80UMHlzceI9F+ouGaiR+mQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/vitest/-/vitest-0.18.0.tgz}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
+      '@edge-runtime/vm': '*'
       '@vitest/ui': '*'
       c8: '*'
       happy-dom: '*'
       jsdom: '*'
     peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
       '@vitest/ui':
         optional: true
       c8:
@@ -3004,18 +3055,21 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/chai': 4.3.0
+      '@types/chai': 4.3.1
       '@types/chai-subset': 1.3.3
+      '@types/node': 17.0.18
       c8: 7.11.0
       chai: 4.3.6
+      debug: 4.3.4
       local-pkg: 0.4.1
-      tinypool: 0.1.2
-      tinyspy: 0.3.2
-      vite: 2.9.1
+      tinypool: 0.2.2
+      tinyspy: 0.3.3
+      vite: 2.9.14
     transitivePeerDependencies:
       - less
       - sass
       - stylus
+      - supports-color
     dev: true
 
   /wcwidth/1.0.1:
