@@ -1,6 +1,11 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["lib/**/*"],
+  "include": [
+    "lib/**/*"
+  ],
+  "exclude": [
+    "**/__fixtures__/**"
+  ],
   "compilerOptions": {
     "outDir": "dist"
   }

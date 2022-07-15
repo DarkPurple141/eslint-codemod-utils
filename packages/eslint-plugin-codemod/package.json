@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-codemod",
-  "version": null,
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
     "eslint": "^7.0.0",
@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest --run"
   },
   "devDependencies": {
     "@atlaskit/modal-dialog": "^12.2.3",

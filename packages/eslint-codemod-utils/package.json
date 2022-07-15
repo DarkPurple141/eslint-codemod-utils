@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "build": "tsc && tsc --project tsconfig.esm.json",
-    "test": "vitest",
+    "test": "vitest --run",
     "prepublish": "pnpm build"
   },
   "license": "ISC",

@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 importers:
 
@@ -18,6 +18,7 @@ importers:
       eslint-plugin-codemod: workspace:*
       eslint-plugin-prettier: ^4.0.0
       prettier: ^2.5.1
+      turbo: ^1.3.1
       typescript: ^4.5.5
       vite: 2.8.6
       vitest: latest
@@ -27,15 +28,16 @@ importers:
       '@types/estree-jsx': 0.0.1
       '@types/node': 17.0.18
       '@types/ws': 8.5.3
-      '@typescript-eslint/eslint-plugin': 5.12.0_39008ab451aed7e12174fadc21405fee
-      '@typescript-eslint/parser': 5.12.0_eslint@7.32.0+typescript@4.5.5
+      '@typescript-eslint/eslint-plugin': 5.12.0_heaivncrv3l6cilu7loccqc75y
+      '@typescript-eslint/parser': 5.12.0_sgaiclxgc5mltnpgmg7py4v6ca
       c8: 7.11.0
       eslint: 7.32.0
       eslint-config-prettier: 8.5.0_eslint@7.32.0
       eslint-formatter-codemod: link:packages/eslint-formatter-codemod
       eslint-plugin-codemod: link:packages/eslint-plugin-codemod
-      eslint-plugin-prettier: 4.0.0_cfc9253cc6cf8e63ed6f63a6b600e6b9
+      eslint-plugin-prettier: 4.0.0_z7eskpggz6hgh3lpmotlmahgxe
       prettier: 2.5.1
+      turbo: 1.3.1
       typescript: 4.5.5
       vite: 2.8.6
       vitest: 0.18.0_c8@7.11.0
@@ -55,7 +57,7 @@ importers:
       '@types/node': 17.0.18
       espree: 9.3.1
       typescript: 4.5.5
-      vitest: 0.18.0_c8@7.11.0
+      vitest: 0.18.0
 
   packages/eslint-formatter-codemod:
     specifiers:
@@ -74,7 +76,7 @@ importers:
       '@types/eslint': 8.4.1
       '@types/estree-jsx': 0.0.1
       typescript: 4.5.5
-      vitest: 0.18.0_c8@7.11.0
+      vitest: 0.18.0
 
   packages/eslint-plugin-codemod:
     specifiers:
@@ -93,7 +95,7 @@ importers:
       '@types/eslint': 8.4.1
       '@types/estree-jsx': 0.0.1
       typescript: 4.5.5
-      vitest: 0.18.0_c8@7.11.0
+      vitest: 0.18.0
 
 packages:
 
@@ -326,6 +328,8 @@ packages:
     resolution: {integrity: sha512-7yJPvPV+ESz2IUTPbOL+YkIGyCqOyNIzdguKQuJGnH7bg1WTIifuM21YqokFt/THWh1AkCRn9IgoykTRCBVpzA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@babel/parser/-/parser-7.17.3.tgz}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.0
     dev: true
 
   /@babel/runtime/7.17.2:
@@ -356,7 +360,7 @@ packages:
       '@babel/helper-split-export-declaration': 7.16.7
       '@babel/parser': 7.17.3
       '@babel/types': 7.17.0
-      debug: 4.3.3
+      debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -738,7 +742,7 @@ packages:
     dev: true
 
   /@types/node/12.20.46:
-    resolution: {integrity: sha512-cPjLXj8d6anFPzFvOPxS3fvly3Shm5nTfl6g8X5smexixbuGUf7hfr21J5tX9JW+UPStp/5P5R8qrKL5IyVJ+A==}
+    resolution: {integrity: sha512-cPjLXj8d6anFPzFvOPxS3fvly3Shm5nTfl6g8X5smexixbuGUf7hfr21J5tX9JW+UPStp/5P5R8qrKL5IyVJ+A==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@types/node/-/node-12.20.46.tgz}
     dev: true
 
   /@types/node/17.0.18:
@@ -763,7 +767,7 @@ packages:
       '@types/node': 17.0.18
     dev: true
 
-  /@typescript-eslint/eslint-plugin/5.12.0_39008ab451aed7e12174fadc21405fee:
+  /@typescript-eslint/eslint-plugin/5.12.0_heaivncrv3l6cilu7loccqc75y:
     resolution: {integrity: sha512-fwCMkDimwHVeIOKeBHiZhRUfJXU8n6xW1FL9diDxAyGAFvKcH4csy0v7twivOQdQdA0KC8TDr7GGRd3L4Lv0rQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -774,10 +778,10 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.12.0_eslint@7.32.0+typescript@4.5.5
+      '@typescript-eslint/parser': 5.12.0_sgaiclxgc5mltnpgmg7py4v6ca
       '@typescript-eslint/scope-manager': 5.12.0
-      '@typescript-eslint/type-utils': 5.12.0_eslint@7.32.0+typescript@4.5.5
-      '@typescript-eslint/utils': 5.12.0_eslint@7.32.0+typescript@4.5.5
+      '@typescript-eslint/type-utils': 5.12.0_sgaiclxgc5mltnpgmg7py4v6ca
+      '@typescript-eslint/utils': 5.12.0_sgaiclxgc5mltnpgmg7py4v6ca
       debug: 4.3.3
       eslint: 7.32.0
       functional-red-black-tree: 1.0.1
@@ -790,7 +794,7 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser/5.12.0_eslint@7.32.0+typescript@4.5.5:
+  /@typescript-eslint/parser/5.12.0_sgaiclxgc5mltnpgmg7py4v6ca:
     resolution: {integrity: sha512-MfSwg9JMBojMUoGjUmX+D2stoQj1CBYTCP0qnnVtu9A+YQXVKNtLjasYh+jozOcrb/wau8TCfWOkQTiOAruBog==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -818,7 +822,7 @@ packages:
       '@typescript-eslint/visitor-keys': 5.12.0
     dev: true
 
-  /@typescript-eslint/type-utils/5.12.0_eslint@7.32.0+typescript@4.5.5:
+  /@typescript-eslint/type-utils/5.12.0_sgaiclxgc5mltnpgmg7py4v6ca:
     resolution: {integrity: sha512-9j9rli3zEBV+ae7rlbBOotJcI6zfc6SHFMdKI9M3Nc0sy458LJ79Os+TPWeBBL96J9/e36rdJOfCuyRSgFAA0Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -828,7 +832,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/utils': 5.12.0_eslint@7.32.0+typescript@4.5.5
+      '@typescript-eslint/utils': 5.12.0_sgaiclxgc5mltnpgmg7py4v6ca
       debug: 4.3.3
       eslint: 7.32.0
       tsutils: 3.21.0_typescript@4.5.5
@@ -863,7 +867,7 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/utils/5.12.0_eslint@7.32.0+typescript@4.5.5:
+  /@typescript-eslint/utils/5.12.0_sgaiclxgc5mltnpgmg7py4v6ca:
     resolution: {integrity: sha512-k4J2WovnMPGI4PzKgDtQdNrCnmBHpMUFy21qjX2CoPdoBcSBIMvVBr9P2YDP8jOqZOeK3ThOL6VO/sy6jtnvzw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -1534,7 +1538,7 @@ packages:
       eslint: 7.32.0
     dev: true
 
-  /eslint-plugin-prettier/4.0.0_cfc9253cc6cf8e63ed6f63a6b600e6b9:
+  /eslint-plugin-prettier/4.0.0_z7eskpggz6hgh3lpmotlmahgxe:
     resolution: {integrity: sha512-98MqmCJ7vJodoQK359bqQWaxOE0CS8paAz/GgjaZLyex4TTk3g9HugoO89EqWCrFiOqn9EVvcoo7gZzONCWVwQ==}
     engines: {node: '>=6.0.0'}
     peerDependencies:
@@ -2893,6 +2897,139 @@ packages:
       yargs: 15.4.1
     dev: true
 
+  /turbo-android-arm64/1.3.1:
+    resolution: {integrity: sha512-JcnZh9tLbZDpKaXaao/s/k4qXt3TbNEc1xEYYXurVWnqiMueGeS7QAtThVB85ZSqzj7djk+ngSrZabPy5RG25Q==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-android-arm64/-/turbo-android-arm64-1.3.1.tgz}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-darwin-64/1.3.1:
+    resolution: {integrity: sha512-TIGDradVFoGck86VIuM38KaDeNxdKaP2ti93UpQeFw26ZhPIeTAa6wUgnz4DQP6bjIvQmXlYJ16ETZb4tFYygg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-darwin-64/-/turbo-darwin-64-1.3.1.tgz}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-darwin-arm64/1.3.1:
+    resolution: {integrity: sha512-aLBq8KiMMmop7uKBkvDt/y+eER2UzxZyUzh1KWcZ7DZB5tFZnknEUyf2qggY2vd2WcDVfQ1EUjZ0MFxhhVaVzA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-darwin-arm64/-/turbo-darwin-arm64-1.3.1.tgz}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-freebsd-64/1.3.1:
+    resolution: {integrity: sha512-BOr/ifmxjlBeuDkDQLUJtzqzXQ2zPHHcI14U9Ys+z4Mza1uzQn/oSJqQvU5RuyRBVai7noMrpPS7QuKtDz0Cyg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-freebsd-64/-/turbo-freebsd-64-1.3.1.tgz}
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-freebsd-arm64/1.3.1:
+    resolution: {integrity: sha512-bHPZjK4xnGLz6/oxl5XmWhdYOdtBMSadrGhptWSZ0wBGNn/gQzDTeZAkQeqhh25AD0eM1hzDe8QUz8GlS43lrA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-freebsd-arm64/-/turbo-freebsd-arm64-1.3.1.tgz}
+    cpu: [arm64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-32/1.3.1:
+    resolution: {integrity: sha512-c5okimusfvivu9wS8MKSr+rXpQAV+M4TyR9JX+spIK8B1I7AjfECAqiK2D5WFWO1bQ33bUAuxXOEpUuLpgEm+g==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-linux-32/-/turbo-linux-32-1.3.1.tgz}
+    cpu: [ia32]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-64/1.3.1:
+    resolution: {integrity: sha512-O0pNX+N5gbmRcyZT+jsCPUNCN3DpIZHqNN35j7MT5nr0IkZa83CGbZnrEc+7Qws//jFJ26EngqD/JyRB2E8nwQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-linux-64/-/turbo-linux-64-1.3.1.tgz}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-arm/1.3.1:
+    resolution: {integrity: sha512-f+r6JIwv/7ylxxJtgVi8cVw+6oNoD/r1IMTU6ejH8bfyMZZko4kkNwH9VYribQ44KDkJEgzdltnzFG5f6Hz10g==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-linux-arm/-/turbo-linux-arm-1.3.1.tgz}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-arm64/1.3.1:
+    resolution: {integrity: sha512-D6+1MeS/x+/VCCooHPU4NIpB8qI/eW70eMRA79bqTPaxxluP0g2CaxXgucco05P51YtNsSxeVcH7X76iadON6Q==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-linux-arm64/-/turbo-linux-arm64-1.3.1.tgz}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-mips64le/1.3.1:
+    resolution: {integrity: sha512-yL64jgwVCziOpBcdpMxIsczkgwwOvmaqKObFKWyCNlk/LOl5NKODLwXEaryLaALtpwUAoS4ltMSI64gKqmLrOA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-linux-mips64le/-/turbo-linux-mips64le-1.3.1.tgz}
+    cpu: [mips64el]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-ppc64le/1.3.1:
+    resolution: {integrity: sha512-tjnM+8RosykS1lBpOPLDXGOz/Po2h796ty17uBd7IFslWPOI16a/akFOFoLH8PCiGGJMe3CYgRhEKn4sPWNxFA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-linux-ppc64le/-/turbo-linux-ppc64le-1.3.1.tgz}
+    cpu: [ppc64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-32/1.3.1:
+    resolution: {integrity: sha512-Snnv+TVigulqwK6guHKndMlrLw88NXj8BtHRGrEksPR0QkyuHlwLf+tHYB4HmvpUl4W9lnXQf4hsljWP64BEdw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-windows-32/-/turbo-windows-32-1.3.1.tgz}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-64/1.3.1:
+    resolution: {integrity: sha512-gLeohHG07yIhON1Pp0YNE00i/yzip2GFhkA6HdJaK95uE5bKULpqxuO414hOS/WzGwrGVXBKCImfe24XXh5T+Q==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-windows-64/-/turbo-windows-64-1.3.1.tgz}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-arm64/1.3.1:
+    resolution: {integrity: sha512-0MWcHLvYgs/qdcoTFZ55nu8HhrpeiwXEMw9cbNfgqTlzy3OsrAsovYEJFyQ8KSxeploiD+QJlCdvhxx+5C0tlA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo-windows-arm64/-/turbo-windows-arm64-1.3.1.tgz}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo/1.3.1:
+    resolution: {integrity: sha512-DXckoGKlZgvTn/PrHpBI/57aeXR7tfyPf2dK+4LmBczt24ELA3o6eYHeA7KzfpSYhB2LE9qveYFQ6mJ1OzGjjg==, tarball: https://packages.atlassian.com/api/npm/npm-remote/turbo/-/turbo-1.3.1.tgz}
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      turbo-android-arm64: 1.3.1
+      turbo-darwin-64: 1.3.1
+      turbo-darwin-arm64: 1.3.1
+      turbo-freebsd-64: 1.3.1
+      turbo-freebsd-arm64: 1.3.1
+      turbo-linux-32: 1.3.1
+      turbo-linux-64: 1.3.1
+      turbo-linux-arm: 1.3.1
+      turbo-linux-arm64: 1.3.1
+      turbo-linux-mips64le: 1.3.1
+      turbo-linux-ppc64le: 1.3.1
+      turbo-windows-32: 1.3.1
+      turbo-windows-64: 1.3.1
+      turbo-windows-arm64: 1.3.1
+    dev: true
+
   /type-check/0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -3031,6 +3168,44 @@ packages:
       rollup: 2.67.2
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /vitest/0.18.0:
+    resolution: {integrity: sha512-ryAtlh5Gvg3+aLNuOQ8YOHxgQCCu46jx40X5MBL0K0/ejB9i5zsr8fV8LTGXbXex80UMHlzceI9F+ouGaiR+mQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/vitest/-/vitest-0.18.0.tgz}
+    engines: {node: '>=v14.16.0'}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@vitest/ui': '*'
+      c8: '*'
+      happy-dom: '*'
+      jsdom: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      c8:
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+    dependencies:
+      '@types/chai': 4.3.1
+      '@types/chai-subset': 1.3.3
+      '@types/node': 17.0.18
+      chai: 4.3.6
+      debug: 4.3.4
+      local-pkg: 0.4.1
+      tinypool: 0.2.2
+      tinyspy: 0.3.3
+      vite: 2.9.14
+    transitivePeerDependencies:
+      - less
+      - sass
+      - stylus
+      - supports-color
     dev: true
 
   /vitest/0.18.0_c8@7.11.0:
