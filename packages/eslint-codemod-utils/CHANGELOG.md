@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.4.0
+
+### Minor Changes
+
+- ca51ad9: Adds an additional common utility getIdentifierInParentScope() to find elements above the current node in scope.
+
 ## 1.3.4
 
 ### Patch Changes
