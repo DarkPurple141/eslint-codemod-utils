@@ -33,7 +33,6 @@ export const callExpression: StringableASTNodeFn<
 > = ({ arguments: calleeArgs, callee, optional, ...other }) => {
   return {
     ...other,
-
     arguments: calleeArgs,
     callee,
     optional,
@@ -198,8 +197,7 @@ export const returnStatement: StringableASTNodeFn<estree.ReturnStatement> = ({
     toString: () =>
       `return${
         argument
-          ? // @ts-expect-error
-            argument.type === 'JSXElement'
+          ? argument.type === 'JSXElement'
             ? ` (${DEFAULT_WHITESPACE}${node(argument)}${DEFAULT_WHITESPACE})`
             : ` ${node(argument)}`
           : ''
