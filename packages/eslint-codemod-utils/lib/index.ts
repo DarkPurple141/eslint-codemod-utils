@@ -2,6 +2,7 @@
 export * from './constants'
 export * from './nodes'
 export * from './jsx-nodes'
+export * from './ts-nodes'
 export * from './utils'
 export * from './types'
 

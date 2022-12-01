@@ -82,12 +82,14 @@ import {
   withStatement,
   yieldExpression,
 } from './nodes'
+import { tsAsExpression, tsStringKeyword, tsTypeReference } from './ts-nodes'
 import { identity } from './utils/identity'
 import { NodeMap } from './utils/node'
 
 export const DEFAULT_WHITESPACE = '\n  '
 
 export const typeToHelperLookup = new Proxy(
+  // @ts-expect-error
   {
     // TODO implement
     AssignmentProperty: identity,
@@ -188,6 +190,10 @@ export const typeToHelperLookup = new Proxy(
     VariableDeclaration: variableDeclaration,
     VariableDeclarator: variableDeclarator,
     YieldExpression: yieldExpression,
+    // typescript
+    TSAsExpression: tsAsExpression,
+    TSStringKeyword: tsStringKeyword,
+    TSTypeReference: tsTypeReference,
   } as NodeMap,
   {
     // dynamic getter will fail and provide debug information
@@ -196,7 +202,16 @@ export const typeToHelperLookup = new Proxy(
         return Reflect.get(target, name, receiver)
       }
 
-      throw new Error(`ecu: key ${name.toString()} missing in typeMap`)
+      const nodeName = name.toString()
+      throw new Error(`\
+eslint-codemod-utils: type '${nodeName}' missing in typeMap.
+
+This is probably because the type '${nodeName}' is a Typescript or Flow specific node type. These nodes currently have only partial support.
+
+To resolve this you can:
+* Use a more constrained parser like esprima in your eslint config
+* Lodge a bug at https://github.com/DarkPurple141/eslint-codemod-utils/issues
+      `)
     },
   }
 )
