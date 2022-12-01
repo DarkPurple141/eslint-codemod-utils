@@ -1,11 +1,11 @@
 import type { Rule } from 'eslint'
 import {
+  EslintNode,
   ImportDeclaration,
   jsxAttribute,
   JSXAttribute,
   jsxIdentifier,
   JSXOpeningElement,
-  RuleListener,
 } from 'eslint-codemod-utils'
 
 export interface UpdatePropNameOptions {
@@ -56,8 +56,7 @@ const rule: Rule.RuleModule = {
       },
     },
   },
-  // @ts-ignore
-  create(context): RuleListener {
+  create(context) {
     const config = context.options as UpdatePropNameOptions[]
     let importDecs: ImportDeclaration[] | null[] = config.map(() => null)
 
@@ -104,7 +103,7 @@ const rule: Rule.RuleModule = {
 
       // Error cases after this point
       context.report({
-        // @ts-ignore
+        // @ts-expect-error
         node: toChangeAttr,
         messageId: 'renameProp',
         data: { ...option, local: specifier.local.name },
@@ -135,11 +134,11 @@ const rule: Rule.RuleModule = {
           }
         })
       },
-      JSXOpeningElement(node) {
+      JSXOpeningElement(node: EslintNode) {
         config.forEach((c, i) => {
           if (importDecs[i]) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            renameProp(node, importDecs[i]!, config[i])
+            renameProp(node as JSXOpeningElement, importDecs[i]!, config[i])
           }
         })
       },

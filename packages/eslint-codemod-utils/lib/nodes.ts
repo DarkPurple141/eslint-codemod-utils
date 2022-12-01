@@ -74,7 +74,6 @@ export const binaryExpression: StringableASTNodeFn<estree.BinaryExpression> = ({
 }) => {
   return {
     ...other,
-
     left,
     right,
     operator,
@@ -176,7 +175,6 @@ export const blockStatement: StringableASTNodeFn<estree.BlockStatement> = ({
 }) => {
   return {
     ...other,
-
     body,
     type: 'BlockStatement',
     toString: () =>

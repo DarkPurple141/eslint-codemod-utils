@@ -32,7 +32,9 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@types/estree-jsx": "^0.0.1"
+    "@types/estree-jsx": "^0.0.1",
+    "@typescript-eslint/types": "^5.45.0",
+    "@typescript-eslint/typescript-estree": "^5.45.0"
   },
   "devDependencies": {
     "@types/eslint": "^8.4.1",

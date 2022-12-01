@@ -138,7 +138,7 @@ Or:
 
 It's a declarative approach to solve the same problem.
 
-See the [eslint-plugin-example](packages/eslint-plugin-example) example for examples of more real world fixes.
+See the [eslint-plugin-example](packages/eslint-plugin-codemod) for examples of more real world fixes.
 
 ## How it works
 
