@@ -1,5 +1,17 @@
 # eslint-codemod-utils
 
+## 1.5.0
+
+### Minor Changes
+
+- dddc134: Updates codemod utils to support a small subset of typescript specific node types.
+
+  This minor also introduces:
+
+  - improved types
+  - improved jsdocs
+  - updates to dependencies
+
 ## 1.4.0
 
 ### Minor Changes
