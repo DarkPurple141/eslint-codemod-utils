@@ -236,8 +236,47 @@ export declare const program: StringableASTNodeFn<estree.Program>
 ### JSX Nodes
 
 ````ts
-export declare const jsxIdentifier: StringableASTNodeFn<JSXIdentifier>
-export declare const jsxMemberExpression: StringableASTNodeFn<JSXMemberExpression>
+/**
+ * __JSXIdentifier__
+ *
+ * @param param Takes a string or the shape of a {estree.JSXIdentifier} node
+ * @returns {estree.JSXIdentifier} node
+ */
+export declare const jsxIdentifier: (
+  param: WithoutType<estree.JSXIdentifier> | string
+) => StringableASTNode<estree.JSXIdentifier>
+/**
+ * __JSXOpeningFragment__
+ *
+ * @example
+ * ```ts
+ * <>hello</>
+ * ^^
+ * ```
+ */
+export declare const jsxOpeningFragment: StringableASTNodeFn<estree.JSXOpeningFragment>
+/**
+ * __JSXClosingFragment__
+ *
+ * @example
+ * ```ts
+ * <>hello</>
+ *        ^^
+ * ```
+ */
+export declare const jsxClosingFragment: StringableASTNodeFn<estree.JSXClosingFragment>
+/**
+ * __JSXFragment__
+ *
+ * @example
+ * ```ts
+ * <>hello</>
+ * ^^^^^^^^^^
+ * ```
+ */
+export declare const jsxFragment: StringableASTNodeFn<estree.JSXFragment>
+export declare const jsxSpreadChild: StringableASTNodeFn<estree.JSXSpreadChild>
+export declare const jsxMemberExpression: StringableASTNodeFn<estree.JSXMemberExpression>
 /**
  * __JSXElement__
  *
@@ -263,7 +302,7 @@ export declare const jsxMemberExpression: StringableASTNodeFn<JSXMemberExpressio
  *
  * @returns {JSXElement}
  */
-export declare const jsxElement: StringableASTNodeFn<JSXElement>
+export declare const jsxElement: StringableASTNodeFn<estree.JSXElement>
 /**
  * __JSXSpreadAttribute__
  *
@@ -284,10 +323,10 @@ export declare const jsxElement: StringableASTNodeFn<JSXElement>
  *      ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃
  * ```
  *
- * @returns {JSXSpreadAttribute}
+ * @returns {estree.JSXSpreadAttribute}
  */
-export declare const jsxSpreadAttribute: StringableASTNodeFn<JSXSpreadAttribute>
-export declare const jsxOpeningElement: StringableASTNodeFn<JSXOpeningElement>
+export declare const jsxSpreadAttribute: StringableASTNodeFn<estree.JSXSpreadAttribute>
+export declare const jsxOpeningElement: StringableASTNodeFn<estree.JSXOpeningElement>
 /**
  * __JSXClosingElement__
  *
@@ -299,9 +338,9 @@ export declare const jsxOpeningElement: StringableASTNodeFn<JSXOpeningElement>
  * </div>
  * ```
  *
- * @returns {JSXClosingElement}
+ * @returns {estree.JSXClosingElement}
  */
-export declare const jsxClosingElement: StringableASTNodeFn<JSXClosingElement>
+export declare const jsxClosingElement: StringableASTNodeFn<estree.JSXClosingElement>
 /**
  * __JSXText__
  *
@@ -313,10 +352,35 @@ export declare const jsxClosingElement: StringableASTNodeFn<JSXClosingElement>
  * <div>hello world</div>
  * ```
  *
- * @returns {JSXText}
+ * @returns {estree.JSXText}
  */
-export declare const jsxText: StringableASTNodeFn<JSXText>
-export declare const jsxExpressionContainer: StringableASTNodeFn<JSXExpressionContainer>
+export declare const jsxText: StringableASTNodeFn<estree.JSXText>
+/**
+ * __JSXEmptyExpression__
+ *
+ * @example
+ *
+ * ```tsx
+ * <SomeJSX attribute={} />
+ *                    ^^
+ * ```
+ *
+ * @returns {estree.JSXEmptyExpression}
+ */
+export declare const jsxEmptyExpression: StringableASTNodeFn<estree.JSXEmptyExpression>
+/**
+ * __JSXExpressionContainer__
+ *
+ * @example
+ *
+ * ```tsx
+ * <SomeJSX attribute={someValue} />
+ *                    ^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.JSXExpressionContainer}
+ */
+export declare const jsxExpressionContainer: StringableASTNodeFn<estree.JSXExpressionContainer>
 /**
  * __JSXAttribute__
  *
@@ -330,5 +394,5 @@ export declare const jsxExpressionContainer: StringableASTNodeFn<JSXExpressionCo
  *
  * @returns {JSXAttribute}
  */
-export declare const jsxAttribute: StringableASTNodeFn<JSXAttribute>
+export declare const jsxAttribute: StringableASTNodeFn<estree.JSXAttribute>
 ````

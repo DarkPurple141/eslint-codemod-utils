@@ -26,7 +26,7 @@ import { DEFAULT_WHITESPACE } from './constants'
  * normalCallExpression()
  * ```
  *
- * @returns {CallExpression}
+ * @returns {estree.CallExpression}
  */
 export const callExpression: StringableASTNodeFn<
   estree.SimpleCallExpression
@@ -38,9 +38,33 @@ export const callExpression: StringableASTNodeFn<
     optional,
     type: 'CallExpression',
     toString: () =>
-      `${callee.type === 'Super' ? 'super' : node(callee)}${
-        optional ? '?.' : ''
-      }(${calleeArgs.map(node).join(', ')})`,
+      `${node(callee)}${optional ? '?.' : ''}(${calleeArgs
+        .map(node)
+        .join(', ')})`,
+  }
+}
+
+/**
+ * __Super__
+ *
+ * @example
+ *
+ * ```
+ * // note the whole expression is a `CallExpression`
+ * // super is simply the callee / identifier
+ * super()
+ * ^^^^^
+ * ```
+ *
+ * @returns {estree.Super}
+ */
+export const superCallExpression: StringableASTNodeFn<estree.Super> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    type: 'Super',
+    toString: () => `super`,
   }
 }
 
@@ -417,6 +441,18 @@ export const importExpression: StringableASTNodeFn<estree.ImportExpression> = ({
   toString: () => `import(${node(source)})`,
 })
 
+/**
+ * __ImportDefaultSpecifier__
+ *
+ * @example
+ *
+ * ```ts
+ * import Hello from 'world'
+ *        ^^^^^
+ * ```
+ *
+ * @returns {estree.ImportDefaultSpecifier}
+ */
 export const importDefaultSpecifier: StringableASTNodeFn<
   estree.ImportDefaultSpecifier
 > = ({ local, ...other }) => ({
@@ -426,6 +462,18 @@ export const importDefaultSpecifier: StringableASTNodeFn<
   toString: () => local.name,
 })
 
+/**
+ * __ExportNamedDeclaration__
+ *
+ * @example
+ *
+ * ```ts
+ * export { Hello } from 'world'
+ * ^^^^^^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.ExportNamedDeclaration}
+ */
 export const exportNamedDeclaration: StringableASTNodeFn<
   estree.ExportNamedDeclaration
 > = ({ declaration, specifiers, source, ...other }) => {
@@ -445,6 +493,18 @@ export const exportNamedDeclaration: StringableASTNodeFn<
   }
 }
 
+/**
+ * __ExportDefaultDeclaration__
+ *
+ * @example
+ *
+ * ```ts
+ * export default HelloWorld
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.ExportDefaultDeclaration}
+ */
 export const exportDefaultDeclaration: StringableASTNodeFn<
   estree.ExportDefaultDeclaration
 > = ({ declaration, ...other }) => {
@@ -457,15 +517,32 @@ export const exportDefaultDeclaration: StringableASTNodeFn<
   }
 }
 
+/**
+ * __ExportAllDeclaration__
+ *
+ * @example
+ *
+ * ```ts
+ * export * from 'world'
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^
+ * ```
+ * ```ts
+ * export * as Hello from 'world'
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.ExportAllDeclaration}
+ */
 export const exportAllDeclaration: StringableASTNodeFn<
   estree.ExportAllDeclaration
-> = ({ source, ...other }) => {
+> = ({ source, exported, ...other }) => {
   return {
     ...other,
     type: 'ExportAllDeclaration',
     source,
-
-    toString: () => `export * from ${node(source)}`,
+    exported,
+    toString: () =>
+      `export * ${exported ? `as ${node(exported)} ` : ''}from ${node(source)}`,
   }
 }
 
@@ -689,7 +766,35 @@ export const spreadElement: StringableASTNodeFn<estree.SpreadElement> = ({
     ...other,
     argument,
     type: 'SpreadElement',
+    toString: () => `...${node(argument)}`,
+  }
+}
 
+/**
+ * __RestElement__
+ *
+ * @example
+ * ```ts
+ * const [a, ...b] = c
+ *           ^^^^
+ * ```
+ *
+ *  * @example
+ * ```ts
+ * const { a, ...b } = c
+ *            ^^^^
+ * ```
+ *
+ * @returns {estree.RestElement}
+ */
+export const restElement: StringableASTNodeFn<estree.RestElement> = ({
+  argument,
+  ...other
+}) => {
+  return {
+    ...other,
+    argument,
+    type: 'RestElement',
     toString: () => `...${node(argument)}`,
   }
 }
@@ -700,7 +805,6 @@ export const objectExpression: StringableASTNodeFn<estree.ObjectExpression> = ({
 }) => {
   return {
     ...other,
-
     properties,
     type: 'ObjectExpression',
     toString: () =>
@@ -749,7 +853,6 @@ export const logicalExpression: StringableASTNodeFn<
     right,
     operator,
     type: 'LogicalExpression',
-
     toString: () => `${node(left)} ${operator} ${node(right)}`,
   }
 }
@@ -895,11 +998,10 @@ export const literal = (
     typeof n === 'string' ||
     typeof n === 'boolean' ||
     typeof n === 'number' ||
-    typeof n === 'undefined' ||
     n === null
   ) {
     return {
-      raw: String(n),
+      raw: typeof n === 'string' ? `\'${n}\'` : String(n),
       value: n,
       type: 'Literal',
       toString: () => String(n),
@@ -1155,7 +1257,6 @@ export const staticBlock: StringableASTNodeFn<estree.StaticBlock> = ({
     ...other,
     body,
     type: 'StaticBlock',
-
     toString: () =>
       `static {\n${body.map(node).map(String).join(DEFAULT_WHITESPACE)}\n}`,
   }

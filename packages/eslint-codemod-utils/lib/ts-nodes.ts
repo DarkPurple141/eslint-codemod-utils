@@ -2,6 +2,7 @@ import {
   AST_NODE_TYPES,
   TSAnyKeyword,
   TSAsExpression,
+  TSNullKeyword,
   TSStringKeyword,
   TSTypeReference,
 } from '@typescript-eslint/types/dist/generated/ast-spec'
@@ -101,5 +102,26 @@ export const tsTypeReference: StringableASTNodeFn<TSTypeReference> = ({
     type: AST_NODE_TYPES.TSTypeReference,
     toString: () =>
       `${node(typeName)}${typeParameters ? node(typeParameters) : ''}`,
+  }
+}
+
+/**
+ * __TSNullKeyword__
+ *
+ * @example
+ * ```ts
+ * const x = 'hello' as null
+ *                      ^^^^
+ * ```
+ *
+ * @returns {TSNullKeyword}
+ */
+export const tsNullKeyword: StringableASTNodeFn<TSNullKeyword> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSNullKeyword,
+    toString: () => `null`,
   }
 }
