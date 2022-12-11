@@ -62,10 +62,12 @@ import {
   program,
   property,
   propertyDefinition,
+  restElement,
   returnStatement,
   sequenceExpression,
   spreadElement,
   staticBlock,
+  superCallExpression,
   switchCase,
   switchStatement,
   taggedTemplateExpression,
@@ -82,7 +84,13 @@ import {
   withStatement,
   yieldExpression,
 } from './nodes'
-import { tsAsExpression, tsStringKeyword, tsTypeReference } from './ts-nodes'
+import {
+  tsAnyKeyword,
+  tsAsExpression,
+  tsNullKeyword,
+  tsStringKeyword,
+  tsTypeReference,
+} from './ts-nodes'
 import { identity } from './utils/identity'
 import { NodeMap } from './utils/node'
 
@@ -143,8 +151,7 @@ export const typeToHelperLookup = new Proxy(
     TaggedTemplateExpression: taggedTemplateExpression,
     ObjectExpression: objectExpression,
     ObjectPattern: objectPattern,
-    // TODO: needs implementation
-    RestElement: identity,
+    RestElement: restElement,
     MemberExpression: memberExpression,
     // TODO: needs implementation
     MetaProperty: identity,
@@ -176,7 +183,7 @@ export const typeToHelperLookup = new Proxy(
     Program: program,
     PropertyDefinition: propertyDefinition,
     ReturnStatement: returnStatement,
-    Super: identity,
+    Super: superCallExpression,
     SequenceExpression: sequenceExpression,
     SpreadElement: spreadElement,
     StaticBlock: staticBlock,
@@ -194,6 +201,8 @@ export const typeToHelperLookup = new Proxy(
     TSAsExpression: tsAsExpression,
     TSStringKeyword: tsStringKeyword,
     TSTypeReference: tsTypeReference,
+    TSAnyKeyword: tsAnyKeyword,
+    TSNullKeyword: tsNullKeyword,
   } as NodeMap,
   {
     // dynamic getter will fail and provide debug information

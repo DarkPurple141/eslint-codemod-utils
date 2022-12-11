@@ -2,6 +2,7 @@ import {
   callExpression,
   comment,
   doWhileStatement,
+  exportAllDeclaration,
   identifier,
   ifStatement,
   importDeclaration,
@@ -30,6 +31,48 @@ const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
   sourceType: 'module',
 }
+
+describe('literal', () => {
+  test('string', () => {
+    expect(String(literal('hello'))).eq('hello')
+  })
+
+  test('boolean', () => {
+    expect(String(literal(true))).eq(`true`)
+  })
+
+  test('null', () => {
+    expect(String(literal(null))).eq(`null`)
+  })
+
+  test('number', () => {
+    expect(String(literal(9))).eq(`9`)
+  })
+})
+
+describe('exportAllDeclaration', () => {
+  test('basic', () => {
+    expect(
+      String(
+        exportAllDeclaration({
+          exported: null,
+          source: literal('@atlaskit/modal-dialog'),
+        })
+      )
+    ).eq(`export * from '@atlaskit/modal-dialog'`)
+  })
+
+  test('with alias', () => {
+    expect(
+      String(
+        exportAllDeclaration({
+          exported: identifier('modal'),
+          source: literal('@atlaskit/modal-dialog'),
+        })
+      )
+    ).eq(`export * as modal from '@atlaskit/modal-dialog'`)
+  })
+})
 
 describe('importDeclaration', () => {
   test('basic', () => {

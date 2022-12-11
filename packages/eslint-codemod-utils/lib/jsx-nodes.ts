@@ -42,6 +42,15 @@ export const jsxIdentifier = (
   }
 }
 
+/**
+ * __JSXOpeningFragment__
+ *
+ * @example
+ * ```ts
+ * <>hello</>
+ * ^^
+ * ```
+ */
 export const jsxOpeningFragment: StringableASTNodeFn<
   estree.JSXOpeningFragment
 > = ({ ...other }) => {
@@ -52,6 +61,15 @@ export const jsxOpeningFragment: StringableASTNodeFn<
   }
 }
 
+/**
+ * __JSXClosingFragment__
+ *
+ * @example
+ * ```ts
+ * <>hello</>
+ *        ^^
+ * ```
+ */
 export const jsxClosingFragment: StringableASTNodeFn<
   estree.JSXClosingFragment
 > = ({ ...other }) => {
@@ -62,6 +80,15 @@ export const jsxClosingFragment: StringableASTNodeFn<
   }
 }
 
+/**
+ * __JSXFragment__
+ *
+ * @example
+ * ```ts
+ * <>hello</>
+ * ^^^^^^^^^^
+ * ```
+ */
 export const jsxFragment: StringableASTNodeFn<estree.JSXFragment> = ({
   openingFragment,
   closingFragment,
@@ -81,6 +108,15 @@ export const jsxFragment: StringableASTNodeFn<estree.JSXFragment> = ({
   },
 })
 
+/**
+ * __JSXSpreadChild__
+ *
+ * @example
+ * ```ts
+ * <>{...child}</>
+ *   ^^^^^^^^^^
+ * ```
+ */
 export const jsxSpreadChild: StringableASTNodeFn<estree.JSXSpreadChild> = ({
   expression,
   ...other
@@ -186,7 +222,7 @@ export const jsxElement: StringableASTNodeFn<estree.JSXElement> = ({
  *      ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃
  * ```
  *
- * @returns {JSXSpreadAttribute}
+ * @returns {estree.JSXSpreadAttribute}
  */
 export const jsxSpreadAttribute: StringableASTNodeFn<
   estree.JSXSpreadAttribute
@@ -213,17 +249,7 @@ export const jsxOpeningElement: StringableASTNodeFn<
           name
     }${
       attributes && attributes.length
-        ? ' ' +
-          attributes
-            .map((attr) => {
-              if ('__pragma' in attr) {
-                return attr
-              } else {
-                return node(attr)
-              }
-            })
-            .map(String)
-            .join(' ')
+        ? ' ' + attributes.map(node).map(String).join(' ')
         : ''
     }${selfClosing ? ' />' : '>'}`,
 })
@@ -239,7 +265,7 @@ export const jsxOpeningElement: StringableASTNodeFn<
  * </div>
  * ```
  *
- * @returns {JSXClosingElement}
+ * @returns {estree.JSXClosingElement}
  */
 export const jsxClosingElement: StringableASTNodeFn<
   estree.JSXClosingElement
@@ -263,7 +289,7 @@ export const jsxClosingElement: StringableASTNodeFn<
  * <div>hello world</div>
  * ```
  *
- * @returns {JSXText}
+ * @returns {estree.JSXText}
  */
 export const jsxText: StringableASTNodeFn<estree.JSXText> = ({
   value,
@@ -297,6 +323,18 @@ export const jsxEmptyExpression: StringableASTNodeFn<
   }
 }
 
+/**
+ * __JSXExpressionContainer__
+ *
+ * @example
+ *
+ * ```tsx
+ * <SomeJSX attribute={someValue} />
+ *                    ^^^^^^^^^^^
+ * ```
+ *
+ * @returns {estree.JSXExpressionContainer}
+ */
 export const jsxExpressionContainer: StringableASTNodeFn<
   estree.JSXExpressionContainer
 > = ({ expression }) => ({
@@ -336,16 +374,5 @@ export const jsxAttribute: StringableASTNodeFn<estree.JSXAttribute> = ({
   type: 'JSXAttribute',
   name,
   value,
-  toString: () =>
-    `${name.name}${
-      value
-        ? `=${
-            value.type === 'Literal'
-              ? node(value)
-              : value.type === 'JSXElement'
-              ? jsxElement(value)
-              : jsxExpressionContainer(value as estree.JSXExpressionContainer)
-          }`
-        : ''
-    }`,
+  toString: () => `${name.name}${value ? `=${node(value)}` : ''}`,
 })

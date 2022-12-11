@@ -13,7 +13,7 @@ describe('tsAsExpression', () => {
       String(
         tsAsExpression({
           // @ts-ignore
-          expression: literal("'hello'"),
+          expression: literal('hello'),
           // @ts-ignore
           typeAnnotation: literal({ value: 'any' }),
         })
