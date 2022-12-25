@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.5.1
+
+### Patch Changes
+
+- 590ec6f: Fixed the resolution of the `Super` and `RestElement` nodes which were being ignored previously in certain cases.
+
 ## 1.5.0
 
 ### Minor Changes
