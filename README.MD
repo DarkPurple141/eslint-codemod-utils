@@ -2,9 +2,11 @@
 
 <p align="center">
   <a href="https://github.com/DarkPurple141/eslint-codemod-utils/actions/workflows/build-test.yml">
-    <img alt="Github Actions Build Status" src="https://img.shields.io/github/workflow/status/DarkPurple141/eslint-codemod-utils/CI%20Build%20&%20Testing?style=flat-square"></a>
+    <img alt="Github Actions Build Status" src="https://img.shields.io/github/actions/workflow/status/DarkPurple141/eslint-codemod-utils/build-test.yml?branch=master&style=flat-square">
+  </a>
   <a href="https://www.npmjs.com/package/eslint-codemod-utils">
-    <img alt="npm version" src="https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square"></a>
+    <img alt="npm version" src="https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square">
+  </a>
 </p>
 
 The `eslint-codemod-utils` package is a library of helper functions designed to enable code evolution in a similar way to `jscodeshift` - but leaning on the live and ongoing enforcement of `eslint` in your source - rather than one off codemod scripts. It provides first class typescript support and will supercharge your custom eslint rules.
