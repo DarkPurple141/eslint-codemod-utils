@@ -9,7 +9,7 @@ module.exports = {
     },
     project: ['./packages/*/tsconfig.eslint.json'],
   },
-  ignorePatterns: ['dist', '*.js'],
+  ignorePatterns: ['dist', '*.js', 'vite*'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',

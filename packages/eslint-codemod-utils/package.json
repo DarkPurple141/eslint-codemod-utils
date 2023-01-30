@@ -42,5 +42,19 @@
     "espree": "^9.3.1",
     "typescript": "^4.5.5",
     "vitest": "latest"
+  },
+  "exports": {
+    ".": {
+      "module": {
+        "default": "./dist/esm/index.js"
+      },
+      "default": "./dist/cjs/index.js"
+    },
+    "./jsx-runtime": {
+      "module": {
+        "default": "./dist/esm/jsx-runtime.js"
+      },
+      "default": "./dist/cjs/jsx-runtime.js"
+    }
   }
 }

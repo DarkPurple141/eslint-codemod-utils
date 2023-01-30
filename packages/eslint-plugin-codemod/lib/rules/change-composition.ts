@@ -1,14 +1,15 @@
 import type { Rule } from 'eslint'
 import {
+  EslintNode,
   identifier,
   importDeclaration,
   ImportDeclaration,
   ImportDefaultSpecifier,
   importSpecifier,
+  isNodeOfType,
   JSXAttribute,
   jsxClosingElement,
   jsxElement,
-  JSXElement,
   jsxExpressionContainer,
   jsxIdentifier,
   jsxOpeningElement,
@@ -26,7 +27,6 @@ const rule: Rule.RuleModule = {
     },
     fixable: 'code',
   },
-  // @ts-expect-error
   create(context) {
     let importNode: ImportDeclaration | null = null
 
@@ -38,8 +38,12 @@ const rule: Rule.RuleModule = {
           importNode = node
         }
       },
-      JSXElement(node: JSXElement) {
+      JSXElement(node: EslintNode) {
         if (!importNode) {
+          return
+        }
+
+        if (!isNodeOfType(node, 'JSXElement')) {
           return
         }
 
@@ -146,6 +150,7 @@ const rule: Rule.RuleModule = {
                 local: identifier({ name: 'ModalHeader' }),
                 imported: identifier({ name: 'ModalHeader' }),
               })
+
               fixes.push(
                 fixer.replaceText(
                   importNode,

@@ -6,6 +6,8 @@
     "target": "ES2019",
     "noImplicitAny": true,
     "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "jsxImportSource": "eslint-codemod-utils",
     "declaration": true,
     "types": [
       "vitest/globals"
