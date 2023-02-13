@@ -28,7 +28,8 @@
   "scripts": {
     "build": "tsc && tsc --project tsconfig.esm.json",
     "test": "vitest --run",
-    "prepublish": "pnpm build"
+    "prepublish": "pnpm build",
+    "postversion": "git push origin --tags"
   },
   "license": "ISC",
   "dependencies": {
