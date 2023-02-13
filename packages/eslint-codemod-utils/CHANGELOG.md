@@ -1,5 +1,12 @@
 # eslint-codemod-utils
 
+## 1.6.0
+
+### Minor Changes
+
+- 24bca60: Add experimental jsx runtime to support jsx in fixers.
+- 1eaa1d7: Improves type behavior of AST functions to be more affording to optional properites.
+
 ## 1.5.1
 
 ### Patch Changes
