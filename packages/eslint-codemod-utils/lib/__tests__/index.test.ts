@@ -19,6 +19,8 @@ import {
   jsxText,
   literal,
   memberExpression,
+  objectExpression,
+  property,
   staticBlock,
   throwStatement,
   unaryExpression,
@@ -241,6 +243,21 @@ describe('unaryExpression', () => {
   })
 })
 
+describe('objectExpression', () => {
+  test('basic', () => {
+    expect(
+      objectExpression({
+        properties: [
+          property({
+            key: identifier('hello'),
+            value: identifier('world'),
+          }),
+        ],
+      }).toString()
+    ).eq('{\n  hello: world\n}')
+  })
+})
+
 describe('memberExpression', () => {
   test('basic', () => {
     expect(
@@ -259,7 +276,6 @@ describe('memberExpression', () => {
         object: identifier('hello'),
         property: identifier('x'),
         computed: true,
-        optional: false,
       }).toString()
     ).eq('hello[x]')
   })
@@ -280,7 +296,6 @@ describe('jsxSpeadAttribute', () => {
         argument: callExpression({
           callee: identifier({ name: 'spread' }),
           arguments: [],
-          optional: false,
         }),
       }).toString()
     ).eq('{...spread()}')
@@ -306,8 +321,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              selfClosing: false,
-              attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -371,7 +384,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              selfClosing: false,
               attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
             }),
@@ -408,7 +420,6 @@ describe('jsxElement', () => {
             openingElement: jsxOpeningElement({
               attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
-              selfClosing: false,
             }),
             closingElement: jsxClosingElement({
               name: jsxIdentifier({ name: 'Modal' }),
@@ -422,7 +433,6 @@ describe('jsxElement', () => {
                 loc: { start: { column: 2 } },
                 openingElement: jsxOpeningElement({
                   attributes: [],
-                  selfClosing: false,
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
                 children: [
@@ -436,7 +446,6 @@ describe('jsxElement', () => {
                     openingElement: jsxOpeningElement({
                       attributes: [],
                       name: jsxIdentifier({ name: 'VeryNested' }),
-                      selfClosing: false,
                     }),
                   }),
                 ],
@@ -541,7 +550,6 @@ describe('jsxOpeningElement', () => {
       jsxOpeningElement({
         name: jsxIdentifier({ name: 'Modal' }),
         attributes: [],
-        selfClosing: false,
       }).toString()
     ).eq(`<Modal>`)
   })
