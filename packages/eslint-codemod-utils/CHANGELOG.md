@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.6.2
+
+### Patch Changes
+
+- 5b0b8d1: Amend publish script and versions.
+
 ## 1.6.1
 
 ### Patch Changes
