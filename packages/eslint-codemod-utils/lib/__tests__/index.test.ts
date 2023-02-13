@@ -19,6 +19,8 @@ import {
   jsxText,
   literal,
   memberExpression,
+  objectExpression,
+  property,
   staticBlock,
   throwStatement,
   unaryExpression,
@@ -241,6 +243,22 @@ describe('unaryExpression', () => {
   })
 })
 
+describe('objectExpression', () => {
+  test('basic', () => {
+    expect(
+      objectExpression({
+        properties: [
+          // @ts-ignore
+          property({
+            key: identifier('hello'),
+            value: identifier('world'),
+          }),
+        ],
+      }).toString()
+    ).eq('{\n  hello: world\n}')
+  })
+})
+
 describe('memberExpression', () => {
   test('basic', () => {
     expect(
@@ -280,7 +298,6 @@ describe('jsxSpeadAttribute', () => {
         argument: callExpression({
           callee: identifier({ name: 'spread' }),
           arguments: [],
-          optional: false,
         }),
       }).toString()
     ).eq('{...spread()}')

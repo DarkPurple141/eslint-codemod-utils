@@ -19,8 +19,17 @@ export type StringableASTNode<T extends EslintCodemodUtilsBaseNode> = T & {
 }
 
 export type StringableASTNodeFn<
-  EstreeNodeType extends EslintCodemodUtilsBaseNode
-> = (node: WithoutType<EstreeNodeType>) => StringableASTNode<EstreeNodeType>
+  EstreeNodeType extends EslintCodemodUtilsBaseNode,
+  Key extends keyof EstreeNodeType = 'type'
+> = (
+  node: WithoutType<
+    Key extends 'type'
+      ? EstreeNodeType
+      : Omit<EstreeNodeType, Key> &
+          Pick<Partial<EstreeNodeType>, Key> &
+          EslintCodemodUtilsBaseNode
+  >
+) => StringableASTNode<EstreeNodeType>
 
 export type EslintNode = Partial<Rule.NodeParentExtension> &
   EslintCodemodUtilsBaseNode

@@ -7,6 +7,7 @@ import type {
 } from './types'
 import { node } from './utils/node'
 import { DEFAULT_WHITESPACE } from './constants'
+import { isNodeOfType } from './utils'
 
 /**
  * __CallExpression__
@@ -29,8 +30,9 @@ import { DEFAULT_WHITESPACE } from './constants'
  * @returns {estree.CallExpression}
  */
 export const callExpression: StringableASTNodeFn<
-  estree.SimpleCallExpression
-> = ({ arguments: calleeArgs, callee, optional, ...other }) => {
+  estree.SimpleCallExpression,
+  'optional'
+> = ({ arguments: calleeArgs, callee, optional = false, ...other }) => {
   return {
     ...other,
     arguments: calleeArgs,
@@ -136,10 +138,19 @@ export const sequenceExpression: StringableASTNodeFn<
  * @returns {estree.ArrowFunctionExpression}
  */
 export const arrowFunctionExpression: StringableASTNodeFn<
-  estree.ArrowFunctionExpression
-> = ({ async, body, expression, params, ...other }) => {
+  estree.ArrowFunctionExpression,
+  'async' | 'generator'
+> = ({
+  async = false,
+  generator = false,
+  body,
+  expression,
+  params,
+  ...other
+}) => {
   return {
     ...other,
+    generator,
     async,
     expression,
     body,
@@ -175,8 +186,9 @@ export const taggedTemplateExpression: StringableASTNodeFn<
 }
 
 export const functionExpression: StringableASTNodeFn<
-  estree.FunctionExpression
-> = ({ async, generator, body, params, id, ...other }) => {
+  estree.FunctionExpression,
+  'generator' | 'async'
+> = ({ async = false, generator = false, body, params, id, ...other }) => {
   return {
     ...other,
     id,
@@ -236,7 +248,6 @@ export const throwStatement: StringableASTNodeFn<estree.ThrowStatement> = ({
   return {
     ...other,
     argument,
-
     type: 'ThrowStatement',
     toString: () =>
       `throw${
@@ -483,7 +494,6 @@ export const exportNamedDeclaration: StringableASTNodeFn<
     specifiers,
     source,
     type: 'ExportNamedDeclaration',
-
     toString: () =>
       `export ${declaration ? node(declaration) : ''}${
         specifiers.length
@@ -636,7 +646,6 @@ export const arrayPattern: StringableASTNodeFn<estree.ArrayPattern> = ({
     ...other,
     type: 'ArrayPattern',
     elements,
-
     toString: () =>
       `[${elements
         .filter((n): n is estree.Pattern => Boolean(n))
@@ -696,11 +705,16 @@ export const newExpression: StringableASTNodeFn<estree.NewExpression> = ({
   toString: () => `new ${node(callee)}(${argumentsParam.map(node).join(', ')})`,
 })
 
-export const property: StringableASTNodeFn<estree.Property> = ({
-  kind,
+export const property: StringableASTNodeFn<
+  estree.Property,
+  'kind' | 'computed' | 'shorthand' | 'method'
+> = ({
+  kind = 'init',
   key,
   value,
-  method,
+  method = false,
+  computed = false,
+  shorthand = false,
   ...other
 }) => {
   return {
@@ -709,13 +723,14 @@ export const property: StringableASTNodeFn<estree.Property> = ({
     kind,
     value,
     method,
+    shorthand,
+    computed,
     type: 'Property',
-
     toString: () =>
       `${kind === 'init' ? '' : kind + ' '}${node(key)}${
         kind !== 'init' ? '' : ': '
       }${
-        kind !== 'init' && value.type === 'FunctionExpression'
+        kind !== 'init' && isNodeOfType(value, 'FunctionExpression')
           ? methodOrPropertyFn(value)
           : node(value)
       }`,
@@ -740,7 +755,6 @@ export const objectPattern: StringableASTNodeFn<estree.ObjectPattern> = ({
     ...other,
     properties,
     type: 'ObjectPattern',
-
     toString: () => `{${properties.map(node).map(String).join(', ')}}`,
   }
 }
@@ -799,6 +813,17 @@ export const restElement: StringableASTNodeFn<estree.RestElement> = ({
   }
 }
 
+/**
+ * __ObjectExpression__
+ * @example
+ * ```ts
+ * const x = {
+ *  key: value,
+ *  get x() { return 1 },
+ * }
+ * ^^^^^^^^^^^^
+ * ```
+ */
 export const objectExpression: StringableASTNodeFn<estree.ObjectExpression> = ({
   properties,
   ...other
@@ -809,9 +834,7 @@ export const objectExpression: StringableASTNodeFn<estree.ObjectExpression> = ({
     type: 'ObjectExpression',
     toString: () =>
       `{${DEFAULT_WHITESPACE}${properties
-        .map((node) =>
-          node.type === 'Property' ? property(node) : spreadElement(node)
-        )
+        .map(node)
         .map(String)
         .join(`,${DEFAULT_WHITESPACE}`)}\n}`,
   }
@@ -825,15 +848,14 @@ export const emptyStatement: StringableASTNodeFn<estree.EmptyStatement> = ({
   toString: () => `;`,
 })
 
-export const memberExpression: StringableASTNodeFn<estree.MemberExpression> = ({
-  object,
-  property,
-  computed,
-  ...other
-}) => ({
+export const memberExpression: StringableASTNodeFn<
+  estree.MemberExpression,
+  'computed' | 'optional'
+> = ({ object, property, computed = false, optional = false, ...other }) => ({
   ...other,
   type: 'MemberExpression',
   computed,
+  optional,
   object,
   property,
   toString: () => {
@@ -865,7 +887,6 @@ export const variableDeclarator: StringableASTNodeFn<
     id,
     init,
     type: 'VariableDeclarator',
-
     toString: () => `${node(id)}${init ? ` = ${node(init)}` : ''}`,
   }
 }
@@ -878,7 +899,6 @@ export const variableDeclaration: StringableASTNodeFn<
     declarations,
     kind,
     type: 'VariableDeclaration',
-
     toString: () =>
       `${kind ? `${kind} ` : ''}${declarations
         .map(variableDeclarator)
@@ -889,10 +909,10 @@ export const variableDeclaration: StringableASTNodeFn<
 
 export const importNamespaceSpecifier: StringableASTNodeFn<
   estree.ImportNamespaceSpecifier
-> = ({ local }) => {
+> = ({ local, ...other }) => {
   return {
+    ...other,
     type: 'ImportNamespaceSpecifier',
-
     local,
     toString: () => `* as ${local.name}`,
   }
@@ -905,7 +925,6 @@ export const templateElement: StringableASTNodeFn<estree.TemplateElement> = ({
   return {
     ...other,
     value,
-
     type: 'TemplateElement',
     toString: () => `${value.raw}`,
   }
@@ -940,7 +959,7 @@ export const importDeclaration: StringableASTNodeFn<
       otherSpecifiers.length > 4 ? `,${DEFAULT_WHITESPACE}` : ', '
     const leadOrEndSpecifier = otherSpecifiers.length > 4 ? '\n' : ' '
 
-    // @ts-ignore technically not part of espree but the typescript parser does inject it - will support it for now
+    // @ts-expect-error technically not part of espree but the typescript parser does inject it - will support it for now
     return `import ${other['importKind'] === 'type' ? 'type ' : ''}${
       defaultSpecifier ? defaultSpecifier.local.name : ''
     }${
@@ -1025,7 +1044,9 @@ export const identifier = (
   param: WithoutType<estree.Identifier> | string
 ): StringableASTNode<estree.Identifier> => {
   const name = typeof param === 'string' ? param : param.name
+  const other = typeof param === 'object' ? param : {}
   return {
+    ...other,
     type: 'Identifier',
     name,
     toString: () => name,
@@ -1070,7 +1091,6 @@ export const switchCase: StringableASTNodeFn<estree.SwitchCase> = ({
     consequent,
     test,
     type: 'SwitchCase',
-
     toString: () =>
       `${!test ? 'default' : `case ${node(test)}`}: ${consequent
         .map(node)
@@ -1219,7 +1239,6 @@ export const assignmentExpression: StringableASTNodeFn<
   return {
     ...other,
     type: 'AssignmentExpression',
-
     left,
     right,
     operator,
@@ -1263,8 +1282,9 @@ export const staticBlock: StringableASTNodeFn<estree.StaticBlock> = ({
 }
 
 export const functionDeclaration: StringableASTNodeFn<
-  estree.FunctionDeclaration
-> = ({ body, async, id, generator, params, ...other }) => ({
+  estree.FunctionDeclaration,
+  'generator' | 'async'
+> = ({ body, async = false, id, generator = false, params, ...other }) => ({
   ...other,
   type: 'FunctionDeclaration',
   body,
@@ -1296,7 +1316,6 @@ export const methodDefinition: StringableASTNodeFn<estree.MethodDefinition> = ({
     key,
     kind,
     value,
-
     type: 'MethodDefinition',
     toString: () => `${node(key)} ${methodOrPropertyFn(value)}`,
   }
@@ -1312,7 +1331,6 @@ export const propertyDefinition: StringableASTNodeFn<
     static: staticKeyWord,
     value,
     type: 'PropertyDefinition',
-
     toString: () => `UNIMPLEMENTED`,
   }
 }
@@ -1325,7 +1343,6 @@ export const classBody: StringableASTNodeFn<estree.ClassBody> = ({
     ...other,
     type: 'ClassBody',
     body,
-
     toString: () =>
       body.length
         ? `${DEFAULT_WHITESPACE}${body
@@ -1348,7 +1365,6 @@ export const classDeclaration: StringableASTNodeFn<estree.ClassDeclaration> = ({
     superClass,
     body,
     id,
-
     toString: () =>
       `class${id ? ` ${node(id)}` : ''}${
         superClass ? ` extends ${node(superClass)}` : ''
@@ -1368,7 +1384,6 @@ export const classExpression: StringableASTNodeFn<estree.ClassExpression> = ({
     superClass,
     body,
     id,
-
     toString: () =>
       String(classDeclaration({ superClass, id: id || null, body, ...other })),
   }
