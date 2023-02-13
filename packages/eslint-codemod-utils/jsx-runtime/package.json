@@ -1,6 +1,0 @@
-{
-  "name": "eslint-codemod-utils/jsx-runtime",
-  "private": true,
-  "main": "../dist/cjs/jsx-runtime.js",
-  "sideEffects": false
-}
