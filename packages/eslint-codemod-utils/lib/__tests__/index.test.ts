@@ -248,7 +248,6 @@ describe('objectExpression', () => {
     expect(
       objectExpression({
         properties: [
-          // @ts-ignore
           property({
             key: identifier('hello'),
             value: identifier('world'),
@@ -277,7 +276,6 @@ describe('memberExpression', () => {
         object: identifier('hello'),
         property: identifier('x'),
         computed: true,
-        optional: false,
       }).toString()
     ).eq('hello[x]')
   })
@@ -323,8 +321,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              selfClosing: false,
-              attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -388,7 +384,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              selfClosing: false,
               attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
             }),
@@ -425,7 +420,6 @@ describe('jsxElement', () => {
             openingElement: jsxOpeningElement({
               attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
-              selfClosing: false,
             }),
             closingElement: jsxClosingElement({
               name: jsxIdentifier({ name: 'Modal' }),
@@ -439,7 +433,6 @@ describe('jsxElement', () => {
                 loc: { start: { column: 2 } },
                 openingElement: jsxOpeningElement({
                   attributes: [],
-                  selfClosing: false,
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
                 children: [
@@ -453,7 +446,6 @@ describe('jsxElement', () => {
                     openingElement: jsxOpeningElement({
                       attributes: [],
                       name: jsxIdentifier({ name: 'VeryNested' }),
-                      selfClosing: false,
                     }),
                   }),
                 ],
@@ -558,7 +550,6 @@ describe('jsxOpeningElement', () => {
       jsxOpeningElement({
         name: jsxIdentifier({ name: 'Modal' }),
         attributes: [],
-        selfClosing: false,
       }).toString()
     ).eq(`<Modal>`)
   })

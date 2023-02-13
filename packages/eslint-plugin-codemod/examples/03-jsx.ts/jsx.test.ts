@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint'
 
 import ecuRule from './ecu'
-import rule from './standard'
+// import rule from './standard'
 
 const ruleTester = new RuleTester({
   parserOptions: {

@@ -544,8 +544,9 @@ export const exportDefaultDeclaration: StringableASTNodeFn<
  * @returns {estree.ExportAllDeclaration}
  */
 export const exportAllDeclaration: StringableASTNodeFn<
-  estree.ExportAllDeclaration
-> = ({ source, exported, ...other }) => {
+  estree.ExportAllDeclaration,
+  'exported'
+> = ({ source, exported = null, ...other }) => {
   return {
     ...other,
     type: 'ExportAllDeclaration',
@@ -566,7 +567,6 @@ export const exportSpecifier: StringableASTNodeFn<estree.ExportSpecifier> = ({
     exported,
     local,
     type: 'ExportSpecifier',
-
     toString: () =>
       local.name !== exported.name
         ? `${node(exported)} as ${node(local)}`

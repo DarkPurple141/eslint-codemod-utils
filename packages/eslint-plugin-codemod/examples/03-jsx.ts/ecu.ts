@@ -59,8 +59,10 @@ const rule: Rule.RuleModule = {
                       closingElement: jsxClosingElement({ name: jsxId }),
                       children: [
                         title?.value?.type === 'Literal'
-                          ? jsxText(title.value)
+                          ? // @ts-expect-error
+                            jsxText(title.value)
                           : jsxExpressionContainer({
+                              // @ts-expect-error
                               expression: title?.value,
                             }),
                       ],
