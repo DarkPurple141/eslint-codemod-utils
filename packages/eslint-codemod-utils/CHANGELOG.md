@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.6.1
+
+### Patch Changes
+
+- 1d848e1: Amend build configuration - test deployment.
+
 ## 1.6.0
 
 ### Minor Changes
