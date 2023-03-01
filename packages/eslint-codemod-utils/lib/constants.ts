@@ -87,6 +87,7 @@ import {
 import {
   tsAnyKeyword,
   tsAsExpression,
+  tsEmptyBodyFunctionExpression,
   tsNullKeyword,
   tsStringKeyword,
   tsTypeReference,
@@ -199,6 +200,7 @@ export const typeToHelperLookup = new Proxy(
     YieldExpression: yieldExpression,
     // typescript
     TSAsExpression: tsAsExpression,
+    TSEmptyBodyFunctionExpression: tsEmptyBodyFunctionExpression,
     TSStringKeyword: tsStringKeyword,
     TSTypeReference: tsTypeReference,
     TSAnyKeyword: tsAnyKeyword,

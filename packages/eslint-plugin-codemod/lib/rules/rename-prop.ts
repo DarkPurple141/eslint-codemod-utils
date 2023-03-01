@@ -1,7 +1,8 @@
-import type { Rule } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
+
 import {
-  EslintNode,
   ImportDeclaration,
+  isNodeOfType,
   jsxAttribute,
   JSXAttribute,
   jsxIdentifier,
@@ -15,13 +16,20 @@ export interface UpdatePropNameOptions {
   newProp: string
 }
 
-const rule: Rule.RuleModule = {
+const createRule = ESLintUtils.RuleCreator(
+  (name) =>
+    `https://github.com/DarkPurple141/eslint-codemod-utils/tree/master/packages/eslint-plugin-codemod/${name}`
+)
+
+const rule = createRule<UpdatePropNameOptions[], string>({
+  defaultOptions: [] as UpdatePropNameOptions[],
+  name: 'jsx/rename-prop',
   meta: {
     type: 'suggestion',
     docs: {
       description:
         'Dummy rule that changes a prop name in a dummy component using ast-helpers',
-      recommended: true,
+      recommended: 'error',
     },
     messages: {
       renameProp:
@@ -67,9 +75,9 @@ const rule: Rule.RuleModule = {
     ) {
       const specifier = importDec.specifiers.find(
         (spec) =>
-          (spec.type === 'ImportSpecifier' &&
+          (isNodeOfType(spec, 'ImportSpecifier') &&
             spec.imported.name === option.specifier) ||
-          (spec.type === 'ImportDefaultSpecifier' &&
+          (isNodeOfType(spec, 'ImportDefaultSpecifier') &&
             option.specifier === 'default')
       )
 
@@ -80,7 +88,7 @@ const rule: Rule.RuleModule = {
 
       if (
         !(
-          node.name.type === 'JSXIdentifier' &&
+          isNodeOfType(node.name, 'JSXIdentifier') &&
           node.name.name === specifier.local.name
         )
       ) {
@@ -89,7 +97,7 @@ const rule: Rule.RuleModule = {
 
       const toChangeAttr = node.attributes.find(
         (attr): attr is JSXAttribute => {
-          if (attr.type === 'JSXAttribute') {
+          if (isNodeOfType(attr, 'JSXAttribute')) {
             return attr.name.name === option.oldProp
           }
 
@@ -110,17 +118,16 @@ const rule: Rule.RuleModule = {
         fix(fixer) {
           const fixed = jsxAttribute({
             ...toChangeAttr,
-            name: jsxIdentifier({ name: option.newProp }),
+            name: jsxIdentifier(option.newProp),
           })
 
-          // @ts-ignore node doesn't have correct type infererence
+          // @ts-expect-error
           return fixer.replaceText(toChangeAttr, `${fixed}`)
         },
       })
     }
 
     return {
-      // @ts-ignore
       'Program:exit': () => {
         config.forEach((_, index) => {
           importDecs[index] = null
@@ -134,7 +141,7 @@ const rule: Rule.RuleModule = {
           }
         })
       },
-      JSXOpeningElement(node: EslintNode) {
+      JSXOpeningElement(node) {
         config.forEach((c, i) => {
           if (importDecs[i]) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -144,6 +151,6 @@ const rule: Rule.RuleModule = {
       },
     }
   },
-}
+})
 
 export default rule

@@ -10,7 +10,8 @@
     "check:format": "prettier packages/** --list-different",
     "test:ci": "vitest --run",
     "coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "version": "pnpm changeset version && pnpm changeset tag"
   },
   "author": "Alex Hinds",
   "license": "ISC",
