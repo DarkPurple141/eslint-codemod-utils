@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.7.0
+
+### Minor Changes
+
+- e1edbc8: Updates to internal types.
+
 ## 1.6.3
 
 ### Patch Changes
