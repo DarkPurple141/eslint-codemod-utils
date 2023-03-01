@@ -12,9 +12,9 @@ describe('tsAsExpression', () => {
     expect(
       String(
         tsAsExpression({
-          // @ts-ignore
+          // @ts-expect-error
           expression: literal('hello'),
-          // @ts-ignore
+          // @ts-expect-error
           typeAnnotation: literal({ value: 'any' }),
         })
       )
