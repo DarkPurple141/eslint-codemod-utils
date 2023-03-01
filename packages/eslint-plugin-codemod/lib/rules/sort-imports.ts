@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint'
-import { importDeclaration } from 'eslint-codemod-utils'
+import { importDeclaration, isNodeOfType } from 'eslint-codemod-utils'
 
 /**
  * Adapted for presentational / demo purposes only
@@ -63,7 +63,7 @@ const rule: Rule.RuleModule = {
             return -1
           }
 
-          if (specB.type === 'ImportDefaultSpecifier') {
+          if (isNodeOfType(specB, 'ImportDefaultSpecifier')) {
             return 1
           }
 

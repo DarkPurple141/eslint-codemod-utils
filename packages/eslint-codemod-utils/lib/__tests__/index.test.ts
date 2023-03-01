@@ -166,7 +166,7 @@ describe('importDeclaration', () => {
               local: identifier({ name: 'Jongo' }),
             }),
           ],
-          source: literal({ value: '@atlaskit/modal-dialog' }),
+          source: literal('@atlaskit/modal-dialog'),
         })
       )
     ).eq(`import { Bongo, Congo, Jongo } from '@atlaskit/modal-dialog'`)
@@ -429,8 +429,10 @@ describe('jsxElement', () => {
                 expression: identifier({ name: 'hello' }),
               }),
               jsxElement({
-                // @ts-expect-error
-                loc: { start: { column: 2 } },
+                loc: {
+                  start: { column: 2, line: 0 },
+                  end: { column: 10, line: 0 },
+                },
                 openingElement: jsxOpeningElement({
                   attributes: [],
                   name: jsxIdentifier({ name: 'BadPeople' }),
@@ -528,7 +530,7 @@ describe('jsxOpeningElement', () => {
           comment({ value: commentValue, type: 'Line' }),
           comment({ value: 'Second line', type: 'Line' }),
         ],
-        name: jsxIdentifier({ name: 'Modal' }),
+        name: jsxIdentifier('Modal'),
         attributes: [],
         selfClosing: true,
       }).toString()
@@ -538,7 +540,7 @@ describe('jsxOpeningElement', () => {
   test('no attributes', () => {
     expect(
       jsxOpeningElement({
-        name: jsxIdentifier({ name: 'Modal' }),
+        name: jsxIdentifier('Modal'),
         attributes: [],
         selfClosing: true,
       }).toString()
@@ -548,8 +550,7 @@ describe('jsxOpeningElement', () => {
   test('no attributes not-self closing', () => {
     expect(
       jsxOpeningElement({
-        name: jsxIdentifier({ name: 'Modal' }),
-        attributes: [],
+        name: jsxIdentifier('Modal'),
       }).toString()
     ).eq(`<Modal>`)
   })

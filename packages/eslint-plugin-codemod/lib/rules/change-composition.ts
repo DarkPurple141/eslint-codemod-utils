@@ -65,7 +65,7 @@ const rule: Rule.RuleModule = {
         // From here we're dealing with a JSX element of the right type
         const headingAttribute = openingElement.attributes.find(
           (attr): attr is JSXAttribute =>
-            attr.type === 'JSXAttribute' && attr?.name?.name === 'heading'
+            isNodeOfType(attr, 'JSXAttribute') && attr?.name?.name === 'heading'
         )
 
         if (!headingAttribute) {
@@ -73,16 +73,17 @@ const rule: Rule.RuleModule = {
         }
 
         context.report({
-          // @ts-ignore
+          // @ts-expect-error
           node,
           message: 'error',
           fix(fixer) {
-            const modalHeaderIdentifer = jsxIdentifier({ name: 'ModalHeader' })
+            const modalHeaderIdentifer = jsxIdentifier('ModalHeader')
             const fixed =
               '(\n' +
               ''.padStart(node.loc?.start?.column || 0, ' ') +
               String(
                 jsxElement({
+                  range: node.range,
                   loc: node.loc,
                   openingElement: jsxOpeningElement({
                     ...node?.openingElement,
@@ -147,8 +148,8 @@ const rule: Rule.RuleModule = {
               )
             ) {
               const namedImport = importSpecifier({
-                local: identifier({ name: 'ModalHeader' }),
-                imported: identifier({ name: 'ModalHeader' }),
+                local: identifier('ModalHeader'),
+                imported: identifier('ModalHeader'),
               })
 
               fixes.push(

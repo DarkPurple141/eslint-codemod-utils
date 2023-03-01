@@ -1,11 +1,4 @@
-import {
-  AST_NODE_TYPES,
-  TSAnyKeyword,
-  TSAsExpression,
-  TSNullKeyword,
-  TSStringKeyword,
-  TSTypeReference,
-} from '@typescript-eslint/types/dist/generated/ast-spec'
+import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/types'
 
 import type { StringableASTNodeFn } from './types'
 import { node } from './utils/node'
@@ -19,9 +12,9 @@ import { node } from './utils/node'
  *           ^^^^^^^^^^^^^^^^^
  * ```
  *
- * @returns {TSAsExpression}
+ * @returns {TSESTree.TSAsExpression}
  */
-export const tsAsExpression: StringableASTNodeFn<TSAsExpression> = ({
+export const tsAsExpression: StringableASTNodeFn<TSESTree.TSAsExpression> = ({
   expression,
   typeAnnotation,
   ...other
@@ -44,9 +37,9 @@ export const tsAsExpression: StringableASTNodeFn<TSAsExpression> = ({
  *                      ^^^^^^
  * ```
  *
- * @returns {TSStringKeyword}
+ * @returns {TSESTree.TSStringKeyword}
  */
-export const tsStringKeyword: StringableASTNodeFn<TSStringKeyword> = ({
+export const tsStringKeyword: StringableASTNodeFn<TSESTree.TSStringKeyword> = ({
   ...other
 }) => {
   return {
@@ -65,9 +58,9 @@ export const tsStringKeyword: StringableASTNodeFn<TSStringKeyword> = ({
  *                      ^^^
  * ```
  *
- * @returns {TSAnyKeyword}
+ * @returns {TSESTree.TSAnyKeyword}
  */
-export const tsAnyKeyword: StringableASTNodeFn<TSAnyKeyword> = ({
+export const tsAnyKeyword: StringableASTNodeFn<TSESTree.TSAnyKeyword> = ({
   ...other
 }) => {
   return {
@@ -88,9 +81,9 @@ export const tsAnyKeyword: StringableASTNodeFn<TSAnyKeyword> = ({
  *                     ^^^^^^^
  * ```
  *
- * @returns {TSTypeReference}
+ * @returns {TSESTree.TSTypeReference}
  */
-export const tsTypeReference: StringableASTNodeFn<TSTypeReference> = ({
+export const tsTypeReference: StringableASTNodeFn<TSESTree.TSTypeReference> = ({
   typeName,
   typeParameters,
   ...other
@@ -114,14 +107,25 @@ export const tsTypeReference: StringableASTNodeFn<TSTypeReference> = ({
  *                      ^^^^
  * ```
  *
- * @returns {TSNullKeyword}
+ * @returns {TSESTree.TSNullKeyword}
  */
-export const tsNullKeyword: StringableASTNodeFn<TSNullKeyword> = ({
+export const tsNullKeyword: StringableASTNodeFn<TSESTree.TSNullKeyword> = ({
   ...other
 }) => {
   return {
     ...other,
     type: AST_NODE_TYPES.TSNullKeyword,
     toString: () => `null`,
+  }
+}
+
+export const tsEmptyBodyFunctionExpression: StringableASTNodeFn<
+  TSESTree.TSEmptyBodyFunctionExpression
+> = ({ returnType, ...other }) => {
+  return {
+    returnType,
+    ...other,
+    type: AST_NODE_TYPES.TSEmptyBodyFunctionExpression,
+    toString: () => `function(){}`,
   }
 }
