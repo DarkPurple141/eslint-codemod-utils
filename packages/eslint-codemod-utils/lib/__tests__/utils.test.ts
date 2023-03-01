@@ -3,8 +3,10 @@ import {
   closestOfType,
   hasJSXAttribute,
   insertImportSpecifier,
+  insertJSXAttribute,
+  literal,
   removeImportSpecifier,
-} from '../utils'
+} from '..'
 
 const ESPREE_OPTIONS = {
   ecmaVersion: 2015,
@@ -89,5 +91,29 @@ describe('removeImportSpecifier', () => {
     expect(removeImportSpecifier(body[0], 'name').toString()).eq(
       `import x from 'place'`
     )
+  })
+})
+
+describe('insertJSXAttribute', () => {
+  test('basic', () => {
+    const { body } = espree.parse(`<Hello />`, ESPREE_OPTIONS)
+    expect(
+      insertJSXAttribute(
+        body[0].expression,
+        'hello',
+        literal('world')
+      ).toString()
+    ).eq(`<Hello hello='world' />`)
+  })
+
+  test('with closing', () => {
+    const { body } = espree.parse(`<Hello></Hello>`, ESPREE_OPTIONS)
+    expect(
+      insertJSXAttribute(
+        body[0].expression,
+        'hello',
+        literal('world')
+      ).toString()
+    ).eq(`<Hello hello='world'></Hello>`)
   })
 })
