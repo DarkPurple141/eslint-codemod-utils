@@ -6,7 +6,7 @@ export * from './ts-nodes'
 export * from './utils'
 export * from './types'
 
-// re-export estree-jsx - unfortunatley can't export *
+// re-export estree-jsx - unfortunately can't export *
 export type {
   JSXIdentifier,
   JSXNamespacedName,
@@ -93,4 +93,16 @@ export type {
   ImportDefaultSpecifier,
   ImportNamespaceSpecifier,
   ImportSpecifier,
+  ArrayPattern,
+  AssignmentOperator,
+  AssignmentPattern,
+  ExportAllDeclaration,
+  ClassDeclaration,
+  Comment,
+  ExportDefaultDeclaration,
+  ExportNamedDeclaration,
+  ExportSpecifier,
+  ObjectPattern,
+  RestElement,
+  VariableDeclaration,
 } from 'estree-jsx'
