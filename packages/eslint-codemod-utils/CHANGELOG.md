@@ -1,5 +1,15 @@
 # eslint-codemod-utils
 
+## 1.8.0
+
+### Minor Changes
+
+- 07e3002: Export all types from estree-jsx
+
+### Patch Changes
+
+- 130388a: Patch for utils.
+
 ## 1.7.0
 
 ### Minor Changes
