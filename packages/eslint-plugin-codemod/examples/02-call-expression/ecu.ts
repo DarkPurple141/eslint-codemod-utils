@@ -34,7 +34,7 @@ const rule: Rule.RuleModule = {
                         return node.arguments[idx]
                           ? property({
                               key: identifier(id),
-                              // @ts-ignore
+                              // @ts-expect-error
                               value: node.arguments[idx],
                             })
                           : null

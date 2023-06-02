@@ -1,9 +1,10 @@
-import type { Node as BaseNode, JSXSpreadChild } from 'estree-jsx'
+import type { Node as ESTreeNode, JSXSpreadChild } from 'estree-jsx'
 import type { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/types'
+import type { Rule } from 'eslint'
 
 export type EslintCodemodUtilsBaseNode =
-  | BaseNode
-  | { type: AST_NODE_TYPES }
+  | ESTreeNode
+  | { type: keyof typeof AST_NODE_TYPES }
   | JSXSpreadChild
 
 export type WithoutType<T extends EslintCodemodUtilsBaseNode> = Omit<T, 'type'>
@@ -25,4 +26,7 @@ export type StringableASTNodeFn<
 ) => StringableASTNode<EstreeNodeType>
 
 export type EslintNode = EslintCodemodUtilsBaseNode &
+  Partial<Rule.NodeParentExtension>
+
+export type TSEslintNode = EslintCodemodUtilsBaseNode &
   Pick<TSESTree.BaseNode, 'parent'>
