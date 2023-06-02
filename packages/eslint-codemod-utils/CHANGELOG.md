@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.8.1
+
+### Patch Changes
+
+- 1c195ad: Updates AST logic to account for additional valid typescript nodes.
+
 ## 1.8.0
 
 ### Minor Changes
