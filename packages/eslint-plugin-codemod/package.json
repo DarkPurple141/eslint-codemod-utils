@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-codemod",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "private": true,
   "dependencies": {
     "eslint": "^7.0.0",
