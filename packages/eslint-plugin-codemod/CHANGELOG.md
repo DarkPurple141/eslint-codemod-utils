@@ -1,5 +1,12 @@
 # eslint-plugin-example
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [ad47185]
+  - eslint-codemod-utils@1.8.3
+
 ## 0.0.11
 
 ### Patch Changes

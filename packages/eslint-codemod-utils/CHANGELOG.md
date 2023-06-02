@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.8.3
+
+### Patch Changes
+
+- ad47185: Adds missing support for TS keywords `unknown`, `readonly`, `boolean`.
+
 ## 1.8.2
 
 ### Patch Changes
