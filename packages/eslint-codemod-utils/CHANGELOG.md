@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.8.5
+
+### Patch Changes
+
+- dcb2602: Revert TS type integration
+
 ## 1.8.4
 
 ### Patch Changes
