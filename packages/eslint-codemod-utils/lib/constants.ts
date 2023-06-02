@@ -89,6 +89,7 @@ import {
   tsAsExpression,
   tsEmptyBodyFunctionExpression,
   tsLiteralType,
+  tsNonNullExpression,
   tsNullKeyword,
   tsQualifiedName,
   tsStringKeyword,
@@ -211,6 +212,7 @@ export const typeToHelperLookup = new Proxy(
     TSQualifiedName: tsQualifiedName,
     TSTypeParameterInstantiation: tsTypeParameterInstantiation,
     TSLiteralType: tsLiteralType,
+    TSNonNullExpression: tsNonNullExpression,
   } as NodeMap,
   {
     // dynamic getter will fail and provide debug information
