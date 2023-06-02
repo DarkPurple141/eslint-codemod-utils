@@ -185,6 +185,32 @@ export const tsTypeParameterInstantiation: StringableASTNodeFn<
   }
 }
 
+export const tsTypeParameterDeclaration: StringableASTNodeFn<
+  TSESTree.TSTypeParameterDeclaration
+> = ({ params, ...other }) => {
+  return {
+    params,
+    ...other,
+    type: AST_NODE_TYPES.TSTypeParameterDeclaration,
+    toString: () => `<${params.map(node).join(', ')}>`,
+  }
+}
+
+/**
+ * FIXME Implementation does not meet spec
+ */
+export const tsTypeParameter: StringableASTNodeFn<TSESTree.TSTypeParameter> = ({
+  name,
+  ...other
+}) => {
+  return {
+    name,
+    ...other,
+    type: AST_NODE_TYPES.TSTypeParameter,
+    toString: () => `${node(name)}`,
+  }
+}
+
 export const tsLiteralType: StringableASTNodeFn<TSESTree.TSLiteralType> = ({
   literal,
   ...other
@@ -212,5 +238,68 @@ export const tsNonNullExpression: StringableASTNodeFn<
     ...other,
     type: AST_NODE_TYPES.TSNonNullExpression,
     toString: () => `${node(expression)}!`,
+  }
+}
+
+/**
+ * __TSTypeAliasDeclaration__
+ * @example
+ * ```
+ * type Alias = number | boolean
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * ```
+ */
+export const tsTypeAliasDeclaration: StringableASTNodeFn<
+  TSESTree.TSTypeAliasDeclaration
+> = ({ id, typeAnnotation, typeParameters, ...other }) => {
+  return {
+    id,
+    typeAnnotation,
+    typeParameters,
+    ...other,
+    type: AST_NODE_TYPES.TSTypeAliasDeclaration,
+    toString: () =>
+      `type ${node(id)}${
+        typeParameters ? `${node(typeParameters)}` : ''
+      } = ${node(typeAnnotation)}`,
+  }
+}
+
+/**
+ * __TSUnionType__
+ * @example
+ * ```
+ * type Alias = number | boolean
+ *              ^^^^^^^^^^^^^^^^
+ * ```
+ */
+export const tsUnionType: StringableASTNodeFn<TSESTree.TSUnionType> = ({
+  types,
+  ...other
+}) => {
+  return {
+    types,
+    ...other,
+    type: AST_NODE_TYPES.TSUnionType,
+    toString: () => `${types.map(node).join(' | ')}`,
+  }
+}
+
+/**
+ * __TSIntersectionType__
+ * @example
+ * ```
+ * type Alias = number & boolean
+ *              ^^^^^^^^^^^^^^^^
+ * ```
+ */
+export const tsIntersectionType: StringableASTNodeFn<
+  TSESTree.TSIntersectionType
+> = ({ types, ...other }) => {
+  return {
+    types,
+    ...other,
+    type: AST_NODE_TYPES.TSIntersectionType,
+    toString: () => `${types.map(node).join(' & ')}`,
   }
 }

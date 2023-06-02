@@ -63,4 +63,20 @@ describe('tsAsExpression', () => {
       `"10" as any as unknown as null as boolean`
     )
   })
+
+  test('parsed ts union & intersection types', () => {
+    const { body } = espree.parse(
+      `type X = 'hello' | 'thing' & 8`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(`type X = 'hello' | 'thing' & 8`)
+  })
+
+  test('parsed ts union & intersection types with generic', () => {
+    const { body } = espree.parse(
+      `type X<T> = 'hello' | 'thing' & 8`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(`type X<T> = 'hello' | 'thing' & 8`)
+  })
 })

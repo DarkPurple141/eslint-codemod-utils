@@ -89,14 +89,19 @@ import {
   tsAsExpression,
   tsBooleanKeyword,
   tsEmptyBodyFunctionExpression,
+  tsIntersectionType,
   tsLiteralType,
   tsNonNullExpression,
   tsNullKeyword,
   tsQualifiedName,
   tsReadonlyKeyword,
   tsStringKeyword,
+  tsTypeAliasDeclaration,
+  tsTypeParameter,
+  tsTypeParameterDeclaration,
   tsTypeParameterInstantiation,
   tsTypeReference,
+  tsUnionType,
   tsUnknownKeyword,
 } from './ts-nodes'
 import { identity } from './utils/identity'
@@ -219,6 +224,11 @@ export const typeToHelperLookup = new Proxy(
     TSTypeParameterInstantiation: tsTypeParameterInstantiation,
     TSLiteralType: tsLiteralType,
     TSNonNullExpression: tsNonNullExpression,
+    TSIntersectionType: tsIntersectionType,
+    TSUnionType: tsUnionType,
+    TSTypeAliasDeclaration: tsTypeAliasDeclaration,
+    TSTypeParameterDeclaration: tsTypeParameterDeclaration,
+    TSTypeParameter: tsTypeParameter,
   } as NodeMap,
   {
     // dynamic getter will fail and provide debug information
