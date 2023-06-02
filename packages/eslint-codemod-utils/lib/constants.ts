@@ -88,8 +88,11 @@ import {
   tsAnyKeyword,
   tsAsExpression,
   tsEmptyBodyFunctionExpression,
+  tsLiteralType,
   tsNullKeyword,
+  tsQualifiedName,
   tsStringKeyword,
+  tsTypeParameterInstantiation,
   tsTypeReference,
 } from './ts-nodes'
 import { identity } from './utils/identity'
@@ -205,6 +208,9 @@ export const typeToHelperLookup = new Proxy(
     TSTypeReference: tsTypeReference,
     TSAnyKeyword: tsAnyKeyword,
     TSNullKeyword: tsNullKeyword,
+    TSQualifiedName: tsQualifiedName,
+    TSTypeParameterInstantiation: tsTypeParameterInstantiation,
+    TSLiteralType: tsLiteralType,
   } as NodeMap,
   {
     // dynamic getter will fail and provide debug information
@@ -214,8 +220,8 @@ export const typeToHelperLookup = new Proxy(
       }
 
       const nodeName = name.toString()
-      throw new Error(`\
-eslint-codemod-utils: type '${nodeName}' missing in typeMap.
+      const error = new Error(`\
+type '${nodeName}' missing in typeMap.
 
 This is probably because the type '${nodeName}' is a Typescript or Flow specific node type. These nodes currently have only partial support.
 
@@ -223,6 +229,8 @@ To resolve this you can:
 * Use a more constrained parser like esprima in your eslint config
 * Lodge a bug at https://github.com/DarkPurple141/eslint-codemod-utils/issues
       `)
+      error.name = 'UnknownNodeError'
+      throw error
     },
   }
 )

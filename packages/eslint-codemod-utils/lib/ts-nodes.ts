@@ -129,3 +129,40 @@ export const tsEmptyBodyFunctionExpression: StringableASTNodeFn<
     toString: () => `function(){}`,
   }
 }
+
+export const tsQualifiedName: StringableASTNodeFn<TSESTree.TSQualifiedName> = ({
+  left,
+  right,
+  ...other
+}) => {
+  return {
+    left,
+    right,
+    ...other,
+    type: AST_NODE_TYPES.TSQualifiedName,
+    toString: () => `${node(left)}.${node(right)}`,
+  }
+}
+
+export const tsTypeParameterInstantiation: StringableASTNodeFn<
+  TSESTree.TSTypeParameterInstantiation
+> = ({ params, ...other }) => {
+  return {
+    params,
+    ...other,
+    type: AST_NODE_TYPES.TSTypeParameterInstantiation,
+    toString: () => `<${params.map(node).join(', ')}>`,
+  }
+}
+
+export const tsLiteralType: StringableASTNodeFn<TSESTree.TSLiteralType> = ({
+  literal,
+  ...other
+}) => {
+  return {
+    literal,
+    ...other,
+    type: AST_NODE_TYPES.TSLiteralType,
+    toString: () => `${node(literal)}`,
+  }
+}

@@ -30,4 +30,22 @@ describe('tsAsExpression', () => {
     const { body } = espree.parse(`const x = 'hello' as World`, ESPREE_OPTIONS)
     expect(node(body[0]).toString()).eq(`const x = 'hello' as World`)
   })
+
+  test('parsed with as type with type parameter', () => {
+    const { body } = espree.parse(
+      `"2" as React.Ref<HTMLDivElement>`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(`"2" as React.Ref<HTMLDivElement>`)
+  })
+
+  test('parsed with as type with type parameter', () => {
+    const { body } = espree.parse(
+      `"2" as React.Ref<HTMLDivElement, true>`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(
+      `"2" as React.Ref<HTMLDivElement, true>`
+    )
+  })
 })
