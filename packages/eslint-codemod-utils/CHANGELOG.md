@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.8.4
+
+### Patch Changes
+
+- dd2ee38: Adds `TSIntersectionType` `TSUnionType` `TSTypeAliasDeclaration` `TSTypeParameterDeclaration` `TSTypeParameter`
+
 ## 1.8.3
 
 ### Patch Changes
