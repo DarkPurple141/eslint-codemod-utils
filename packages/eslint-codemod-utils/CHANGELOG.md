@@ -1,5 +1,12 @@
 # eslint-codemod-utils
 
+## 1.8.2
+
+### Patch Changes
+
+- 3742023: Fixes missing support for TSNonNullExpression.
+- 3742023: Updates AST logic to account for additional valid typescript nodes.
+
 ## 1.8.1
 
 ### Patch Changes
