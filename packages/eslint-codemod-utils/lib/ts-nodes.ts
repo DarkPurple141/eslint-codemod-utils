@@ -166,3 +166,21 @@ export const tsLiteralType: StringableASTNodeFn<TSESTree.TSLiteralType> = ({
     toString: () => `${node(literal)}`,
   }
 }
+
+/**
+ * @example
+ * ```
+ * element!.select()
+ * ^^^^^^^^
+ * ```
+ */
+export const tsNonNullExpression: StringableASTNodeFn<
+  TSESTree.TSNonNullExpression
+> = ({ expression, ...other }) => {
+  return {
+    expression,
+    ...other,
+    type: AST_NODE_TYPES.TSNonNullExpression,
+    toString: () => `${node(expression)}!`,
+  }
+}

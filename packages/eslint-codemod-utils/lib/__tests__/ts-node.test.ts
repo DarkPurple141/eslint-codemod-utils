@@ -48,4 +48,9 @@ describe('tsAsExpression', () => {
       `"2" as React.Ref<HTMLDivElement, true>`
     )
   })
+
+  test('parsed non-null ts expression', () => {
+    const { body } = espree.parse(`inputEl.current!.select()`, ESPREE_OPTIONS)
+    expect(node(body[0]).toString()).eq(`inputEl.current!.select()`)
+  })
 })
