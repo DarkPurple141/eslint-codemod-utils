@@ -119,6 +119,36 @@ export const tsNullKeyword: StringableASTNodeFn<TSESTree.TSNullKeyword> = ({
   }
 }
 
+export const tsUnknownKeyword: StringableASTNodeFn<
+  TSESTree.TSUnknownKeyword
+> = ({ ...other }) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSUnknownKeyword,
+    toString: () => `unknown`,
+  }
+}
+
+export const tsBooleanKeyword: StringableASTNodeFn<
+  TSESTree.TSBooleanKeyword
+> = ({ ...other }) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSBooleanKeyword,
+    toString: () => `boolean`,
+  }
+}
+
+export const tsReadonlyKeyword: StringableASTNodeFn<
+  TSESTree.TSReadonlyKeyword
+> = ({ ...other }) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSReadonlyKeyword,
+    toString: () => `readonly`,
+  }
+}
+
 export const tsEmptyBodyFunctionExpression: StringableASTNodeFn<
   TSESTree.TSEmptyBodyFunctionExpression
 > = ({ returnType, ...other }) => {

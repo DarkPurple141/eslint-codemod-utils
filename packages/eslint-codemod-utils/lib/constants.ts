@@ -87,14 +87,17 @@ import {
 import {
   tsAnyKeyword,
   tsAsExpression,
+  tsBooleanKeyword,
   tsEmptyBodyFunctionExpression,
   tsLiteralType,
   tsNonNullExpression,
   tsNullKeyword,
   tsQualifiedName,
+  tsReadonlyKeyword,
   tsStringKeyword,
   tsTypeParameterInstantiation,
   tsTypeReference,
+  tsUnknownKeyword,
 } from './ts-nodes'
 import { identity } from './utils/identity'
 import { NodeMap } from './utils/node'
@@ -208,6 +211,9 @@ export const typeToHelperLookup = new Proxy(
     TSStringKeyword: tsStringKeyword,
     TSTypeReference: tsTypeReference,
     TSAnyKeyword: tsAnyKeyword,
+    TSUnknownKeyword: tsUnknownKeyword,
+    TSBooleanKeyword: tsBooleanKeyword,
+    TSReadonlyKeyword: tsReadonlyKeyword,
     TSNullKeyword: tsNullKeyword,
     TSQualifiedName: tsQualifiedName,
     TSTypeParameterInstantiation: tsTypeParameterInstantiation,
