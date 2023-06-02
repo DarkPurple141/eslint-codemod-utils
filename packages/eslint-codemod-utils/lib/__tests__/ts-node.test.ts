@@ -53,4 +53,14 @@ describe('tsAsExpression', () => {
     const { body } = espree.parse(`inputEl.current!.select()`, ESPREE_OPTIONS)
     expect(node(body[0]).toString()).eq(`inputEl.current!.select()`)
   })
+
+  test('parsed keyword assertions', () => {
+    const { body } = espree.parse(
+      `"10" as any as unknown as null as boolean`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(
+      `"10" as any as unknown as null as boolean`
+    )
+  })
 })
