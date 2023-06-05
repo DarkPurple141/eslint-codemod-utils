@@ -13,6 +13,10 @@ const rule: Rule.RuleModule = {
   create(context) {
     return {
       JSXElement(node: Rule.Node) {
+        if (!node) {
+          return
+        }
+
         if (!isNodeOfType(node, 'JSXElement')) {
           return
         }
