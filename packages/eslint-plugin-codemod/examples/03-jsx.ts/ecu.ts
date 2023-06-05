@@ -28,7 +28,6 @@ const rule: Rule.RuleModule = {
         }
         if (findModal(node)) {
           context.report({
-            // @ts-expect-error
             node,
             message: 'error',
             fix(fixer) {
@@ -39,7 +38,6 @@ const rule: Rule.RuleModule = {
                   inner.name.name === 'title'
               )
               return fixer.replaceText(
-                // @ts-expect-error
                 node,
                 `${jsxElement({
                   ...node,

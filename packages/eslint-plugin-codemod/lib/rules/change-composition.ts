@@ -1,6 +1,5 @@
 import type { Rule } from 'eslint'
 import {
-  EslintNode,
   identifier,
   importDeclaration,
   ImportDeclaration,
@@ -38,8 +37,12 @@ const rule: Rule.RuleModule = {
           importNode = node
         }
       },
-      JSXElement(node: EslintNode) {
+      JSXElement(node: Rule.Node) {
         if (!importNode) {
+          return
+        }
+
+        if (!node) {
           return
         }
 
@@ -49,7 +52,7 @@ const rule: Rule.RuleModule = {
 
         const { openingElement } = node
 
-        if (openingElement.name.type !== 'JSXIdentifier') {
+        if (!isNodeOfType(openingElement.name, 'JSXIdentifier')) {
           return
         }
 
@@ -73,7 +76,6 @@ const rule: Rule.RuleModule = {
         }
 
         context.report({
-          // @ts-expect-error
           node,
           message: 'error',
           fix(fixer) {
@@ -115,12 +117,12 @@ const rule: Rule.RuleModule = {
                         // JSXText case
                         headingAttribute?.value?.type === 'Literal' &&
                         typeof headingAttribute.value.value === 'string'
-                          ? // @ts-ignore
+                          ? // @ts-expect-error
                             jsxText(headingAttribute.value)
                           : headingAttribute?.value?.type === 'JSXElement'
                           ? jsxElement(headingAttribute.value)
                           : jsxExpressionContainer({
-                              // @ts-expect-error TODO this shouldn't error
+                              // @ts-expect-error
                               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                               expression: headingAttribute.value!,
                             }),
@@ -132,7 +134,6 @@ const rule: Rule.RuleModule = {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               `\n${whiteSpace(node.loc!)})`
 
-            // @ts-expect-error
             const fixes = [fixer.replaceText(node, fixed)]
 
             // should never occurr

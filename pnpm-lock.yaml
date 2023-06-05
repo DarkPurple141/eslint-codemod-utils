@@ -48,7 +48,7 @@ importers:
       '@typescript-eslint/types': ^5.45.0
       '@typescript-eslint/typescript-estree': ^5.45.0
       espree: ^9.3.1
-      typescript: ^4.5.5
+      typescript: ^4.9.0
       vitest: latest
     dependencies:
       '@types/estree-jsx': 1.0.0
@@ -56,28 +56,24 @@ importers:
     devDependencies:
       '@types/eslint': 8.4.1
       '@types/node': 17.0.18
-      '@typescript-eslint/typescript-estree': 5.45.0_typescript@4.5.5
+      '@typescript-eslint/typescript-estree': 5.45.0_typescript@4.9.3
       espree: 9.3.1
-      typescript: 4.5.5
+      typescript: 4.9.3
       vitest: 0.31.4
 
   packages/eslint-plugin-codemod:
     specifiers:
       '@atlaskit/modal-dialog': ^12.2.3
-      '@types/eslint': ^8.4.1
-      '@types/estree-jsx': ^1.0.0
       eslint: ^7.0.0
       eslint-codemod-utils: workspace:*
-      typescript: ^4.5.5
+      typescript: ^4.9.0
       vitest: latest
     dependencies:
       eslint: 7.32.0
       eslint-codemod-utils: link:../eslint-codemod-utils
     devDependencies:
       '@atlaskit/modal-dialog': 12.2.3
-      '@types/eslint': 8.4.1
-      '@types/estree-jsx': 1.0.0
-      typescript: 4.5.5
+      typescript: 4.9.3
       vitest: 0.31.4
 
 packages:
@@ -928,27 +924,6 @@ packages:
   /@typescript-eslint/types/5.45.0:
     resolution: {integrity: sha512-QQij+u/vgskA66azc9dCmx+rev79PzX8uDHpsqSjEFtfF2gBUTRCpvYMh2gw2ghkJabNkPlSUCimsyBEQZd1DA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@typescript-eslint/types/-/types-5.45.0.tgz}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-
-  /@typescript-eslint/typescript-estree/5.45.0_typescript@4.5.5:
-    resolution: {integrity: sha512-maRhLGSzqUpFcZgXxg1qc/+H0bT36lHK4APhp0AEUVrpSwXiRAomm/JGjSG+kNUio5kAa3uekCYu/47cnGn5EQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@typescript-eslint/typescript-estree/-/typescript-estree-5.45.0.tgz}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@typescript-eslint/types': 5.45.0
-      '@typescript-eslint/visitor-keys': 5.45.0
-      debug: 4.3.4
-      globby: 11.1.0
-      is-glob: 4.0.3
-      semver: 7.3.8
-      tsutils: 3.21.0_typescript@4.5.5
-      typescript: 4.5.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
 
   /@typescript-eslint/typescript-estree/5.45.0_typescript@4.9.3:
     resolution: {integrity: sha512-maRhLGSzqUpFcZgXxg1qc/+H0bT36lHK4APhp0AEUVrpSwXiRAomm/JGjSG+kNUio5kAa3uekCYu/47cnGn5EQ==, tarball: https://packages.atlassian.com/api/npm/npm-remote/@typescript-eslint/typescript-estree/-/typescript-estree-5.45.0.tgz}
@@ -3631,16 +3606,6 @@ packages:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tslib/-/tslib-2.3.1.tgz}
     dev: true
 
-  /tsutils/3.21.0_typescript@4.5.5:
-    resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tsutils/-/tsutils-3.21.0.tgz}
-    engines: {node: '>= 6'}
-    peerDependencies:
-      typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
-    dependencies:
-      tslib: 1.14.1
-      typescript: 4.5.5
-    dev: true
-
   /tsutils/3.21.0_typescript@4.9.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/tsutils/-/tsutils-3.21.0.tgz}
     engines: {node: '>= 6'}
@@ -3754,12 +3719,6 @@ packages:
   /type-fest/0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==, tarball: https://packages.atlassian.com/api/npm/npm-remote/type-fest/-/type-fest-0.8.1.tgz}
     engines: {node: '>=8'}
-    dev: true
-
-  /typescript/4.5.5:
-    resolution: {integrity: sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
     dev: true
 
   /typescript/4.9.3:

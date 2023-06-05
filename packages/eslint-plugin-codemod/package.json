@@ -14,9 +14,7 @@
   },
   "devDependencies": {
     "@atlaskit/modal-dialog": "^12.2.3",
-    "@types/eslint": "^8.4.1",
-    "@types/estree-jsx": "^1.0.0",
-    "typescript": "^4.5.5",
+    "typescript": "^4.9.0",
     "vitest": "latest"
   }
 }
