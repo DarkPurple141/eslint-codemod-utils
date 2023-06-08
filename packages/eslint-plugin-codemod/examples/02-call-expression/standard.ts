@@ -23,10 +23,12 @@ const rule: Rule.RuleModule = {
               return fixer.replaceText(
                 node,
                 `${fnName}({ ${
+                  // @ts-expect-error
                   node.arguments[0] ? `first: ${node.arguments[0].name}` : ''
                 }${
                   node.arguments[1]
-                    ? `, second: ${node.arguments[1].name || 'unknown'}`
+                    ? // @ts-expect-error
+                      `, second: ${node.arguments[1].name || 'unknown'}`
                     : ''
                 } })`
               )
