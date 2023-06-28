@@ -1,6 +1,6 @@
 import { program } from '..'
 
-import programFixture from './__fixtures__/program'
+import programFixture from '../__fixtures__/program'
 
 describe('program', () => {
   test('basic', () => {
