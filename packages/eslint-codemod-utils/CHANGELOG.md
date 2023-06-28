@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.8.6
+
+### Patch Changes
+
+- 51662bd: Fix for issue with computed properties not being implemented correctly.
+
 ## 1.8.5
 
 ### Patch Changes
