@@ -725,12 +725,11 @@ export const property: StringableASTNodeFn<
     computed,
     type: AST_NODE_TYPES.Property,
     toString: () =>
-      `${kind === 'init' ? '' : kind + ' '}${node(key)}${
-        kind !== 'init' ? '' : ': '
-      }${
+      `${kind === 'init' ? '' : kind + ' '}${computed ? '[' : ''}${node(key)}${
+        computed ? ']' : ''
+      }${kind !== 'init' ? '' : ': '}${
         kind !== 'init' && isNodeOfType(value, 'FunctionExpression')
-          ? // @ts-ignore
-            methodOrPropertyFn(value)
+          ? methodOrPropertyFn(value)
           : node(value)
       }`,
   }
@@ -1301,8 +1300,11 @@ export const functionDeclaration: StringableASTNodeFn<
       .join(', ')}) ${node(body)}`,
 })
 
-export const methodOrPropertyFn = (fn: ESTree.FunctionExpression) => {
-  return `(${fn.params.map(node).join(', ')}) ${node(fn.body)}`
+export const methodOrPropertyFn = ({
+  params,
+  body,
+}: ESTree.FunctionExpression) => {
+  return `(${params.map(node).join(', ')}) ${node(body)}`
 }
 
 export const methodDefinition: StringableASTNodeFn<ESTree.MethodDefinition> = ({
@@ -1319,7 +1321,8 @@ export const methodDefinition: StringableASTNodeFn<ESTree.MethodDefinition> = ({
     kind,
     value,
     type: AST_NODE_TYPES.MethodDefinition,
-    toString: () => `${node(key)} ${methodOrPropertyFn(value)}`,
+    toString: () =>
+      `${computed ? `[${node(key)}]` : node(key)} ${methodOrPropertyFn(value)}`,
   }
 }
 

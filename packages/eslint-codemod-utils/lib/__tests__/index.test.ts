@@ -19,6 +19,7 @@ import {
   jsxText,
   literal,
   memberExpression,
+  node as nodeFn,
   objectExpression,
   property,
   staticBlock,
@@ -255,6 +256,19 @@ describe('objectExpression', () => {
         ],
       }).toString()
     ).eq('{\n  hello: world\n}')
+  })
+
+  test('via the parser', () => {
+    expect(
+      nodeFn(
+        espree.parse(
+          `const y = {\nhello: 'world',\n  [thing]: 'bro',\n  [thing]() {},\n  [thing]: () => {},\n  get x() {}\n}`,
+          ESPREE_OPTIONS
+        ).body[0]
+      ).toString()
+    ).eq(
+      `const y = {\n  hello: 'world',\n  [thing]: 'bro',\n  [thing]: function () {},\n  [thing]: () => {},\n  get x() {}\n}`
+    )
   })
 })
 
