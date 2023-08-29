@@ -1,5 +1,11 @@
 # eslint-codemod-utils
 
+## 1.8.7
+
+### Patch Changes
+
+- 0839e66: Corrects the output of certain specific TS operator nodes.
+
 ## 1.8.6
 
 ### Patch Changes
