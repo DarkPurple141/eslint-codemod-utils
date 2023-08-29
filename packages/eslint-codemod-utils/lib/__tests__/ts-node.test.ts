@@ -72,6 +72,34 @@ describe('tsAsExpression', () => {
     expect(node(body[0]).toString()).eq(`type X = 'hello' | 'thing' & 8`)
   })
 
+  test('parsed ts type query', () => {
+    const { body } = espree.parse(
+      `type X = 'hello'\ntype Y = typeof X`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(`type X = 'hello'`)
+    expect(node(body[1]).toString()).eq(`type Y = typeof X`)
+  })
+
+  test('parsed ts type operator', () => {
+    const { body } = espree.parse(
+      `type X = 'hello'\ntype Y = keyof typeof X`,
+      ESPREE_OPTIONS
+    )
+    expect(node(body[0]).toString()).eq(`type X = 'hello'`)
+    expect(node(body[1]).toString()).eq(`type Y = keyof typeof X`)
+  })
+
+  test('type alias declaration (keyword)', () => {
+    const { body } = espree.parse(`type X = string`, ESPREE_OPTIONS)
+    expect(node(body[0]).toString()).eq(`type X = string`)
+  })
+
+  test('type alias declaration (literal)', () => {
+    const { body } = espree.parse(`type X = 'hello'`, ESPREE_OPTIONS)
+    expect(node(body[0]).toString()).eq(`type X = 'hello'`)
+  })
+
   test('parsed ts union & intersection types with generic', () => {
     const { body } = espree.parse(
       `type X<T> = 'hello' | 'thing' & 8`,

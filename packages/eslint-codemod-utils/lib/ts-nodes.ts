@@ -197,6 +197,54 @@ export const tsTypeParameterDeclaration: StringableASTNodeFn<
 }
 
 /**
+ * __TSTypeOperator__
+ *
+ * @example
+ * ```
+ * type X = 'hello'
+ * type Y = typeof X
+ *          ^^^^^^^^
+ * ```
+ */
+export const tsTypeOperator: StringableASTNodeFn<TSESTree.TSTypeOperator> = ({
+  typeAnnotation,
+  operator,
+  ...other
+}) => {
+  return {
+    ...other,
+    typeAnnotation,
+    operator,
+    type: AST_NODE_TYPES.TSTypeOperator,
+    toString: () =>
+      `${operator}${typeAnnotation ? ` ${node(typeAnnotation)}` : ''}`,
+  }
+}
+
+/**
+ * __TSTypeQuery__
+ *
+ * @example
+ * ```
+ * type X = typeof 'hello'
+ * ```
+ */
+export const tsTypeQuery: StringableASTNodeFn<TSESTree.TSTypeQuery> = ({
+  exprName,
+  typeParameters,
+  ...other
+}) => {
+  return {
+    ...other,
+    typeParameters,
+    exprName,
+    type: AST_NODE_TYPES.TSTypeQuery,
+    toString: () =>
+      `typeof ${node(exprName)}${typeParameters ? node(typeParameters) : ''}`,
+  }
+}
+
+/**
  * FIXME Implementation does not meet spec
  */
 export const tsTypeParameter: StringableASTNodeFn<TSESTree.TSTypeParameter> = ({
@@ -204,8 +252,8 @@ export const tsTypeParameter: StringableASTNodeFn<TSESTree.TSTypeParameter> = ({
   ...other
 }) => {
   return {
-    name,
     ...other,
+    name,
     type: AST_NODE_TYPES.TSTypeParameter,
     toString: () => `${node(name)}`,
   }
@@ -251,15 +299,16 @@ export const tsNonNullExpression: StringableASTNodeFn<
  */
 export const tsTypeAliasDeclaration: StringableASTNodeFn<
   TSESTree.TSTypeAliasDeclaration
-> = ({ id, typeAnnotation, typeParameters, ...other }) => {
+> = ({ id, typeAnnotation, typeParameters, declare, ...other }) => {
   return {
     id,
     typeAnnotation,
     typeParameters,
+    declare,
     ...other,
     type: AST_NODE_TYPES.TSTypeAliasDeclaration,
     toString: () =>
-      `type ${node(id)}${
+      `${declare ? 'declare ' : ''}type ${node(id)}${
         typeParameters ? `${node(typeParameters)}` : ''
       } = ${node(typeAnnotation)}`,
   }
