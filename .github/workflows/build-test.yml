@@ -16,7 +16,7 @@ jobs:
       matrix:
         node-version: [16]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2.4.0
         with:
           version: 6
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Lint
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
