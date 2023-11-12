@@ -3,7 +3,7 @@
   "version": "0.0.16",
   "private": true,
   "dependencies": {
-    "eslint": "^7.0.0",
+    "eslint": "^8.0.0",
     "eslint-codemod-utils": "workspace:*"
   },
   "source": "src/index.ts",
