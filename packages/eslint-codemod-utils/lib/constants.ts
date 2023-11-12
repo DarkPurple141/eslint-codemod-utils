@@ -86,6 +86,7 @@ import {
 } from './nodes'
 import {
   tsAnyKeyword,
+  tsArrayType,
   tsAsExpression,
   tsBooleanKeyword,
   tsEmptyBodyFunctionExpression,
@@ -213,6 +214,7 @@ export const typeToHelperLookup = new Proxy(
     VariableDeclarator: variableDeclarator,
     YieldExpression: yieldExpression,
     // typescript
+    TSArrayType: tsArrayType,
     TSAsExpression: tsAsExpression,
     TSEmptyBodyFunctionExpression: tsEmptyBodyFunctionExpression,
     TSStringKeyword: tsStringKeyword,

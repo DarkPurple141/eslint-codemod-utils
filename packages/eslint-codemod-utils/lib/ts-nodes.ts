@@ -352,3 +352,23 @@ export const tsIntersectionType: StringableASTNodeFn<
     toString: () => `${types.map(node).join(' & ')}`,
   }
 }
+
+/**
+ * __TSArrayType__
+ * @example
+ * ```
+ * type Alias = number[]
+ *              ^^^^^^^^
+ * ```
+ */
+export const tsArrayType: StringableASTNodeFn<TSESTree.TSArrayType> = ({
+  elementType,
+  ...other
+}) => {
+  return {
+    elementType,
+    ...other,
+    type: AST_NODE_TYPES.TSArrayType,
+    toString: () => `${node(elementType)}[]`,
+  }
+}
