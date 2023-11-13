@@ -1,5 +1,12 @@
 # eslint-codemod-utils
 
+## 1.9.0
+
+### Minor Changes
+
+- 6dbd9a4: Introduces support for satisfies expression.
+- 8626b1d: Adds additional TS node type; `TSArrayType`.
+
 ## 1.8.7
 
 ### Patch Changes
