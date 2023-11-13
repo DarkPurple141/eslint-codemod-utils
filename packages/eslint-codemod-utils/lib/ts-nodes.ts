@@ -372,3 +372,15 @@ export const tsArrayType: StringableASTNodeFn<TSESTree.TSArrayType> = ({
     toString: () => `${node(elementType)}[]`,
   }
 }
+
+export const tsSatisfiesExpression: StringableASTNodeFn<
+  TSESTree.TSSatisfiesExpression
+> = ({ expression, typeAnnotation, ...other }) => {
+  return {
+    ...other,
+    expression,
+    typeAnnotation,
+    type: AST_NODE_TYPES.TSSatisfiesExpression,
+    toString: () => `${node(expression)} satisfies ${node(typeAnnotation)}`,
+  }
+}
