@@ -2,6 +2,7 @@
 
 ![brach build status](https://github.com/darkpurple141/eslint-codemod-utils/actions/workflows/build-test.yml/badge.svg?branch=master)
 [![npm version](https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square)](https://www.npmjs.com/package/eslint-codemod-utils)
+
 The `eslint-codemod-utils` package is a library of helper functions designed to enable code evolution in a similar way to `jscodeshift` - but leaning on the live and ongoing enforcement of `eslint` in your source - rather than one off codemod scripts. It provides first class typescript support and will supercharge your custom eslint rules.
 
 ## Installation
@@ -133,7 +134,7 @@ Or:
 
 It's a declarative approach to solve the same problem.
 
-See the [eslint-plugin-example](packages/eslint-plugin-codemod) example for examples of more real world fixes.
+See the [eslint-plugin-example](packages/eslint-plugin-codemod) for examples of more real world fixes.
 
 ## How it works
 
@@ -209,3 +210,8 @@ context.report({
   },
 })
 ```
+
+## Similar projects
+
+- AST Types [https://github.com/benjamn/ast-types](https://github.com/benjamn/ast-types)
+- Codeshift Community [https://www.codeshiftcommunity.com/](https://www.codeshiftcommunity.com/)

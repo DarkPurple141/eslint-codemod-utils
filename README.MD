@@ -1,11 +1,7 @@
 # ESLint Codemod Utilities
 
-<div>
-
 ![brach build status](https://github.com/darkpurple141/eslint-codemod-utils/actions/workflows/build-test.yml/badge.svg?branch=master)
 [![npm version](https://img.shields.io/npm/v/eslint-codemod-utils?style=flat-square)](https://www.npmjs.com/package/eslint-codemod-utils)
-
-</div>
 
 The `eslint-codemod-utils` package is a library of helper functions designed to enable code evolution in a similar way to `jscodeshift` - but leaning on the live and ongoing enforcement of `eslint` in your source - rather than one off codemod scripts. It provides first class typescript support and will supercharge your custom eslint rules.
 
