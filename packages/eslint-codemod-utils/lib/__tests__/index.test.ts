@@ -1,3 +1,4 @@
+import { AST_TOKEN_TYPES } from '@typescript-eslint/types'
 import {
   callExpression,
   comment,
@@ -37,7 +38,7 @@ const ESPREE_OPTIONS = {
 
 describe('literal', () => {
   test('string', () => {
-    expect(String(literal('hello'))).eq('hello')
+    expect(String(literal('hello'))).eq(`\'hello\'`)
   })
 
   test('boolean', () => {
@@ -59,6 +60,8 @@ describe('exportAllDeclaration', () => {
       String(
         exportAllDeclaration({
           exported: null,
+          assertions: [],
+          exportKind: 'value',
           source: literal('@atlaskit/modal-dialog'),
         })
       )
@@ -70,6 +73,8 @@ describe('exportAllDeclaration', () => {
       String(
         exportAllDeclaration({
           exported: identifier('modal'),
+          exportKind: 'value',
+          assertions: [],
           source: literal('@atlaskit/modal-dialog'),
         })
       )
@@ -83,7 +88,9 @@ describe('importDeclaration', () => {
       String(
         importDeclaration({
           specifiers: [],
-          source: literal({ value: '@atlaskit/modal-dialog' }),
+          assertions: [],
+          importKind: 'value',
+          source: literal('@atlaskit/modal-dialog'),
         })
       )
     ).eq(`import '@atlaskit/modal-dialog'`)
@@ -103,13 +110,16 @@ describe('importDeclaration', () => {
     expect(
       String(
         importDeclaration({
+          importKind: 'value',
+          assertions: [],
           specifiers: [
             importSpecifier({
+              importKind: 'value',
               imported: identifier({ name: 'Hello' }),
               local: identifier({ name: 'Hello' }),
             }),
           ],
-          source: literal({ value: '@atlaskit/modal-dialog' }),
+          source: literal('@atlaskit/modal-dialog'),
         })
       )
     ).eq(`import { Hello } from '@atlaskit/modal-dialog'`)
@@ -124,7 +134,9 @@ describe('importDeclaration', () => {
               local: identifier({ name: 'Hello' }),
             }),
           ],
-          source: literal({ value: '@atlaskit/modal-dialog' }),
+          assertions: [],
+          importKind: 'value',
+          source: literal('@atlaskit/modal-dialog'),
         })
       )
     ).eq(`import Hello from '@atlaskit/modal-dialog'`)
@@ -134,16 +146,19 @@ describe('importDeclaration', () => {
     expect(
       String(
         importDeclaration({
+          assertions: [],
+          importKind: 'value',
           specifiers: [
             importDefaultSpecifier({
               local: identifier({ name: 'Hello' }),
             }),
             importSpecifier({
+              importKind: 'value',
               imported: identifier({ name: 'Bongo' }),
               local: identifier({ name: 'Bongo' }),
             }),
           ],
-          source: literal({ value: '@atlaskit/modal-dialog' }),
+          source: literal('@atlaskit/modal-dialog'),
         })
       )
     ).eq(`import Hello, { Bongo } from '@atlaskit/modal-dialog'`)
@@ -153,18 +168,23 @@ describe('importDeclaration', () => {
     expect(
       String(
         importDeclaration({
+          assertions: [],
+          importKind: 'value',
           specifiers: [
             importSpecifier({
               imported: identifier({ name: 'Bongo' }),
               local: identifier({ name: 'Bongo' }),
+              importKind: 'value',
             }),
             importSpecifier({
               imported: identifier({ name: 'Congo' }),
               local: identifier({ name: 'Congo' }),
+              importKind: 'value',
             }),
             importSpecifier({
               imported: identifier({ name: 'Jongo' }),
               local: identifier({ name: 'Jongo' }),
+              importKind: 'value',
             }),
           ],
           source: literal('@atlaskit/modal-dialog'),
@@ -176,21 +196,26 @@ describe('importDeclaration', () => {
   test('with aliasing', () => {
     expect(
       importDeclaration({
+        importKind: 'value',
+        assertions: [],
         specifiers: [
           importSpecifier({
             imported: identifier({ name: 'Bongo' }),
             local: identifier({ name: 'BongoMan' }),
+            importKind: 'value',
           }),
           importSpecifier({
             imported: identifier({ name: 'Congo' }),
             local: identifier({ name: 'CongoMan' }),
+            importKind: 'value',
           }),
           importSpecifier({
             imported: identifier({ name: 'Jongo' }),
             local: identifier({ name: 'JongoGirl' }),
+            importKind: 'value',
           }),
         ],
-        source: literal({ value: '@atlaskit/modal-dialog' }),
+        source: literal('@atlaskit/modal-dialog'),
       }).toString()
     ).eq(
       `import { Bongo as BongoMan, Congo as CongoMan, Jongo as JongoGirl } from '@atlaskit/modal-dialog'`
@@ -250,6 +275,10 @@ describe('objectExpression', () => {
       objectExpression({
         properties: [
           property({
+            shorthand: false,
+            computed: false,
+            kind: 'init',
+            method: false,
             key: identifier('hello'),
             value: identifier('world'),
           }),
@@ -289,6 +318,7 @@ describe('memberExpression', () => {
       memberExpression({
         object: identifier('hello'),
         property: identifier('x'),
+        optional: false,
         computed: true,
       }).toString()
     ).eq('hello[x]')
@@ -308,6 +338,7 @@ describe('jsxSpeadAttribute', () => {
     expect(
       jsxSpreadAttribute({
         argument: callExpression({
+          optional: false,
           callee: identifier({ name: 'spread' }),
           arguments: [],
         }),
@@ -335,6 +366,8 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
+              selfClosing: false,
+              attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -364,7 +397,7 @@ describe('jsxElement', () => {
                 jsxAttribute({
                   name: jsxIdentifier({ name: 'isOpen' }),
                   value: jsxExpressionContainer({
-                    expression: literal({ value: true }),
+                    expression: literal(true),
                   }),
                 }),
                 jsxAttribute({
@@ -399,6 +432,7 @@ describe('jsxElement', () => {
           jsxElement({
             openingElement: jsxOpeningElement({
               attributes: [],
+              selfClosing: false,
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -433,6 +467,7 @@ describe('jsxElement', () => {
           jsxElement({
             openingElement: jsxOpeningElement({
               attributes: [],
+              selfClosing: false,
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -449,6 +484,7 @@ describe('jsxElement', () => {
                 },
                 openingElement: jsxOpeningElement({
                   attributes: [],
+                  selfClosing: false,
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
                 children: [
@@ -461,6 +497,7 @@ describe('jsxElement', () => {
                     }),
                     openingElement: jsxOpeningElement({
                       attributes: [],
+                      selfClosing: false,
                       name: jsxIdentifier({ name: 'VeryNested' }),
                     }),
                   }),
@@ -529,7 +566,9 @@ describe('jsxOpeningElement', () => {
     const commentValue = 'Hello this is a comment'
     expect(
       jsxOpeningElement({
-        leadingComments: [comment({ value: commentValue, type: 'Line' })],
+        leadingComments: [
+          comment({ value: commentValue, type: AST_TOKEN_TYPES.Line }),
+        ],
         name: jsxIdentifier({ name: 'Modal' }),
         attributes: [],
         selfClosing: true,
@@ -541,8 +580,8 @@ describe('jsxOpeningElement', () => {
     expect(
       jsxOpeningElement({
         leadingComments: [
-          comment({ value: commentValue, type: 'Line' }),
-          comment({ value: 'Second line', type: 'Line' }),
+          comment({ value: commentValue, type: AST_TOKEN_TYPES.Line }),
+          comment({ value: 'Second line', type: AST_TOKEN_TYPES.Line }),
         ],
         name: jsxIdentifier('Modal'),
         attributes: [],
@@ -564,6 +603,8 @@ describe('jsxOpeningElement', () => {
   test('no attributes not-self closing', () => {
     expect(
       jsxOpeningElement({
+        selfClosing: false,
+        attributes: [],
         name: jsxIdentifier('Modal'),
       }).toString()
     ).eq(`<Modal>`)

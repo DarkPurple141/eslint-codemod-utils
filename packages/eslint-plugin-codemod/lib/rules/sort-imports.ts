@@ -1,5 +1,9 @@
 import type { Rule } from 'eslint'
-import { importDeclaration, isNodeOfType } from 'eslint-codemod-utils'
+import {
+  AST_NODE_TYPES,
+  importDeclaration,
+  isNodeOfType,
+} from 'eslint-codemod-utils'
 
 /**
  * Adapted for presentational / demo purposes only
@@ -59,11 +63,11 @@ const rule: Rule.RuleModule = {
         })
 
         const sorted = specifiers.sort((specA, specB) => {
-          if (specA.type === 'ImportDefaultSpecifier') {
+          if (specA.type === AST_NODE_TYPES.ImportDefaultSpecifier) {
             return -1
           }
 
-          if (isNodeOfType(specB, 'ImportDefaultSpecifier')) {
+          if (isNodeOfType(specB, AST_NODE_TYPES.ImportDefaultSpecifier)) {
             return 1
           }
 
@@ -90,7 +94,9 @@ const rule: Rule.RuleModule = {
               return fixer.replaceText(
                 node,
                 importDeclaration({
+                  importKind: 'value',
                   ...node,
+                  // @ts-expect-error no 'importKind' in type technically correct
                   specifiers: sorted,
                 }).toString()
               )

@@ -1,6 +1,6 @@
 import { Rule } from 'eslint'
 import { findF } from './finder'
-import { isNodeOfType } from 'eslint-codemod-utils'
+import { AST_NODE_TYPES, isNodeOfType } from 'eslint-codemod-utils'
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -19,7 +19,8 @@ const rule: Rule.RuleModule = {
             message: 'error',
             fix(fixer) {
               const fnName =
-                isNodeOfType(node.callee, 'Identifier') && node.callee.name
+                isNodeOfType(node.callee, AST_NODE_TYPES.Identifier) &&
+                node.callee.name
               return fixer.replaceText(
                 node,
                 `${fnName}({ ${

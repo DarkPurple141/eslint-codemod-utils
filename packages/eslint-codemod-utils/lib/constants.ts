@@ -33,6 +33,7 @@ import {
   conditionalExpression,
   continueStatement,
   debuggerStatement,
+  decorator,
   doWhileStatement,
   emptyStatement,
   exportAllDeclaration,
@@ -59,6 +60,7 @@ import {
   newExpression,
   objectExpression,
   objectPattern,
+  privateIdentifier,
   program,
   property,
   propertyDefinition,
@@ -85,17 +87,22 @@ import {
   yieldExpression,
 } from './nodes'
 import {
+  tsAbstractKeyword,
   tsAnyKeyword,
   tsArrayType,
   tsAsExpression,
+  tsAsyncKeyword,
   tsBooleanKeyword,
+  tsConditionalType,
   tsEmptyBodyFunctionExpression,
   tsIntersectionType,
   tsLiteralType,
+  tsNeverKeyword,
   tsNonNullExpression,
   tsNullKeyword,
   tsQualifiedName,
   tsReadonlyKeyword,
+  tsSatisfiesExpression,
   tsStringKeyword,
   tsTypeAliasDeclaration,
   tsTypeOperator,
@@ -104,8 +111,10 @@ import {
   tsTypeParameterInstantiation,
   tsTypeQuery,
   tsTypeReference,
+  tsUndefinedKeyword,
   tsUnionType,
   tsUnknownKeyword,
+  tsVoidKeyword,
 } from './ts-nodes'
 import { identity } from './utils/identity'
 import { NodeMap } from './utils/node'
@@ -113,10 +122,7 @@ import { NodeMap } from './utils/node'
 export const DEFAULT_WHITESPACE = '\n  '
 
 export const typeToHelperLookup = new Proxy(
-  // @ts-expect-error
   {
-    // TODO implement
-    AssignmentProperty: identity,
     // TODO implement
     AssignmentPattern: identity,
     AssignmentExpression: assignmentExpression,
@@ -127,6 +133,7 @@ export const typeToHelperLookup = new Proxy(
     BinaryExpression: binaryExpression,
     ConditionalExpression: conditionalExpression,
     ChainExpression: chainExpression,
+    Decorator: decorator,
     JSXFragment: jsxFragment,
     JSXSpreadChild: jsxSpreadChild,
     JSXExpressionContainer: jsxExpressionContainer,
@@ -148,10 +155,10 @@ export const typeToHelperLookup = new Proxy(
     IfStatement: ifStatement,
     // TODO implement
     LabeledStatement: identity,
+    // @ts-expect-error
     Literal: literal,
     LogicalExpression: logicalExpression,
     /** this isn't a concrete node type */
-    Expression: identity,
     ForStatement: forStatement,
     ForInStatement: forInStatement,
     ForOfStatement: forOfStatement,
@@ -177,7 +184,6 @@ export const typeToHelperLookup = new Proxy(
     EmptyStatement: emptyStatement,
     FunctionDeclaration: functionDeclaration,
     CallExpression: callExpression,
-    SimpleCallExpression: callExpression,
     CatchClause: catchClause,
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
@@ -189,12 +195,8 @@ export const typeToHelperLookup = new Proxy(
     ExportSpecifier: exportSpecifier,
     ExportAllDeclaration: exportAllDeclaration,
     ExportDefaultDeclaration: exportDefaultDeclaration,
-    /** this isn't a concrete node type */
-    Pattern: identity,
-    /** this isn't a concrete node type */
-    Statement: identity,
     BreakStatement: breakStatement,
-    PrivateIdentifier: identity,
+    PrivateIdentifier: privateIdentifier,
     Property: property,
     Program: program,
     PropertyDefinition: propertyDefinition,
@@ -220,6 +222,7 @@ export const typeToHelperLookup = new Proxy(
     TSStringKeyword: tsStringKeyword,
     TSTypeReference: tsTypeReference,
     TSAnyKeyword: tsAnyKeyword,
+    TSVoidKeyword: tsVoidKeyword,
     TSUnknownKeyword: tsUnknownKeyword,
     TSBooleanKeyword: tsBooleanKeyword,
     TSReadonlyKeyword: tsReadonlyKeyword,
@@ -235,7 +238,13 @@ export const typeToHelperLookup = new Proxy(
     TSTypeAliasDeclaration: tsTypeAliasDeclaration,
     TSTypeParameterDeclaration: tsTypeParameterDeclaration,
     TSTypeParameter: tsTypeParameter,
-  } as NodeMap,
+    TSAbstractKeyword: tsAbstractKeyword,
+    TSSatisfiesExpression: tsSatisfiesExpression,
+    TSUndefinedKeyword: tsUndefinedKeyword,
+    TSConditionalType: tsConditionalType,
+    TSNeverKeyword: tsNeverKeyword,
+    TSAsyncKeyword: tsAsyncKeyword,
+  } satisfies NodeMap,
   {
     // dynamic getter will fail and provide debug information
     get(target, name, receiver) {

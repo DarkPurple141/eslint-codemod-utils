@@ -1,4 +1,4 @@
-import { literal, node, tsAsExpression } from '..'
+import { literal, node, tsAnyKeyword, tsAsExpression } from '..'
 
 import * as espree from '@typescript-eslint/parser'
 
@@ -12,10 +12,8 @@ describe('tsAsExpression', () => {
     expect(
       String(
         tsAsExpression({
-          // @ts-expect-error
           expression: literal('hello'),
-          // @ts-expect-error
-          typeAnnotation: literal({ value: 'any' }),
+          typeAnnotation: tsAnyKeyword({}),
         })
       )
     ).eq(`'hello' as any`)

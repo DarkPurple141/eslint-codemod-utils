@@ -1,4 +1,4 @@
-import type * as ESTree from 'estree-jsx'
+import { TSESTree as ESTree } from '@typescript-eslint/types'
 import { jsxAttribute, jsxElement, jsxIdentifier, jsxOpeningElement } from '..'
 
 /**

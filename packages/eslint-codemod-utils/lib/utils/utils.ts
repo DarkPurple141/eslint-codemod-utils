@@ -1,4 +1,3 @@
-import * as ESTree from 'estree-jsx'
 import {
   identifier,
   importDeclaration,
@@ -8,6 +7,7 @@ import {
 } from '../nodes'
 import type { StringableASTNode } from '../types'
 import { isNodeOfType } from './is-node-of-type'
+import { AST_NODE_TYPES, TSESTree as ESTree } from '@typescript-eslint/types'
 
 export function hasJSXAttribute(
   node: ESTree.JSXElement,
@@ -19,7 +19,8 @@ export function hasJSXAttribute(
 
   return node.openingElement.attributes.some(
     (attr) =>
-      isNodeOfType(attr, 'JSXAttribute') && attr.name.name === attributeName
+      isNodeOfType(attr, AST_NODE_TYPES.JSXAttribute) &&
+      attr.name.name === attributeName
   )
 }
 
@@ -28,7 +29,7 @@ export function hasJSXChild(
   childIdentifier: string
 ): boolean {
   const jsxIdentifierMatch =
-    isNodeOfType(node.openingElement.name, 'JSXIdentifier') &&
+    isNodeOfType(node.openingElement.name, AST_NODE_TYPES.JSXIdentifier) &&
     node.openingElement.name.name &&
     node.openingElement.name.name === childIdentifier
 
@@ -38,7 +39,7 @@ export function hasJSXChild(
       node.children &&
         node.children
           .filter((child): child is ESTree.JSXElement =>
-            isNodeOfType(child, 'JSXElement')
+            isNodeOfType(child, AST_NODE_TYPES.JSXElement)
           )
           .find((child) => hasJSXChild(child, childIdentifier))
     )
@@ -70,13 +71,13 @@ export function hasImportSpecifier(
 ) {
   if (importName === 'default') {
     return declaration.specifiers.some((spec) =>
-      isNodeOfType(spec, 'ImportDefaultSpecifier')
+      isNodeOfType(spec, AST_NODE_TYPES.ImportDefaultSpecifier)
     )
   }
 
   return declaration.specifiers
     .filter((spec): spec is ESTree.ImportSpecifier =>
-      isNodeOfType(spec, 'ImportSpecifier')
+      isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier)
     )
     .some((node) => node.imported.name === importName)
 }
@@ -109,11 +110,11 @@ export function insertImportSpecifier(
     specifiers: declaration.specifiers.concat(
       importName === 'default'
         ? importDefaultSpecifier({
-            // @ts-expect-error no undefined on identifier
             local: identifier(specifierAlias),
           })
         : importSpecifier({
             imported: identifier(importName),
+            importKind: 'value',
             local: specifierAlias ? identifier(specifierAlias) : id,
           })
     ),
@@ -142,6 +143,8 @@ export function insertImportDeclaration(
   specifiers: (string | { local: string; imported: string })[]
 ): StringableASTNode<ESTree.ImportDeclaration> {
   return importDeclaration({
+    importKind: 'value',
+    assertions: [],
     source: literal(source),
     specifiers: specifiers.map((spec) => {
       return spec === 'default'
@@ -149,6 +152,7 @@ export function insertImportDeclaration(
             local: identifier('__default'),
           })
         : importSpecifier({
+            importKind: 'value',
             imported:
               typeof spec === 'string'
                 ? identifier(spec)
@@ -179,7 +183,7 @@ export function removeImportSpecifier(
       importName === 'default'
         ? spec.type !== 'ImportDefaultSpecifier'
         : !(
-            isNodeOfType(spec, 'ImportSpecifier') &&
+            isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier) &&
             spec.imported.name === importName
           )
     ),

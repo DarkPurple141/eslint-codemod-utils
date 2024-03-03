@@ -19,6 +19,6 @@ export type NodeMap<
 export const node = <EstreeNodeType extends EslintCodemodUtilsBaseNode>(
   estNode: EstreeNodeType
 ): StringableASTNode<EstreeNodeType> => {
-  // @ts-expect-error
+  // @ts-expect-error this error will be suppressed until all nodes are implemented
   return typeToHelperLookup[estNode.type](estNode)
 }
