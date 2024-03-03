@@ -12,10 +12,9 @@ describe('tsAsExpression', () => {
     expect(
       String(
         tsAsExpression({
-          // @ts-expect-error
           expression: literal('hello'),
           // @ts-expect-error
-          typeAnnotation: literal({ value: 'any' }),
+          typeAnnotation: literal('any'),
         })
       )
     ).eq(`'hello' as any`)
