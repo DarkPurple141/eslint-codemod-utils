@@ -1,5 +1,5 @@
-import type { JSXElement } from 'estree-jsx'
 import {
+  TSESTree as ESTree,
   jsxAttribute,
   jsxClosingElement,
   jsxElement,
@@ -10,10 +10,10 @@ import {
 import type { StringableASTNode } from '../types'
 
 export const jsx = function (
-  type: string | ((...args: any[]) => StringableASTNode<JSXElement>),
+  type: string | ((...args: any[]) => StringableASTNode<ESTree.JSXElement>),
   props: Record<string, unknown>,
   ...children: any[]
-): StringableASTNode<JSXElement> | undefined {
+): StringableASTNode<ESTree.JSXElement> | undefined {
   if (!type) {
     return
   }
