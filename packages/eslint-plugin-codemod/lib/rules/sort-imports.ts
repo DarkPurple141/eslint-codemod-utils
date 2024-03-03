@@ -96,6 +96,7 @@ const rule: Rule.RuleModule = {
                 importDeclaration({
                   importKind: 'value',
                   ...node,
+                  // @ts-expect-error no 'importKind' in type technically correct
                   specifiers: sorted,
                 }).toString()
               )
