@@ -1,5 +1,5 @@
 import { Rule } from 'eslint'
-import { literal } from 'eslint-codemod-utils'
+import { node as nodeFn } from 'eslint-codemod-utils'
 import { findSemi } from './finder'
 
 const rule: Rule.RuleModule = {
@@ -21,7 +21,7 @@ const rule: Rule.RuleModule = {
             node,
             message: 'error',
             fix: (fixer) => {
-              return fixer.replaceText(node, `${literal(node)};`)
+              return fixer.replaceText(node, `${nodeFn(node)};`)
             },
           })
       },

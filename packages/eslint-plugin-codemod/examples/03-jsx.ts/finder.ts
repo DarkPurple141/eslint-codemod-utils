@@ -1,11 +1,11 @@
-import { isNodeOfType, JSXElement } from 'eslint-codemod-utils'
+import { AST_NODE_TYPES, isNodeOfType, TSESTree } from 'eslint-codemod-utils'
 
-export function findModal(node: JSXElement) {
-  if (!isNodeOfType(node, 'JSXElement')) {
+export function findModal(node: TSESTree.JSXElement) {
+  if (!isNodeOfType(node, AST_NODE_TYPES.JSXElement)) {
     return false
   }
 
-  if (!isNodeOfType(node.openingElement.name, 'JSXIdentifier')) {
+  if (!isNodeOfType(node.openingElement.name, AST_NODE_TYPES.JSXIdentifier)) {
     return false
   }
 
@@ -15,8 +15,8 @@ export function findModal(node: JSXElement) {
 
   return node.openingElement.attributes.some((innerNode) => {
     return (
-      isNodeOfType(innerNode, 'JSXAttribute') &&
-      isNodeOfType(innerNode.name, 'JSXIdentifier') &&
+      isNodeOfType(innerNode, AST_NODE_TYPES.JSXAttribute) &&
+      isNodeOfType(innerNode.name, AST_NODE_TYPES.JSXIdentifier) &&
       innerNode.name.name === 'title'
     )
   })

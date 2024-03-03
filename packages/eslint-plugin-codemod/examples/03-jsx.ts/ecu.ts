@@ -1,14 +1,15 @@
 import { Rule } from 'eslint'
 import {
-  EslintNode,
+  AST_NODE_TYPES,
+  ESLintNode,
   isNodeOfType,
-  JSXAttribute,
   jsxClosingElement,
   jsxElement,
   jsxExpressionContainer,
   jsxIdentifier,
   jsxOpeningElement,
   jsxText,
+  TSESTree,
 } from 'eslint-codemod-utils'
 import { findModal } from './finder'
 
@@ -22,8 +23,8 @@ const rule: Rule.RuleModule = {
   },
   create(context) {
     return {
-      JSXElement(node: EslintNode) {
-        if (!isNodeOfType(node, 'JSXElement')) {
+      JSXElement(node: ESLintNode) {
+        if (!isNodeOfType(node, AST_NODE_TYPES.JSXElement)) {
           return
         }
         if (findModal(node)) {
@@ -33,8 +34,8 @@ const rule: Rule.RuleModule = {
             fix(fixer) {
               const jsxId = jsxIdentifier('ModalTitle')
               const title = node.openingElement.attributes.find(
-                (inner): inner is JSXAttribute =>
-                  isNodeOfType(inner, 'JSXAttribute') &&
+                (inner): inner is TSESTree.JSXAttribute =>
+                  isNodeOfType(inner, AST_NODE_TYPES.JSXAttribute) &&
                   inner.name.name === 'title'
               )
               return fixer.replaceText(
@@ -45,7 +46,7 @@ const rule: Rule.RuleModule = {
                     ...node.openingElement,
                     attributes: node.openingElement.attributes.filter(
                       (n) =>
-                        isNodeOfType(n, 'JSXAttribute') &&
+                        isNodeOfType(n, AST_NODE_TYPES.JSXAttribute) &&
                         n.name.name !== 'title'
                     ),
                     selfClosing: false,
@@ -53,14 +54,16 @@ const rule: Rule.RuleModule = {
                   closingElement: jsxClosingElement({ ...node.openingElement }),
                   children: [
                     jsxElement({
-                      openingElement: jsxOpeningElement({ name: jsxId }),
+                      openingElement: jsxOpeningElement({
+                        name: jsxId,
+                        selfClosing: false,
+                        attributes: [],
+                      }),
                       closingElement: jsxClosingElement({ name: jsxId }),
                       children: [
                         title?.value?.type === 'Literal'
-                          ? // @ts-expect-error
-                            jsxText(title.value)
+                          ? jsxText(title.value)
                           : jsxExpressionContainer({
-                              // @ts-expect-error
                               expression: title?.value,
                             }),
                       ],

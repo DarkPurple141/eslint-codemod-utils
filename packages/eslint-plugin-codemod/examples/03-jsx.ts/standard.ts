@@ -1,5 +1,5 @@
 import { Rule } from 'eslint'
-import { isNodeOfType } from 'eslint-codemod-utils'
+import { AST_NODE_TYPES, isNodeOfType } from 'eslint-codemod-utils'
 import { findModal } from './finder'
 
 const rule: Rule.RuleModule = {
@@ -17,7 +17,7 @@ const rule: Rule.RuleModule = {
           return
         }
 
-        if (!isNodeOfType(node, 'JSXElement')) {
+        if (!isNodeOfType(node, AST_NODE_TYPES.JSXElement)) {
           return
         }
         if (findModal(node)) {
