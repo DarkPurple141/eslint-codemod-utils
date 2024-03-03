@@ -38,7 +38,7 @@ const ESPREE_OPTIONS = {
 
 describe('literal', () => {
   test('string', () => {
-    expect(String(literal('hello'))).eq('hello')
+    expect(String(literal('hello'))).eq(`\'hello\'`)
   })
 
   test('boolean', () => {
@@ -497,7 +497,7 @@ describe('jsxElement', () => {
                     }),
                     openingElement: jsxOpeningElement({
                       attributes: [],
-                      selfClosing: true,
+                      selfClosing: false,
                       name: jsxIdentifier({ name: 'VeryNested' }),
                     }),
                   }),
