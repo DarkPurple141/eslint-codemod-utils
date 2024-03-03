@@ -1,6 +1,5 @@
-import { AST_NODE_TYPES } from '@typescript-eslint/types'
+import { AST_NODE_TYPES, TSESTree as ESTree } from '@typescript-eslint/types'
 import { DEFAULT_WHITESPACE } from './constants'
-import * as ESTree from 'estree-jsx'
 
 import type {
   StringableASTNode,
@@ -38,7 +37,7 @@ export const jsxIdentifier = (
   param: WithoutType<ESTree.JSXIdentifier> | string
 ): StringableASTNode<ESTree.JSXIdentifier> => {
   const name = typeof param === 'string' ? param : param.name
-  const other = typeof param === 'object' ? param : {}
+  const other = typeof param === 'object' ? param : ({} as any)
   return {
     ...other,
     name,
@@ -143,7 +142,7 @@ export const jsxMemberExpression: StringableASTNodeFn<
   property,
   toString: () =>
     `${
-      isNodeOfType(object, 'JSXIdentifier')
+      isNodeOfType(object, AST_NODE_TYPES.JSXIdentifier)
         ? jsxIdentifier(object)
         : node(object)
     }.${jsxIdentifier(property)}`,
@@ -185,10 +184,7 @@ const DEFAULT_LOC: ESTree.SourceLocation = {
  *
  * @returns {JSXElement}
  */
-export const jsxElement: StringableASTNodeFn<
-  ESTree.JSXElement,
-  'children' | 'closingElement'
-> = ({
+export const jsxElement: StringableASTNodeFn<ESTree.JSXElement> = ({
   openingElement,
   closingElement = null,
   children = [],
@@ -222,7 +218,7 @@ export const jsxElement: StringableASTNodeFn<
  * import { jsxSpreadAttribute, identifier } from 'eslint-codemod-utils'
  *
  * const spreadAttr = jsxSpreadAttribute({
- *  argument: identifier({ name: 'spread' })
+ *   argument: identifier({ name: 'spread' })
  * })
  * ```
  * @example
@@ -245,25 +241,18 @@ export const jsxSpreadAttribute: StringableASTNodeFn<
 })
 
 export const jsxOpeningElement: StringableASTNodeFn<
-  ESTree.JSXOpeningElement,
-  'attributes' | 'selfClosing'
-> = ({
-  name,
-  attributes = [],
-  selfClosing = false,
-  leadingComments = [],
-  ...other
-}) => ({
+  ESTree.JSXOpeningElement
+> = ({ name, attributes = [], selfClosing = false, ...other }) => ({
   ...other,
   type: AST_NODE_TYPES.JSXOpeningElement,
   name,
   attributes,
   selfClosing,
   toString: () =>
-    `${comments(leadingComments)}<${
-      name.type === 'JSXIdentifier'
+    `<${
+      name.type === AST_NODE_TYPES.JSXIdentifier
         ? jsxIdentifier(name)
-        : name.type === 'JSXMemberExpression'
+        : name.type === AST_NODE_TYPES.JSXMemberExpression
         ? jsxMemberExpression(name)
         : // namespaced name not yet implemeneted
           name
@@ -364,12 +353,11 @@ export const jsxExpressionContainer: StringableASTNodeFn<
   expression,
   type: AST_NODE_TYPES.JSXExpressionContainer,
   toString: () => {
-    if (isNodeOfType(expression, 'JSXEmptyExpression')) {
+    if (isNodeOfType(expression, AST_NODE_TYPES.JSXEmptyExpression)) {
       return '{}'
     }
 
-    // @ts-expect-error This should never happen but makes the API more accomodating
-    if (expression.type === 'JSXExpressionContainer') {
+    if (isNodeOfType(expression, AST_NODE_TYPES.JSXExpressionContainer)) {
       return String(jsxExpressionContainer(expression))
     }
 
