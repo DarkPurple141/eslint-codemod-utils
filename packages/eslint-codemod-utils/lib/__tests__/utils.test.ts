@@ -1,5 +1,6 @@
 import * as espree from 'espree'
 import {
+  AST_NODE_TYPES,
   closestOfType,
   hasJSXAttribute,
   insertImportSpecifier,
@@ -21,7 +22,10 @@ describe.skip('closestOfType', () => {
   test('basic', () => {
     const program = espree.parse('<Hello name="world"></Hello>', ESPREE_OPTIONS)
     expect(
-      closestOfType(program.body[0].expression.openingElement, 'JSXElement')
+      closestOfType(
+        program.body[0].expression.openingElement,
+        AST_NODE_TYPES.JSXElement
+      )
     ).toHaveProperty('type', 'JSXElement')
   })
 })

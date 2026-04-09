@@ -1,9 +1,10 @@
-import { RuleTester } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 
 import ecuRule from './ecu'
 import rule from './standard'
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 'latest',
@@ -18,7 +19,7 @@ ruleTester.run('call-expression/basic', rule, {
   invalid: [
     {
       code: 'f(oldArg)',
-      errors: ['error'],
+      errors: [{ messageId: 'updateParams' }],
       output: 'f({ first: oldArg })',
     },
     // {
@@ -39,17 +40,17 @@ ruleTester.run('call-expression/ecu', ecuRule, {
   invalid: [
     {
       code: 'f(oldArg)',
-      errors: ['error'],
+      errors: [{ messageId: 'updateParams' }],
       output: 'f({\n  first: oldArg\n})',
     },
     {
       code: 'f(oldArg, otherArg)',
-      errors: ['error'],
+      errors: [{ messageId: 'updateParams' }],
       output: 'f({\n  first: oldArg,\n  second: otherArg\n})',
     },
     {
       code: 'f(oldArg, { x: 1 })',
-      errors: ['error'],
+      errors: [{ messageId: 'updateParams' }],
       output: 'f({\n  first: oldArg,\n  second: {\n  x: 1\n}\n})',
     },
   ],

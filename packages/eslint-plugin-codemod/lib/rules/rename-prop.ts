@@ -1,12 +1,11 @@
 import { ESLintUtils } from '@typescript-eslint/utils'
 
 import {
-  ImportDeclaration,
+  AST_NODE_TYPES,
   isNodeOfType,
   jsxAttribute,
-  JSXAttribute,
   jsxIdentifier,
-  JSXOpeningElement,
+  TSESTree,
 } from 'eslint-codemod-utils'
 
 export interface UpdatePropNameOptions {
@@ -66,18 +65,20 @@ const rule = createRule<UpdatePropNameOptions[], string>({
   },
   create(context) {
     const config = context.options as UpdatePropNameOptions[]
-    let importDecs: ImportDeclaration[] | null[] = config.map(() => null)
+    let importDecs: TSESTree.ImportDeclaration[] | null[] = config.map(
+      () => null
+    )
 
     function renameProp(
-      node: JSXOpeningElement,
-      importDec: ImportDeclaration,
+      node: TSESTree.JSXOpeningElement,
+      importDec: TSESTree.ImportDeclaration,
       option: UpdatePropNameOptions
     ) {
       const specifier = importDec.specifiers.find(
         (spec) =>
-          (isNodeOfType(spec, 'ImportSpecifier') &&
+          (isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier) &&
             spec.imported.name === option.specifier) ||
-          (isNodeOfType(spec, 'ImportDefaultSpecifier') &&
+          (isNodeOfType(spec, AST_NODE_TYPES.ImportDefaultSpecifier) &&
             option.specifier === 'default')
       )
 
@@ -88,7 +89,7 @@ const rule = createRule<UpdatePropNameOptions[], string>({
 
       if (
         !(
-          isNodeOfType(node.name, 'JSXIdentifier') &&
+          isNodeOfType(node.name, AST_NODE_TYPES.JSXIdentifier) &&
           node.name.name === specifier.local.name
         )
       ) {
@@ -96,8 +97,8 @@ const rule = createRule<UpdatePropNameOptions[], string>({
       }
 
       const toChangeAttr = node.attributes.find(
-        (attr): attr is JSXAttribute => {
-          if (isNodeOfType(attr, 'JSXAttribute')) {
+        (attr): attr is TSESTree.JSXAttribute => {
+          if (isNodeOfType(attr, AST_NODE_TYPES.JSXAttribute)) {
             return attr.name.name === option.oldProp
           }
 
@@ -111,7 +112,6 @@ const rule = createRule<UpdatePropNameOptions[], string>({
 
       // Error cases after this point
       context.report({
-        // @ts-expect-error
         node: toChangeAttr,
         messageId: 'renameProp',
         data: { ...option, local: specifier.local.name },
@@ -121,7 +121,6 @@ const rule = createRule<UpdatePropNameOptions[], string>({
             name: jsxIdentifier(option.newProp),
           })
 
-          // @ts-expect-error
           return fixer.replaceText(toChangeAttr, `${fixed}`)
         },
       })
@@ -145,7 +144,7 @@ const rule = createRule<UpdatePropNameOptions[], string>({
         config.forEach((c, i) => {
           if (importDecs[i]) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            renameProp(node as JSXOpeningElement, importDecs[i]!, config[i])
+            renameProp(node, importDecs[i]!, config[i])
           }
         })
       },

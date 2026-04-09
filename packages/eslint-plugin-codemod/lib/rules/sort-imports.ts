@@ -1,5 +1,14 @@
-import type { Rule } from 'eslint'
-import { importDeclaration, isNodeOfType } from 'eslint-codemod-utils'
+import { ESLintUtils } from '@typescript-eslint/utils'
+import {
+  AST_NODE_TYPES,
+  importDeclaration,
+  isNodeOfType,
+} from 'eslint-codemod-utils'
+
+const createRule = ESLintUtils.RuleCreator(
+  (name) =>
+    `https://github.com/DarkPurple141/eslint-codemod-utils/tree/master/packages/eslint-plugin-codemod/${name}`
+)
 
 /**
  * Adapted for presentational / demo purposes only
@@ -10,14 +19,20 @@ import { importDeclaration, isNodeOfType } from 'eslint-codemod-utils'
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+type SortImportsOptions = {
+  ignoreCase?: boolean
+  ignoreMemberSort?: boolean
+}
+
+const rule = createRule<[SortImportsOptions?], 'sortMembersAlphabetically'>({
+  name: 'sort-imports',
+  defaultOptions: [{}],
   meta: {
     type: 'suggestion',
 
     docs: {
       description: 'enforce sorted import declarations within modules',
       recommended: false,
-      url: 'https://eslint.org/docs/rules/sort-imports',
     },
 
     schema: [
@@ -45,53 +60,51 @@ const rule: Rule.RuleModule = {
   },
 
   create(context) {
-    const configuration = context.options[0] || {},
-      ignoreCase = configuration.ignoreCase || false,
-      ignoreMemberSort = configuration.ignoreMemberSort || false
+    const configuration = context.options[0] ?? {}
+    const { ignoreCase = false, ignoreMemberSort = false } = configuration
 
     return {
       ImportDeclaration(node) {
-        const specifiers = node.specifiers.map((spec, index) => {
-          return {
-            ...spec,
-            index,
-          }
-        })
+        // Pair each specifier with its original position so we can detect
+        // whether the sorted array differs from the source order.
+        const indexed = node.specifiers.map((spec, index) => ({
+          spec,
+          index,
+        }))
 
-        const sorted = specifiers.sort((specA, specB) => {
-          if (specA.type === 'ImportDefaultSpecifier') {
+        const sortedIndexed = [...indexed].sort((a, b) => {
+          if (isNodeOfType(a.spec, AST_NODE_TYPES.ImportDefaultSpecifier)) {
             return -1
           }
 
-          if (isNodeOfType(specB, 'ImportDefaultSpecifier')) {
+          if (isNodeOfType(b.spec, AST_NODE_TYPES.ImportDefaultSpecifier)) {
             return 1
           }
 
-          if (ignoreCase) {
-            return specA.local.name
-              .toLowerCase()
-              .localeCompare(specB.local.name.toLowerCase())
-          } else {
-            return specA.local.name.localeCompare(specB.local.name)
-          }
-        })
-        const unsortedNode = sorted.find((node, index) => {
-          return index !== node.index
+          const nameA = a.spec.local.name
+          const nameB = b.spec.local.name
+          return ignoreCase
+            ? nameA.toLowerCase().localeCompare(nameB.toLowerCase())
+            : nameA.localeCompare(nameB)
         })
 
-        if (!ignoreMemberSort && unsortedNode) {
+        const unsortedIndexed = sortedIndexed.find(
+          (entry, index) => index !== entry.index
+        )
+
+        if (!ignoreMemberSort && unsortedIndexed) {
           context.report({
-            node: unsortedNode,
+            node: unsortedIndexed.spec,
             messageId: 'sortMembersAlphabetically',
             data: {
-              memberName: unsortedNode.local.name,
+              memberName: unsortedIndexed.spec.local.name,
             },
             fix(fixer) {
               return fixer.replaceText(
                 node,
                 importDeclaration({
                   ...node,
-                  specifiers: sorted,
+                  specifiers: sortedIndexed.map((entry) => entry.spec),
                 }).toString()
               )
             },
@@ -100,6 +113,6 @@ const rule: Rule.RuleModule = {
       },
     }
   },
-}
+})
 
 export default rule

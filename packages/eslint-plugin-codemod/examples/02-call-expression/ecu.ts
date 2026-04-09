@@ -1,20 +1,35 @@
-import { Rule } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 import {
+  AST_NODE_TYPES,
   callExpression,
   identifier,
+  isNodeOfType,
+  Loose,
   objectExpression,
   property,
-  Property,
+  TSESTree,
 } from 'eslint-codemod-utils'
 import { findF } from './finder'
 
-const rule: Rule.RuleModule = {
+const createRule = ESLintUtils.RuleCreator(
+  (name) =>
+    `https://github.com/DarkPurple141/eslint-codemod-utils/tree/master/packages/eslint-plugin-codemod/${name}`
+)
+
+const rule = createRule({
+  name: 'update-fn-param-set-ecu',
+  defaultOptions: [],
   meta: {
     type: 'problem',
     docs: {
-      description: 'Update a fn paramater set',
+      description: 'Update a fn parameter set',
+      recommended: 'error',
     },
     fixable: 'code',
+    messages: {
+      updateParams: 'This call needs to use the new parameter shape.',
+    },
+    schema: [],
   },
   create(context) {
     return {
@@ -22,7 +37,7 @@ const rule: Rule.RuleModule = {
         if (findF(node)) {
           context.report({
             node,
-            message: 'error',
+            messageId: 'updateParams',
             fix(fixer) {
               const thing = callExpression({
                 ...node,
@@ -31,15 +46,26 @@ const rule: Rule.RuleModule = {
                   objectExpression({
                     properties: ['first', 'second']
                       .map((id, idx) => {
-                        return node.arguments[idx]
-                          ? property({
-                              key: identifier(id),
-                              // @ts-expect-error
-                              value: node.arguments[idx],
-                            })
-                          : null
+                        const arg = node.arguments[idx]
+                        if (!arg) {
+                          return null
+                        }
+                        // `CallExpression.arguments` is
+                        // `(Expression | SpreadElement)[]`. `SpreadElement`
+                        // isn't a valid RHS for an object `Property` value,
+                        // so skip those and pass Expressions through.
+                        if (isNodeOfType(arg, AST_NODE_TYPES.SpreadElement)) {
+                          return null
+                        }
+                        return property({
+                          key: identifier(id),
+                          value: arg,
+                        })
                       })
-                      .filter(Boolean) as Property[],
+                      .filter(
+                        (prop): prop is Loose<TSESTree.Property> =>
+                          prop !== null
+                      ),
                   }),
                 ],
               })
@@ -50,6 +76,6 @@ const rule: Rule.RuleModule = {
       },
     }
   },
-}
+})
 
 export default rule

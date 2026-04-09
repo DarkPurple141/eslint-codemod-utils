@@ -33,6 +33,7 @@ import {
   conditionalExpression,
   continueStatement,
   debuggerStatement,
+  decorator,
   doWhileStatement,
   emptyStatement,
   exportAllDeclaration,
@@ -59,6 +60,7 @@ import {
   newExpression,
   objectExpression,
   objectPattern,
+  privateIdentifier,
   program,
   property,
   propertyDefinition,
@@ -85,17 +87,22 @@ import {
   yieldExpression,
 } from './nodes'
 import {
+  tsAbstractKeyword,
   tsAnyKeyword,
   tsArrayType,
   tsAsExpression,
+  tsAsyncKeyword,
   tsBooleanKeyword,
+  tsConditionalType,
   tsEmptyBodyFunctionExpression,
   tsIntersectionType,
   tsLiteralType,
+  tsNeverKeyword,
   tsNonNullExpression,
   tsNullKeyword,
   tsQualifiedName,
   tsReadonlyKeyword,
+  tsSatisfiesExpression,
   tsStringKeyword,
   tsTypeAliasDeclaration,
   tsTypeOperator,
@@ -104,19 +111,25 @@ import {
   tsTypeParameterInstantiation,
   tsTypeQuery,
   tsTypeReference,
+  tsUndefinedKeyword,
   tsUnionType,
   tsUnknownKeyword,
+  tsVoidKeyword,
 } from './ts-nodes'
+import type { TSESTree as TSESTreeImport } from '@typescript-eslint/types'
 import { identity } from './utils/identity'
 import { NodeMap } from './utils/node'
+import type { StringableASTNode as StringableASTNodeImport } from './types'
 
 export const DEFAULT_WHITESPACE = '\n  '
 
-export const typeToHelperLookup = new Proxy(
-  // @ts-expect-error
+// Explicit annotation: the inferred object type for the proxy target is so
+// deep (every helper's destructured `Loose<…>` signature is distinct) that
+// `tsc --declaration` cannot serialize it into the emitted `.d.ts`. Pinning
+// the exported type to the compact `Partial<NodeMap>` shape keeps the public
+// declaration portable without weakening the runtime dispatch contract.
+export const typeToHelperLookup: Partial<NodeMap> = new Proxy(
   {
-    // TODO implement
-    AssignmentProperty: identity,
     // TODO implement
     AssignmentPattern: identity,
     AssignmentExpression: assignmentExpression,
@@ -127,6 +140,7 @@ export const typeToHelperLookup = new Proxy(
     BinaryExpression: binaryExpression,
     ConditionalExpression: conditionalExpression,
     ChainExpression: chainExpression,
+    Decorator: decorator,
     JSXFragment: jsxFragment,
     JSXSpreadChild: jsxSpreadChild,
     JSXExpressionContainer: jsxExpressionContainer,
@@ -148,10 +162,16 @@ export const typeToHelperLookup = new Proxy(
     IfStatement: ifStatement,
     // TODO implement
     LabeledStatement: identity,
-    Literal: literal,
+    // `literal` is overloaded to accept raw primitives or `WithoutType<Literal>`.
+    // The dispatch map only ever calls the object-shaped overload, but the
+    // overload signatures make `satisfies NodeMap` unable to pick a single
+    // arity. Cast via `unknown` so the map entry satisfies the contract
+    // without widening the public `literal(…)` signature.
+    Literal: literal as unknown as (
+      n: TSESTreeImport.Literal
+    ) => StringableASTNodeImport<TSESTreeImport.Literal>,
     LogicalExpression: logicalExpression,
     /** this isn't a concrete node type */
-    Expression: identity,
     ForStatement: forStatement,
     ForInStatement: forInStatement,
     ForOfStatement: forOfStatement,
@@ -177,7 +197,6 @@ export const typeToHelperLookup = new Proxy(
     EmptyStatement: emptyStatement,
     FunctionDeclaration: functionDeclaration,
     CallExpression: callExpression,
-    SimpleCallExpression: callExpression,
     CatchClause: catchClause,
     ContinueStatement: continueStatement,
     ClassDeclaration: classDeclaration,
@@ -189,12 +208,8 @@ export const typeToHelperLookup = new Proxy(
     ExportSpecifier: exportSpecifier,
     ExportAllDeclaration: exportAllDeclaration,
     ExportDefaultDeclaration: exportDefaultDeclaration,
-    /** this isn't a concrete node type */
-    Pattern: identity,
-    /** this isn't a concrete node type */
-    Statement: identity,
     BreakStatement: breakStatement,
-    PrivateIdentifier: identity,
+    PrivateIdentifier: privateIdentifier,
     Property: property,
     Program: program,
     PropertyDefinition: propertyDefinition,
@@ -220,6 +235,7 @@ export const typeToHelperLookup = new Proxy(
     TSStringKeyword: tsStringKeyword,
     TSTypeReference: tsTypeReference,
     TSAnyKeyword: tsAnyKeyword,
+    TSVoidKeyword: tsVoidKeyword,
     TSUnknownKeyword: tsUnknownKeyword,
     TSBooleanKeyword: tsBooleanKeyword,
     TSReadonlyKeyword: tsReadonlyKeyword,
@@ -235,7 +251,17 @@ export const typeToHelperLookup = new Proxy(
     TSTypeAliasDeclaration: tsTypeAliasDeclaration,
     TSTypeParameterDeclaration: tsTypeParameterDeclaration,
     TSTypeParameter: tsTypeParameter,
-  } as NodeMap,
+    TSAbstractKeyword: tsAbstractKeyword,
+    TSSatisfiesExpression: tsSatisfiesExpression,
+    TSUndefinedKeyword: tsUndefinedKeyword,
+    TSConditionalType: tsConditionalType,
+    TSNeverKeyword: tsNeverKeyword,
+    TSAsyncKeyword: tsAsyncKeyword,
+    // `NodeMap` covers every TSESTree node, but this dispatch table is
+    // incrementally implemented (see the Proxy below — unknown types throw
+    // an `UnknownNodeError` at runtime). Partial-satisfy so unimplemented
+    // variants are tolerated at the type level.
+  } satisfies Partial<NodeMap>,
   {
     // dynamic getter will fail and provide debug information
     get(target, name, receiver) {

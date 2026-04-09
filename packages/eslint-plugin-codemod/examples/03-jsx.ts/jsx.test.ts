@@ -1,9 +1,10 @@
-import { RuleTester } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 
 import ecuRule from './ecu'
 // import rule from './standard'
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 'latest',
@@ -18,17 +19,17 @@ const ruleTester = new RuleTester({
 //   invalid: [
 //     {
 //       code: '<Modal title="blah" />',
-//       errors: ['error'],
+//       errors: [{ messageId: 'compose' }],
 //       output: '<Modal>\n  <ModalTitle>\n  blah\n</ModalTitle>\n</Modal>',
 //     },
 //     {
 //       code: '<Modal title={blah} />',
-//       errors: ['error'],
+//       errors: [{ messageId: 'compose' }],
 //       output: '<Modal>\n  <ModalTitle>\n  {blah}\n</ModalTitle>\n</Modal>',
 //     },
 //     {
 //       code: '<Modal title={<Blah />} />',
-//       errors: ['error'],
+//       errors: [{ messageId: 'compose' }],
 //       output: '<Modal>\n  <ModalTitle>\n  {<Blah />}\n</ModalTitle>\n</Modal>',
 //     },
 //   ],
@@ -39,17 +40,17 @@ ruleTester.run('jsx/ecu', ecuRule, {
   invalid: [
     {
       code: '<Modal title="blah" />',
-      errors: ['error'],
+      errors: [{ messageId: 'compose' }],
       output: '<Modal>\n  <ModalTitle>\n  blah\n</ModalTitle>\n</Modal>',
     },
     {
       code: '<Modal title={blah} />',
-      errors: ['error'],
+      errors: [{ messageId: 'compose' }],
       output: '<Modal>\n  <ModalTitle>\n  {blah}\n</ModalTitle>\n</Modal>',
     },
     {
       code: '<Modal title={<Blah />} />',
-      errors: ['error'],
+      errors: [{ messageId: 'compose' }],
       output: '<Modal>\n  <ModalTitle>\n  {<Blah />}\n</ModalTitle>\n</Modal>',
     },
   ],

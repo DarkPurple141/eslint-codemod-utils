@@ -1,5 +1,5 @@
 import type * as eslint from 'eslint'
-import type { Comment } from 'estree-jsx'
+import type { TSESTree } from '@typescript-eslint/types'
 
 /**
  * @example
@@ -11,9 +11,12 @@ import type { Comment } from 'estree-jsx'
  */
 export function getNodeAfterComment(
   source: eslint.SourceCode,
-  comment: Comment
+  comment: TSESTree.Comment
 ): eslint.Rule.Node | null {
-  const token = source.getTokenAfter(comment)
+  // `eslint.SourceCode.getTokenAfter` expects the vanilla-ESLint `Comment`
+  // shape; cast across the thin-but-real shape difference between it and
+  // `TSESTree.Comment` (the runtime objects are the same).
+  const token = source.getTokenAfter(comment as unknown as eslint.AST.Token)
 
   if (token) {
     return source.getNodeByRangeIndex(token.range[1]) as eslint.Rule.Node

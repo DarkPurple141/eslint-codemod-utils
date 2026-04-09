@@ -1,16 +1,26 @@
-import { Rule } from 'eslint'
-import { literal } from 'eslint-codemod-utils'
+import { ESLintUtils } from '@typescript-eslint/utils'
+import { node as nodeFn } from 'eslint-codemod-utils'
 import { findSemi } from './finder'
 
-const rule: Rule.RuleModule = {
+const createRule = ESLintUtils.RuleCreator(
+  (name) =>
+    `https://github.com/DarkPurple141/eslint-codemod-utils/tree/master/packages/eslint-plugin-codemod/${name}`
+)
+
+const rule = createRule({
+  name: '01-basic-ecu',
+  defaultOptions: [],
   meta: {
     type: 'layout',
     docs: {
       description: 'Require or disallow semicolons instead of ASI',
-      recommended: false,
-      url: 'https://eslint.org/docs/rules/semi',
+      recommended: 'error',
     },
     fixable: 'code',
+    schema: [],
+    messages: {
+      missingSemi: 'Missing semicolon.',
+    },
   },
   create(context) {
     const source = context.getSourceCode()
@@ -19,14 +29,14 @@ const rule: Rule.RuleModule = {
         if (!findSemi(node, source))
           context.report({
             node,
-            message: 'error',
+            messageId: 'missingSemi',
             fix: (fixer) => {
-              return fixer.replaceText(node, `${literal(node)};`)
+              return fixer.replaceText(node, `${nodeFn(node)};`)
             },
           })
       },
     }
   },
-}
+})
 
 export default rule

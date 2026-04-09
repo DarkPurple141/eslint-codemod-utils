@@ -1,8 +1,9 @@
-import { RuleTester } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 
 import rule from '../rules/change-composition'
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -28,7 +29,7 @@ ruleTester.run('change-composition', rule, {
         return <Modal heading="some heading" testId="modal" isBlanketHidden />
       }
       `,
-      errors: ['error'],
+      errors: [{ messageId: 'changeComposition' }],
       output: `
       import React from 'react'
       // The import "ModalHeader" has been added by codemod
@@ -54,7 +55,7 @@ import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
         return <Modal heading="some heading" testId="modal" isBlanketHidden><Bread /></Modal>
       }
       `,
-      errors: ['error'],
+      errors: [{ messageId: 'changeComposition' }],
       output: `
       import React from 'react'
       // The import "ModalHeader" has been added by codemod
@@ -81,7 +82,7 @@ import Modal, { ModalTransition, ModalHeader } from '@atlaskit/modal-dialog'
         return <Modal heading={"some heading"} testId="modal" isBlanketHidden />
       }
       `,
-      errors: ['error'],
+      errors: [{ messageId: 'changeComposition' }],
       output: `
       import React from 'react'
       // The import "ModalHeader" has been added by codemod
@@ -107,7 +108,7 @@ import Modal, { ModalHeader } from '@atlaskit/modal-dialog'
         return <Modal heading="some heading" appearance="warning" testId="modal" isBlanketHidden />
       }
       `,
-      errors: ['error'],
+      errors: [{ messageId: 'changeComposition' }],
       output: `
       import React from 'react'
       // The import "ModalHeader" has been added by codemod

@@ -121,9 +121,9 @@ export const tsNullKeyword: StringableASTNodeFn<TSESTree.TSNullKeyword> = ({
 
 export const tsUnknownKeyword: StringableASTNodeFn<
   TSESTree.TSUnknownKeyword
-> = ({ ...other }) => {
+> = (node) => {
   return {
-    ...other,
+    ...node,
     type: AST_NODE_TYPES.TSUnknownKeyword,
     toString: () => `unknown`,
   }
@@ -373,6 +373,9 @@ export const tsArrayType: StringableASTNodeFn<TSESTree.TSArrayType> = ({
   }
 }
 
+/**
+ * __TSSatisfiesExpression__
+ */
 export const tsSatisfiesExpression: StringableASTNodeFn<
   TSESTree.TSSatisfiesExpression
 > = ({ expression, typeAnnotation, ...other }) => {
@@ -382,5 +385,92 @@ export const tsSatisfiesExpression: StringableASTNodeFn<
     typeAnnotation,
     type: AST_NODE_TYPES.TSSatisfiesExpression,
     toString: () => `${node(expression)} satisfies ${node(typeAnnotation)}`,
+  }
+}
+
+/**
+ * __TSConditionalType__
+ */
+export const tsConditionalType: StringableASTNodeFn<
+  TSESTree.TSConditionalType
+> = ({ checkType, extendsType, trueType, falseType, ...other }) => {
+  return {
+    checkType,
+    extendsType,
+    trueType,
+    falseType,
+    ...other,
+    type: AST_NODE_TYPES.TSConditionalType,
+    toString: () =>
+      `${node(checkType)} extends ${node(extendsType)} ? ${node(
+        trueType
+      )} : ${node(falseType)}`,
+  }
+}
+
+/**
+ * __TSVoidKeyword__
+ * @example
+ * ```
+ * function x(): void {}
+ *               ^^^^
+ * ```
+ */
+export const tsVoidKeyword: StringableASTNodeFn<TSESTree.TSVoidKeyword> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSVoidKeyword,
+    toString: () => `void`,
+  }
+}
+
+/**
+ * __TSAbstractKeyword__
+ *
+ * @example
+ * ```
+ * abstract class X {}
+ * ^^^^^^^^
+ * ```
+ */
+export const tsAbstractKeyword: StringableASTNodeFn<
+  TSESTree.TSAbstractKeyword
+> = (node) => {
+  return {
+    ...node,
+    type: AST_NODE_TYPES.TSAbstractKeyword,
+    toString: () => `abstract`,
+  }
+}
+
+export const tsUndefinedKeyword: StringableASTNodeFn<
+  TSESTree.TSUndefinedKeyword
+> = ({ ...other }) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSUndefinedKeyword,
+    toString: () => `undefined`,
+  }
+}
+
+export const tsNeverKeyword: StringableASTNodeFn<TSESTree.TSNeverKeyword> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSNeverKeyword,
+    toString: () => 'never',
+  }
+}
+
+export const tsAsyncKeyword: StringableASTNodeFn<TSESTree.TSAsyncKeyword> = ({
+  ...other
+}) => {
+  return {
+    ...other,
+    type: AST_NODE_TYPES.TSAsyncKeyword,
+    toString: () => 'async',
   }
 }

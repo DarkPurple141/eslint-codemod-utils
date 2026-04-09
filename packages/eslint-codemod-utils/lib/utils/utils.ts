@@ -1,4 +1,3 @@
-import * as ESTree from 'estree-jsx'
 import {
   identifier,
   importDeclaration,
@@ -8,6 +7,7 @@ import {
 } from '../nodes'
 import type { StringableASTNode } from '../types'
 import { isNodeOfType } from './is-node-of-type'
+import { AST_NODE_TYPES, TSESTree as ESTree } from '@typescript-eslint/types'
 
 export function hasJSXAttribute(
   node: ESTree.JSXElement,
@@ -19,7 +19,8 @@ export function hasJSXAttribute(
 
   return node.openingElement.attributes.some(
     (attr) =>
-      isNodeOfType(attr, 'JSXAttribute') && attr.name.name === attributeName
+      isNodeOfType(attr, AST_NODE_TYPES.JSXAttribute) &&
+      attr.name.name === attributeName
   )
 }
 
@@ -28,7 +29,7 @@ export function hasJSXChild(
   childIdentifier: string
 ): boolean {
   const jsxIdentifierMatch =
-    isNodeOfType(node.openingElement.name, 'JSXIdentifier') &&
+    isNodeOfType(node.openingElement.name, AST_NODE_TYPES.JSXIdentifier) &&
     node.openingElement.name.name &&
     node.openingElement.name.name === childIdentifier
 
@@ -38,7 +39,7 @@ export function hasJSXChild(
       node.children &&
         node.children
           .filter((child): child is ESTree.JSXElement =>
-            isNodeOfType(child, 'JSXElement')
+            isNodeOfType(child, AST_NODE_TYPES.JSXElement)
           )
           .find((child) => hasJSXChild(child, childIdentifier))
     )
@@ -70,13 +71,13 @@ export function hasImportSpecifier(
 ) {
   if (importName === 'default') {
     return declaration.specifiers.some((spec) =>
-      isNodeOfType(spec, 'ImportDefaultSpecifier')
+      isNodeOfType(spec, AST_NODE_TYPES.ImportDefaultSpecifier)
     )
   }
 
   return declaration.specifiers
     .filter((spec): spec is ESTree.ImportSpecifier =>
-      isNodeOfType(spec, 'ImportSpecifier')
+      isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier)
     )
     .some((node) => node.imported.name === importName)
 }
@@ -104,19 +105,23 @@ export function insertImportSpecifier(
 
   const id = identifier(importName)
 
+  const newSpecifier =
+    importName === 'default'
+      ? // Narrowed above — `specifierAlias` is guaranteed non-undefined here.
+        importDefaultSpecifier({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          local: identifier(specifierAlias!),
+        })
+      : importSpecifier({
+          imported: identifier(importName),
+          local: specifierAlias ? identifier(specifierAlias) : id,
+        })
+
+  // `.concat` on a heterogenous specifier array widens to the union — build
+  // the array explicitly to keep types consistent with `WithoutType<…>`.
   return importDeclaration({
     ...declaration,
-    specifiers: declaration.specifiers.concat(
-      importName === 'default'
-        ? importDefaultSpecifier({
-            // @ts-expect-error no undefined on identifier
-            local: identifier(specifierAlias),
-          })
-        : importSpecifier({
-            imported: identifier(importName),
-            local: specifierAlias ? identifier(specifierAlias) : id,
-          })
-    ),
+    specifiers: [...declaration.specifiers, newSpecifier],
   })
 }
 
@@ -179,7 +184,7 @@ export function removeImportSpecifier(
       importName === 'default'
         ? spec.type !== 'ImportDefaultSpecifier'
         : !(
-            isNodeOfType(spec, 'ImportSpecifier') &&
+            isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier) &&
             spec.imported.name === importName
           )
     ),
