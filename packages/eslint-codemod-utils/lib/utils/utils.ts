@@ -105,19 +105,24 @@ export function insertImportSpecifier(
 
   const id = identifier(importName)
 
+  const newSpecifier =
+    importName === 'default'
+      ? // Narrowed above — `specifierAlias` is guaranteed non-undefined here.
+        importDefaultSpecifier({
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            local: identifier(specifierAlias!),
+          })
+      : importSpecifier({
+          imported: identifier(importName),
+          importKind: 'value',
+          local: specifierAlias ? identifier(specifierAlias) : id,
+        })
+
+  // `.concat` on a heterogenous specifier array widens to the union — build
+  // the array explicitly to keep types consistent with `WithoutType<…>`.
   return importDeclaration({
     ...declaration,
-    specifiers: declaration.specifiers.concat(
-      importName === 'default'
-        ? importDefaultSpecifier({
-            local: identifier(specifierAlias),
-          })
-        : importSpecifier({
-            imported: identifier(importName),
-            importKind: 'value',
-            local: specifierAlias ? identifier(specifierAlias) : id,
-          })
-    ),
+    specifiers: [...declaration.specifiers, newSpecifier],
   })
 }
 

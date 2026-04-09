@@ -1,11 +1,19 @@
-import { program } from '..'
+import { program, TSESTree, WithoutType } from '..'
 
 import programFixture from '../__fixtures__/program'
 
 describe('program', () => {
   test('basic', () => {
-    // @ts-expect-error This is fine it's just JSON
-    expect(String(program(programFixture))).eq(
+    // The fixture is plain JSON with string-literal `type` fields rather than
+    // `AST_NODE_TYPES` enum members, so widen via `unknown` into the loose
+    // input type that `program(…)` accepts.
+    expect(
+      String(
+        program(
+          programFixture as unknown as WithoutType<TSESTree.Program>
+        )
+      )
+    ).eq(
       `import A, { Welcome } from '@atlaskit/welcome'
 import { X } from './other'
 import tmm, * as x from 'thing'

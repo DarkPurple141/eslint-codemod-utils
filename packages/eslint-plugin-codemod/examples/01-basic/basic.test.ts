@@ -1,9 +1,10 @@
-import { RuleTester } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 
 import ecuRule from './ecu'
 import rule from './standard'
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 'latest',
@@ -18,12 +19,12 @@ ruleTester.run('basic/example', rule, {
   invalid: [
     {
       code: 'import world from "hello"',
-      errors: ['error'],
+      errors: [{ messageId: 'missingSemi' }],
       output: 'import world from "hello";',
     },
     {
       code: 'const x = 10',
-      errors: ['error'],
+      errors: [{ messageId: 'missingSemi' }],
       output: 'const x = 10;',
     },
   ],
@@ -34,12 +35,12 @@ ruleTester.run('basic/example-ecu', ecuRule, {
   invalid: [
     {
       code: 'import world from "hello"',
-      errors: ['error'],
+      errors: [{ messageId: 'missingSemi' }],
       output: 'import world from "hello";',
     },
     {
       code: 'const x = 10',
-      errors: ['error'],
+      errors: [{ messageId: 'missingSemi' }],
       output: 'const x = 10;',
     },
   ],

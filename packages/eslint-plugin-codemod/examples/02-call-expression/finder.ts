@@ -1,7 +1,11 @@
-import { CallExpression, isNodeOfType } from 'eslint-codemod-utils'
+import {
+  AST_NODE_TYPES,
+  isNodeOfType,
+  TSESTree,
+} from 'eslint-codemod-utils'
 
-export function findF(node: CallExpression) {
-  if (!isNodeOfType(node.callee, 'Identifier')) {
+export function findF(node: TSESTree.CallExpression) {
+  if (!isNodeOfType(node.callee, AST_NODE_TYPES.Identifier)) {
     return false
   }
 
@@ -13,7 +17,7 @@ export function findF(node: CallExpression) {
     return false
   }
 
-  if (isNodeOfType(node.arguments[0], 'ObjectExpression')) {
+  if (isNodeOfType(node.arguments[0], AST_NODE_TYPES.ObjectExpression)) {
     return false
   }
 

@@ -1,8 +1,9 @@
-import { RuleTester } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 
 import rule from '../rules/no-codemod-comment'
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     ecmaFeatures: {

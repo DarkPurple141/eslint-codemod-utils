@@ -116,8 +116,10 @@ import {
   tsUnknownKeyword,
   tsVoidKeyword,
 } from './ts-nodes'
+import type { TSESTree as TSESTreeImport } from '@typescript-eslint/types'
 import { identity } from './utils/identity'
 import { NodeMap } from './utils/node'
+import type { StringableASTNode as StringableASTNodeImport } from './types'
 
 export const DEFAULT_WHITESPACE = '\n  '
 
@@ -155,8 +157,14 @@ export const typeToHelperLookup = new Proxy(
     IfStatement: ifStatement,
     // TODO implement
     LabeledStatement: identity,
-    // @ts-expect-error
-    Literal: literal,
+    // `literal` is overloaded to accept raw primitives or `WithoutType<Literal>`.
+    // The dispatch map only ever calls the object-shaped overload, but the
+    // overload signatures make `satisfies NodeMap` unable to pick a single
+    // arity. Cast via `unknown` so the map entry satisfies the contract
+    // without widening the public `literal(…)` signature.
+    Literal: literal as unknown as (
+      n: TSESTreeImport.Literal
+    ) => StringableASTNodeImport<TSESTreeImport.Literal>,
     LogicalExpression: logicalExpression,
     /** this isn't a concrete node type */
     ForStatement: forStatement,
@@ -244,7 +252,11 @@ export const typeToHelperLookup = new Proxy(
     TSConditionalType: tsConditionalType,
     TSNeverKeyword: tsNeverKeyword,
     TSAsyncKeyword: tsAsyncKeyword,
-  } satisfies NodeMap,
+    // `NodeMap` covers every TSESTree node, but this dispatch table is
+    // incrementally implemented (see the Proxy below — unknown types throw
+    // an `UnknownNodeError` at runtime). Partial-satisfy so unimplemented
+    // variants are tolerated at the type level.
+  } satisfies Partial<NodeMap>,
   {
     // dynamic getter will fail and provide debug information
     get(target, name, receiver) {

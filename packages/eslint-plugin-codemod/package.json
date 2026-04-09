@@ -3,7 +3,8 @@
   "version": "0.0.17",
   "private": true,
   "dependencies": {
-    "eslint": "^7.0.0",
+    "@typescript-eslint/utils": "^5.45.0",
+    "eslint": "^8.0.0",
     "eslint-codemod-utils": "workspace:*"
   },
   "source": "src/index.ts",
@@ -13,7 +14,8 @@
     "test": "vitest --run"
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^5.45.0",
     "typescript": "^4.9.0",
-    "vitest": "latest"
+    "vitest": "^0.34.6"
   }
 }

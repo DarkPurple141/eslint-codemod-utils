@@ -1,7 +1,12 @@
-import { AST_NODE_TYPES, TSESTree as ESTree } from '@typescript-eslint/types'
+import {
+  AST_NODE_TYPES,
+  AST_TOKEN_TYPES,
+  TSESTree as ESTree,
+} from '@typescript-eslint/types'
 import { DEFAULT_WHITESPACE } from './constants'
 
 import type {
+  Loose,
   StringableASTNode,
   StringableASTNodeFn,
   WithoutType,
@@ -12,19 +17,25 @@ import { node } from './utils/node'
 export const whiteSpace = (loc?: ESTree.SourceLocation) =>
   ''.padStart(loc?.start?.column || 0, ' ')
 
-export const comments = (comments: ESTree.Comment[] = []) => ({
+export const comments = (comments: Loose<ESTree.Comment>[] = []) => ({
   comments,
   toString: () =>
     comments.length ? `${comments.map(comment).join('\n')}\n` : '',
 })
 
-export const comment = ({ value, type, loc, ...other }: ESTree.Comment) => ({
+export const comment = ({
+  value,
+  type,
+  loc,
+  ...other
+}: Loose<ESTree.Comment>) => ({
   ...other,
   value,
   type,
   toString: () =>
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    whiteSpace(loc!) + (type === 'Line' ? `// ${value}` : `/* ${value} */`),
+    whiteSpace(loc!) +
+    (type === AST_TOKEN_TYPES.Line ? `// ${value}` : `/* ${value} */`),
 })
 
 /**
@@ -240,28 +251,44 @@ export const jsxSpreadAttribute: StringableASTNodeFn<
   toString: () => `{...${node(argument)}}`,
 })
 
-export const jsxOpeningElement: StringableASTNodeFn<
-  ESTree.JSXOpeningElement
-> = ({ name, attributes = [], selfClosing = false, ...other }) => ({
-  ...other,
-  type: AST_NODE_TYPES.JSXOpeningElement,
+/**
+ * __JSXOpeningElement__
+ *
+ * Note: `leadingComments` is a parser-added extension (ESLint attaches it to
+ * the node during traversal). It's not part of `TSESTree.JSXOpeningElement`,
+ * but the library has historically supported rendering it so that lint fixers
+ * can preserve documentation comments on the opening tag. We accept it as an
+ * optional extra input field and render it before the opening tag.
+ */
+export const jsxOpeningElement = ({
   name,
-  attributes,
-  selfClosing,
-  toString: () =>
-    `<${
-      name.type === AST_NODE_TYPES.JSXIdentifier
-        ? jsxIdentifier(name)
-        : name.type === AST_NODE_TYPES.JSXMemberExpression
-        ? jsxMemberExpression(name)
-        : // namespaced name not yet implemeneted
-          name
-    }${
-      attributes && attributes.length
-        ? ' ' + attributes.map(node).map(String).join(' ')
-        : ''
-    }${selfClosing ? ' />' : '>'}`,
-})
+  attributes = [],
+  selfClosing = false,
+  leadingComments = [],
+  ...other
+}: WithoutType<ESTree.JSXOpeningElement> & {
+  leadingComments?: Loose<ESTree.Comment>[]
+}): StringableASTNode<ESTree.JSXOpeningElement> =>
+  ({
+    ...other,
+    type: AST_NODE_TYPES.JSXOpeningElement,
+    name,
+    attributes,
+    selfClosing,
+    toString: () =>
+      `${comments(leadingComments)}<${
+        name.type === AST_NODE_TYPES.JSXIdentifier
+          ? jsxIdentifier(name)
+          : name.type === AST_NODE_TYPES.JSXMemberExpression
+          ? jsxMemberExpression(name)
+          : // namespaced name not yet implemented
+            name
+      }${
+        attributes && attributes.length
+          ? ' ' + attributes.map(node).map(String).join(' ')
+          : ''
+      }${selfClosing ? ' />' : '>'}`,
+  } as StringableASTNode<ESTree.JSXOpeningElement>)
 
 /**
  * __JSXClosingElement__

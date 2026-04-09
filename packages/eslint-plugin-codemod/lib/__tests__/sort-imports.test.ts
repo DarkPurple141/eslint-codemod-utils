@@ -9,16 +9,18 @@
 // Requirements
 //------------------------------------------------------------------------------
 import rule from '../rules/sort-imports'
-import { RuleTester } from 'eslint'
+import { AST_NODE_TYPES } from 'eslint-codemod-utils'
+import { ESLintUtils } from '@typescript-eslint/utils'
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-    parserOptions: { ecmaVersion: 6, sourceType: 'module' },
-  }),
-  ignoreCaseArgs = [{ ignoreCase: true }]
+const ruleTester = new ESLintUtils.RuleTester({
+  parser: '@typescript-eslint/parser',
+  parserOptions: { ecmaVersion: 6, sourceType: 'module' },
+})
+const ignoreCaseArgs: [{ ignoreCase: true }] = [{ ignoreCase: true }]
 
 ruleTester.run('sort-imports', rule, {
   valid: [
@@ -67,7 +69,7 @@ ruleTester.run('sort-imports', rule, {
       errors: [
         {
           messageId: 'sortMembersAlphabetically',
-          type: 'ImportSpecifier',
+          type: AST_NODE_TYPES.ImportSpecifier,
         },
       ],
     },
@@ -77,7 +79,7 @@ ruleTester.run('sort-imports', rule, {
       errors: [
         {
           messageId: 'sortMembersAlphabetically',
-          type: 'ImportSpecifier',
+          type: AST_NODE_TYPES.ImportSpecifier,
         },
       ],
     },
@@ -105,7 +107,7 @@ bar,
       errors: [
         {
           messageId: 'sortMembersAlphabetically',
-          type: 'ImportSpecifier',
+          type: AST_NODE_TYPES.ImportSpecifier,
         },
       ],
     },

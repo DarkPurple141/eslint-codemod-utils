@@ -1,64 +1,112 @@
-import type { Rule } from 'eslint'
+import { ESLintUtils } from '@typescript-eslint/utils'
 import {
+  AST_NODE_TYPES,
   identifier,
   importDeclaration,
-  ImportDeclaration,
-  ImportDefaultSpecifier,
   importSpecifier,
   isNodeOfType,
-  JSXAttribute,
   jsxClosingElement,
   jsxElement,
   jsxExpressionContainer,
   jsxIdentifier,
   jsxOpeningElement,
   jsxText,
+  Loose,
+  TSESTree,
   whiteSpace,
 } from 'eslint-codemod-utils'
 
-const rule: Rule.RuleModule = {
+const createRule = ESLintUtils.RuleCreator(
+  (name) =>
+    `https://github.com/DarkPurple141/eslint-codemod-utils/tree/master/packages/eslint-plugin-codemod/${name}`
+)
+
+/**
+ * Normalise the `heading` prop value to a valid JSX child.
+ *
+ * `JSXAttribute.value` is `Literal | JSXExpression | null` where
+ * `JSXExpression = JSXEmptyExpression | JSXExpressionContainer | JSXSpreadChild`.
+ * The composition fix needs to insert it as a JSX child — a narrower set of
+ * types — so we translate each variant explicitly:
+ *
+ *  - string literal  → `JSXText`
+ *  - JSXElement      → the element itself (passed through)
+ *  - other expression → wrap in `JSXExpressionContainer`
+ */
+function renderHeadingChild(
+  value: TSESTree.JSXAttribute['value']
+): Loose<TSESTree.JSXChild>[] {
+  if (!value) {
+    return []
+  }
+
+  if (
+    isNodeOfType(value, AST_NODE_TYPES.Literal) &&
+    typeof value.value === 'string'
+  ) {
+    return [jsxText({ value: String(value.value), raw: value.raw })]
+  }
+
+  if (isNodeOfType(value, AST_NODE_TYPES.JSXElement)) {
+    return [jsxElement(value)]
+  }
+
+  // A `JSXExpressionContainer` can be reused as-is (it's already a JSX child).
+  if (isNodeOfType(value, AST_NODE_TYPES.JSXExpressionContainer)) {
+    return [value]
+  }
+
+  // Non-string literals (BigInt/Boolean/Null/Number/RegExp) are valid
+  // `Expression`s and can be wrapped into an expression container.
+  if (isNodeOfType(value, AST_NODE_TYPES.Literal)) {
+    return [jsxExpressionContainer({ expression: value })]
+  }
+
+  // `JSXEmptyExpression`/`JSXSpreadChild` don't translate into a sensible JSX
+  // child in this rewrite — skip them.
+  return []
+}
+
+const rule = createRule({
+  name: 'jsx/change-composition',
+  defaultOptions: [],
   meta: {
     type: 'suggestion',
     docs: {
       description:
         'Dummy rule that changes a component prop to a composed prop in a dummy component using ast-helpers',
-      recommended: true,
+      recommended: 'error',
     },
     fixable: 'code',
+    messages: {
+      changeComposition:
+        'A composition rewrite is required for <{{ local }} />.',
+    },
+    schema: [],
   },
   create(context) {
-    let importNode: ImportDeclaration | null = null
+    let importNode: TSESTree.ImportDeclaration | null = null
 
     return {
       ImportDeclaration(node) {
-        if (!node) return
-
         if (node.source.value === '@atlaskit/modal-dialog') {
           importNode = node
         }
       },
-      JSXElement(node: Rule.Node) {
+      JSXElement(node) {
         if (!importNode) {
-          return
-        }
-
-        if (!node) {
-          return
-        }
-
-        if (!isNodeOfType(node, 'JSXElement')) {
           return
         }
 
         const { openingElement } = node
 
-        if (!isNodeOfType(openingElement.name, 'JSXIdentifier')) {
+        if (!isNodeOfType(openingElement.name, AST_NODE_TYPES.JSXIdentifier)) {
           return
         }
 
         const localDefaultImport = importNode.specifiers.find(
-          (spec): spec is ImportDefaultSpecifier =>
-            spec.type === 'ImportDefaultSpecifier'
+          (spec): spec is TSESTree.ImportDefaultSpecifier =>
+            isNodeOfType(spec, AST_NODE_TYPES.ImportDefaultSpecifier)
         )
 
         if (openingElement.name.name !== localDefaultImport?.local.name) {
@@ -67,8 +115,10 @@ const rule: Rule.RuleModule = {
 
         // From here we're dealing with a JSX element of the right type
         const headingAttribute = openingElement.attributes.find(
-          (attr): attr is JSXAttribute =>
-            isNodeOfType(attr, 'JSXAttribute') && attr?.name?.name === 'heading'
+          (attr): attr is TSESTree.JSXAttribute =>
+            isNodeOfType(attr, AST_NODE_TYPES.JSXAttribute) &&
+            isNodeOfType(attr.name, AST_NODE_TYPES.JSXIdentifier) &&
+            attr.name.name === 'heading'
         )
 
         if (!headingAttribute) {
@@ -77,9 +127,11 @@ const rule: Rule.RuleModule = {
 
         context.report({
           node,
-          message: 'error',
+          messageId: 'changeComposition',
+          data: { local: localDefaultImport?.local.name ?? '' },
           fix(fixer) {
             const modalHeaderIdentifer = jsxIdentifier('ModalHeader')
+            const headingValue = headingAttribute.value
             const fixed =
               '(\n' +
               ''.padStart(node.loc?.start?.column || 0, ' ') +
@@ -88,23 +140,38 @@ const rule: Rule.RuleModule = {
                   range: node.range,
                   loc: node.loc,
                   openingElement: jsxOpeningElement({
-                    ...node?.openingElement,
+                    ...openingElement,
                     selfClosing: false,
-                    attributes: node.openingElement.attributes.filter(
+                    attributes: openingElement.attributes.filter(
                       (att) =>
                         !(
-                          att.type === 'JSXAttribute' &&
+                          isNodeOfType(att, AST_NODE_TYPES.JSXAttribute) &&
+                          isNodeOfType(
+                            att.name,
+                            AST_NODE_TYPES.JSXIdentifier
+                          ) &&
                           att.name.name === 'heading'
                         )
                     ),
                   }),
-                  closingElement: jsxClosingElement(
-                    node?.closingElement || node.openingElement
-                  ),
-                  children: (node.children || []).concat(
+                  closingElement: node.closingElement
+                    ? jsxClosingElement(node.closingElement)
+                    : jsxClosingElement({ name: openingElement.name }),
+                  children: [
+                    ...(node.children || []),
                     jsxElement({
-                      // @ts-expect-error
-                      loc: { start: { column: node.loc.start.column + 2 } },
+                      // Synthesise a `loc` whose column is offset from the
+                      // parent `<Modal>` by two spaces, so that `whiteSpace`
+                      // inside `jsxElement.toString()` indents the nested
+                      // `<ModalHeader>` one level deeper than its parent.
+                      // Only the start column is consulted at render time.
+                      loc: {
+                        start: {
+                          column: (node.loc?.start?.column ?? 0) + 2,
+                          line: 0,
+                        },
+                        end: { column: 0, line: 0 },
+                      },
                       openingElement: jsxOpeningElement({
                         name: modalHeaderIdentifer,
                         selfClosing: false,
@@ -113,22 +180,9 @@ const rule: Rule.RuleModule = {
                       closingElement: jsxClosingElement({
                         name: modalHeaderIdentifer,
                       }),
-                      children: [
-                        // JSXText case
-                        headingAttribute?.value?.type === 'Literal' &&
-                        typeof headingAttribute.value.value === 'string'
-                          ? // @ts-expect-error
-                            jsxText(headingAttribute.value)
-                          : headingAttribute?.value?.type === 'JSXElement'
-                          ? jsxElement(headingAttribute.value)
-                          : jsxExpressionContainer({
-                              // @ts-expect-error
-                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                              expression: headingAttribute.value!,
-                            }),
-                      ],
-                    })
-                  ),
+                      children: renderHeadingChild(headingValue),
+                    }),
+                  ],
                 })
               ) +
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -136,7 +190,7 @@ const rule: Rule.RuleModule = {
 
             const fixes = [fixer.replaceText(node, fixed)]
 
-            // should never occurr
+            // should never occur
             if (!importNode) {
               return fixes
             }
@@ -144,13 +198,15 @@ const rule: Rule.RuleModule = {
             if (
               !importNode.specifiers.some(
                 (spec) =>
-                  spec.type === 'ImportSpecifier' &&
+                  isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier) &&
+                  isNodeOfType(spec.imported, AST_NODE_TYPES.Identifier) &&
                   spec.imported.name === 'ModalHeader'
               )
             ) {
               const namedImport = importSpecifier({
                 local: identifier('ModalHeader'),
                 imported: identifier('ModalHeader'),
+                importKind: 'value',
               })
 
               fixes.push(
@@ -159,9 +215,7 @@ const rule: Rule.RuleModule = {
                   String(
                     importDeclaration({
                       ...importNode,
-                      specifiers: (importNode.specifiers || []).concat(
-                        namedImport
-                      ),
+                      specifiers: [...importNode.specifiers, namedImport],
                     })
                   )
                 )
@@ -180,6 +234,6 @@ const rule: Rule.RuleModule = {
       },
     }
   },
-}
+})
 
 export default rule

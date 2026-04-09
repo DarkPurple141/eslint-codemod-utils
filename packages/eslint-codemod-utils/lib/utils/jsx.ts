@@ -7,46 +7,79 @@ import {
   jsxOpeningElement,
   literal,
 } from '..'
-import type { StringableASTNode } from '../types'
+import type { Loose, StringableASTNode } from '../types'
+
+/**
+ * A `jsx(…)` runtime-style factory. Accepts a `type` (string or function
+ * component) plus props/children and returns a `StringableASTNode<JSXElement>`.
+ *
+ * `children` are typed as `JsxChild` so that both raw string/number text and
+ * nested `jsx()` results can be passed through uniformly.
+ */
+type JsxProps = Record<string, unknown> & {
+  children?: JsxChild | JsxChild[]
+}
+type JsxChild =
+  | StringableASTNode<ESTree.JSXElement>
+  | Loose<ESTree.JSXChild>
+  | string
+  | number
+  | false
+  | null
+  | undefined
 
 export const jsx = function (
-  type: string | ((...args: any[]) => StringableASTNode<ESTree.JSXElement>),
-  props: Record<string, unknown>,
-  ...children: any[]
+  type:
+    | string
+    | ((...args: any[]) => StringableASTNode<ESTree.JSXElement>),
+  props: JsxProps,
+  ...children: JsxChild[]
 ): StringableASTNode<ESTree.JSXElement> | undefined {
   if (!type) {
     return
   }
 
   if (typeof type === 'function') {
-    // merge props and children
+    const existing = Array.isArray(props.children)
+      ? props.children
+      : props.children
+      ? [props.children]
+      : []
     const componentProps = {
       ...props,
-      // @ts-expect-error
-      children: (props.children || []).concat(children),
+      children: [...existing, ...children],
     }
-    // render the function
-    const element = type(componentProps)
-    return element
+    return type(componentProps)
   }
 
-  const filteredChildren = children.filter(Boolean)
-  const selfClosing = !Boolean(filteredChildren.length)
+  const filteredChildren = children.filter(
+    (child): child is Exclude<JsxChild, false | null | undefined> =>
+      Boolean(child)
+  )
+  const selfClosing = filteredChildren.length === 0
 
   const name = jsxIdentifier(type)
   return jsxElement({
     openingElement: jsxOpeningElement({
       name,
       selfClosing,
-      attributes: Object.keys(props).map((prop) => {
-        return jsxAttribute({
-          name: jsxIdentifier(prop),
-          value: literal('hello'),
-        })
-      }),
+      attributes: Object.keys(props)
+        .filter((key) => key !== 'children')
+        .map((prop) => {
+          return jsxAttribute({
+            name: jsxIdentifier(prop),
+            value: literal('hello'),
+          })
+        }),
     }),
     closingElement: selfClosing ? null : jsxClosingElement({ name }),
-    // @ts-expect-error
-    children: filteredChildren.map(jsx),
+    children: filteredChildren
+      .map((child): Loose<ESTree.JSXChild> | undefined => {
+        if (typeof child === 'string' || typeof child === 'number') {
+          return undefined
+        }
+        return child
+      })
+      .filter((child): child is Loose<ESTree.JSXChild> => Boolean(child)),
   })
 }

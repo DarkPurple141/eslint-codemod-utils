@@ -1,7 +1,7 @@
-import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/types'
-import * as ESTree from 'estree-jsx'
+import { AST_NODE_TYPES, TSESTree as ESTree } from '@typescript-eslint/types'
 
 import type {
+  Loose,
   StringableASTNode,
   StringableASTNodeFn,
   WithoutType,
@@ -30,10 +30,12 @@ import { isNodeOfType } from './utils'
  *
  * @returns {ESTree.CallExpression}
  */
-export const callExpression: StringableASTNodeFn<
-  ESTree.SimpleCallExpression,
-  'optional'
-> = ({ arguments: calleeArgs, callee, optional = false, ...other }) => {
+export const callExpression: StringableASTNodeFn<ESTree.CallExpression> = ({
+  arguments: calleeArgs,
+  callee,
+  optional = false,
+  ...other
+}) => {
   return {
     ...other,
     arguments: calleeArgs,
@@ -139,8 +141,7 @@ export const sequenceExpression: StringableASTNodeFn<
  * @returns {ESTree.ArrowFunctionExpression}
  */
 export const arrowFunctionExpression: StringableASTNodeFn<
-  ESTree.ArrowFunctionExpression,
-  'async' | 'generator'
+  ESTree.ArrowFunctionExpression
 > = ({
   async = false,
   generator = false,
@@ -187,8 +188,7 @@ export const taggedTemplateExpression: StringableASTNodeFn<
 }
 
 export const functionExpression: StringableASTNodeFn<
-  ESTree.FunctionExpression,
-  'generator' | 'async'
+  ESTree.FunctionExpression
 > = ({ async = false, generator = false, body, params, id, ...other }) => {
   return {
     ...other,
@@ -251,15 +251,26 @@ export const throwStatement: StringableASTNodeFn<ESTree.ThrowStatement> = ({
     ...other,
     argument,
     type: AST_NODE_TYPES.ThrowStatement,
-    toString: () =>
-      `throw${
-        argument
-          ? // @ts-expect-error
-            argument.type === 'JSXElement' || argument.type === 'JSXFragment'
-            ? ` (${DEFAULT_WHITESPACE}${node(argument)}${DEFAULT_WHITESPACE})`
-            : ` ${node(argument)}`
-          : ''
-      };`,
+    toString: () => {
+      if (!argument) {
+        return `throw;`
+      }
+      // `TSESTree.ThrowStatement.argument` is typed as
+      // `Statement | TSAsExpression | null` in `@typescript-eslint/types@5.45`
+      // which notably excludes JSX nodes, even though `espree` happily emits
+      // `JSXElement`/`JSXFragment` here at runtime for `throw (<el />)`. Cast
+      // the discriminant to the full `AST_NODE_TYPES` enum so the comparison
+      // reflects the real parser output rather than the narrow declared type.
+      const argumentType = argument.type as AST_NODE_TYPES
+      const needsParens =
+        argumentType === AST_NODE_TYPES.JSXElement ||
+        argumentType === AST_NODE_TYPES.JSXFragment
+      return `throw${
+        needsParens
+          ? ` (${DEFAULT_WHITESPACE}${node(argument)}${DEFAULT_WHITESPACE})`
+          : ` ${node(argument)}`
+      };`
+    },
   }
 }
 
@@ -490,6 +501,11 @@ export const importDefaultSpecifier: StringableASTNodeFn<
 export const exportNamedDeclaration: StringableASTNodeFn<
   ESTree.ExportNamedDeclaration
 > = ({ declaration, specifiers, source, ...other }) => {
+  // `ExportNamedDeclaration` is a discriminated union with mutually-exclusive
+  // `source`/`declaration`/`specifiers` invariants that depend on runtime
+  // values. TypeScript can't narrow to one variant here, so fall back to a
+  // structural cast — the runtime shape is always valid for exactly one
+  // variant depending on the inputs the caller provided.
   return {
     ...other,
     declaration,
@@ -502,7 +518,7 @@ export const exportNamedDeclaration: StringableASTNodeFn<
           ? `{ ${specifiers.map(node).map(String).join(', ')} }`
           : ''
       }${source ? `from ${node(source)}` : ''}`,
-  }
+  } as StringableASTNode<ESTree.ExportNamedDeclaration>
 }
 
 /**
@@ -546,8 +562,7 @@ export const exportDefaultDeclaration: StringableASTNodeFn<
  * @returns {ESTree.ExportAllDeclaration}
  */
 export const exportAllDeclaration: StringableASTNodeFn<
-  ESTree.ExportAllDeclaration,
-  'exported'
+  ESTree.ExportAllDeclaration
 > = ({ source, exported = null, ...other }) => {
   return {
     ...other,
@@ -576,11 +591,12 @@ export const exportSpecifier: StringableASTNodeFn<ESTree.ExportSpecifier> = ({
   }
 }
 
-export const importSpecifier: StringableASTNodeFn<
-  ESTree.ImportSpecifier & {
-    importKind?: TSESTree.ImportSpecifier['importKind']
-  }
-> = ({ imported, local, importKind = 'value', ...other }) => ({
+export const importSpecifier: StringableASTNodeFn<ESTree.ImportSpecifier> = ({
+  imported,
+  local,
+  importKind = 'value',
+  ...other
+}) => ({
   ...other,
   type: AST_NODE_TYPES.ImportSpecifier,
   imported,
@@ -648,8 +664,11 @@ export const arrayPattern: StringableASTNodeFn<ESTree.ArrayPattern> = ({
     type: AST_NODE_TYPES.ArrayPattern,
     elements,
     toString: () =>
-      // @ts-expect-error
-      `[${elements.filter(Boolean).map(node).map(String).join(', ')}]`,
+      `[${elements
+        .filter((node): node is ESTree.DestructuringPattern => node !== null)
+        .map(node)
+        .map(String)
+        .join(', ')}]`,
   }
 }
 
@@ -665,7 +684,6 @@ export const updateExpression: StringableASTNodeFn<ESTree.UpdateExpression> = ({
     operator,
     prefix,
     type: AST_NODE_TYPES.UpdateExpression,
-
     toString: () =>
       `${
         prefix ? `${operator}${node(argument)}` : `${node(argument)}${operator}`
@@ -703,10 +721,7 @@ export const newExpression: StringableASTNodeFn<ESTree.NewExpression> = ({
   toString: () => `new ${node(callee)}(${argumentsParam.map(node).join(', ')})`,
 })
 
-export const property: StringableASTNodeFn<
-  ESTree.Property,
-  'kind' | 'computed' | 'shorthand' | 'method'
-> = ({
+export const property: StringableASTNodeFn<ESTree.Property> = ({
   kind = 'init',
   key,
   value,
@@ -715,6 +730,9 @@ export const property: StringableASTNodeFn<
   shorthand = false,
   ...other
 }) => {
+  // `Property` is a union discriminated on `computed: boolean`. The runtime
+  // value of `computed` chooses the variant, but TS can't narrow a runtime
+  // boolean so structurally cast the return.
   return {
     ...other,
     key,
@@ -728,11 +746,12 @@ export const property: StringableASTNodeFn<
       `${kind === 'init' ? '' : kind + ' '}${computed ? '[' : ''}${node(key)}${
         computed ? ']' : ''
       }${kind !== 'init' ? '' : ': '}${
-        kind !== 'init' && isNodeOfType(value, 'FunctionExpression')
+        kind !== 'init' &&
+        isNodeOfType(value, AST_NODE_TYPES.FunctionExpression)
           ? methodOrPropertyFn(value)
           : node(value)
       }`,
-  }
+  } as StringableASTNode<ESTree.Property>
 }
 
 /**
@@ -846,23 +865,29 @@ export const emptyStatement: StringableASTNodeFn<ESTree.EmptyStatement> = ({
   toString: () => `;`,
 })
 
-export const memberExpression: StringableASTNodeFn<
-  ESTree.MemberExpression,
-  'computed' | 'optional'
-> = ({ object, property, computed = false, optional = false, ...other }) => ({
-  ...other,
-  type: AST_NODE_TYPES.MemberExpression,
-  computed,
-  optional,
+export const memberExpression: StringableASTNodeFn<ESTree.MemberExpression> = ({
   object,
   property,
-  toString: () => {
-    const translatedNode = node(property)
-    return `${node(object)}${
-      computed ? `[${translatedNode}]` : `.${translatedNode}`
-    }`
-  },
-})
+  computed = false,
+  optional = false,
+  ...other
+}) =>
+  // `MemberExpression` is a union discriminated on `computed` — see the note
+  // on `property` above for why a structural cast is needed here.
+  ({
+    ...other,
+    type: AST_NODE_TYPES.MemberExpression,
+    computed,
+    optional,
+    object,
+    property,
+    toString: () => {
+      const translatedNode = node(property)
+      return `${node(object)}${
+        computed ? `[${translatedNode}]` : `.${translatedNode}`
+      }`
+    },
+  } as StringableASTNode<ESTree.MemberExpression>)
 
 export const logicalExpression: StringableASTNodeFn<
   ESTree.LogicalExpression
@@ -929,9 +954,7 @@ export const templateElement: StringableASTNodeFn<ESTree.TemplateElement> = ({
 }
 
 export const importDeclaration: StringableASTNodeFn<
-  ESTree.ImportDeclaration & {
-    importKind?: TSESTree.ImportDeclaration['importKind']
-  }
+  ESTree.ImportDeclaration
 > = ({ specifiers, source, ...other }) => ({
   ...other,
   type: AST_NODE_TYPES.ImportDeclaration,
@@ -944,16 +967,16 @@ export const importDeclaration: StringableASTNodeFn<
 
     const defaultSpecifier = specifiers.find(
       (spec): spec is ESTree.ImportDefaultSpecifier =>
-        isNodeOfType(spec, 'ImportDefaultSpecifier')
+        isNodeOfType(spec, AST_NODE_TYPES.ImportDefaultSpecifier)
     )
     const otherSpecifiers = specifiers.filter(
       (spec): spec is ESTree.ImportSpecifier =>
-        isNodeOfType(spec, 'ImportSpecifier')
+        isNodeOfType(spec, AST_NODE_TYPES.ImportSpecifier)
     )
 
     const nameSpaceSpecifier = specifiers.find(
       (node): node is ESTree.ImportNamespaceSpecifier =>
-        isNodeOfType(node, 'ImportNamespaceSpecifier')
+        isNodeOfType(node, AST_NODE_TYPES.ImportNamespaceSpecifier)
     )
 
     const seperator =
@@ -1010,29 +1033,29 @@ export const regExpLiteral: StringableASTNodeFn<ESTree.RegExpLiteral> = ({
   toString: () => raw || String(value),
 })
 
-export const literal = (
-  n: WithoutType<ESTree.Literal> | (string | number | boolean | null)
-): StringableASTNode<ESTree.Literal> => {
-  if (
-    typeof n === 'string' ||
-    typeof n === 'boolean' ||
-    typeof n === 'number' ||
-    n === null
-  ) {
+export const stringLiteral: StringableASTNodeFn<ESTree.StringLiteral> = ({
+  raw,
+  ...node
+}) => {
+  return {
+    ...node,
+    raw,
+    type: AST_NODE_TYPES.Literal,
+    toString: () => raw,
+  }
+}
+
+export const booleanLiteral = (
+  n: boolean | WithoutType<ESTree.BooleanLiteral>
+): StringableASTNode<ESTree.BooleanLiteral> => {
+  if (typeof n === 'boolean') {
     return {
-      raw: typeof n === 'string' ? `\'${n}\'` : String(n),
       value: n,
+      raw: String(n) as 'true' | 'false',
       type: AST_NODE_TYPES.Literal,
       toString: () => String(n),
     }
-  }
-
-  if ('bigint' in n) {
-    return bigIntLiteral(n as ESTree.BigIntLiteral)
-  } else if ('regex' in n) {
-    return regExpLiteral(n as ESTree.RegExpLiteral)
   } else {
-    // @ts-expect-error
     return {
       ...n,
       type: AST_NODE_TYPES.Literal,
@@ -1041,11 +1064,132 @@ export const literal = (
   }
 }
 
+export const numberLiteral = (
+  n: number | WithoutType<ESTree.NumberLiteral>
+): StringableASTNode<ESTree.NumberLiteral> => {
+  if (typeof n === 'number') {
+    return {
+      value: n,
+      raw: String(n),
+      type: AST_NODE_TYPES.Literal,
+      toString: () => String(n),
+    }
+  }
+
+  return {
+    ...n,
+    type: AST_NODE_TYPES.Literal,
+    toString: () => n.raw || String(n.value),
+  }
+}
+
+export const nullLiteral = (
+  n: null | WithoutType<ESTree.NullLiteral>
+): StringableASTNode<ESTree.NullLiteral> => {
+  if (n === null) {
+    return {
+      raw: 'null',
+      value: null,
+      type: AST_NODE_TYPES.Literal,
+      toString: () => 'null',
+    }
+  }
+
+  return {
+    ...n,
+    type: AST_NODE_TYPES.Literal,
+    toString: () => 'null',
+  }
+}
+
+/**
+ * __Literal__
+ *
+ * Polymorphic helper for building a `Literal` node. Call it with a raw JS
+ * primitive (`'x'`, `42`, `true`, `null`) or with a pre-built `WithoutType<…>`
+ * node to construct the corresponding `StringLiteral`, `NumberLiteral`,
+ * `BooleanLiteral`, `NullLiteral`, `BigIntLiteral`, or `RegExpLiteral`.
+ *
+ * Overloads are used so that call sites get a narrowed return type:
+ * `literal('x')` is `StringableASTNode<StringLiteral>`, not a wide union —
+ * this matters when passing the result into helpers that expect a specific
+ * variant (e.g. `importDeclaration({ source: literal('x') })` where `source`
+ * is typed as `StringLiteral`).
+ */
+export function literal(n: string): StringableASTNode<ESTree.StringLiteral>
+export function literal(n: number): StringableASTNode<ESTree.NumberLiteral>
+export function literal(n: boolean): StringableASTNode<ESTree.BooleanLiteral>
+export function literal(n: null): StringableASTNode<ESTree.NullLiteral>
+export function literal(
+  n: WithoutType<ESTree.BigIntLiteral>
+): StringableASTNode<ESTree.BigIntLiteral>
+export function literal(
+  n: WithoutType<ESTree.RegExpLiteral>
+): StringableASTNode<ESTree.RegExpLiteral>
+export function literal(
+  n: WithoutType<ESTree.StringLiteral>
+): StringableASTNode<ESTree.StringLiteral>
+export function literal(
+  n: WithoutType<ESTree.NumberLiteral>
+): StringableASTNode<ESTree.NumberLiteral>
+export function literal(
+  n: WithoutType<ESTree.BooleanLiteral>
+): StringableASTNode<ESTree.BooleanLiteral>
+export function literal(
+  n: WithoutType<ESTree.NullLiteral>
+): StringableASTNode<ESTree.NullLiteral>
+export function literal(
+  n: string | number | boolean | null | WithoutType<ESTree.Literal>
+): StringableASTNode<ESTree.Literal> {
+  if (typeof n === 'string') {
+    return stringLiteral({ value: n, raw: `'${n}'` })
+  }
+
+  if (typeof n === 'boolean') {
+    return booleanLiteral(n)
+  }
+
+  if (typeof n === 'number') {
+    return numberLiteral(n)
+  }
+
+  if (n === null) {
+    return nullLiteral(n)
+  }
+
+  // At this point `n` is `WithoutType<Literal>` — a discriminated union across
+  // the concrete literal variants. Dispatch by the discriminator field. The
+  // `in` narrowing loses `WithoutType<…>` through the distributive intersection
+  // produced by `Loose<…>`, so re-assert the concrete shape.
+  if ('bigint' in n) {
+    return bigIntLiteral(n as WithoutType<ESTree.BigIntLiteral>)
+  }
+  if ('regex' in n) {
+    return regExpLiteral(n as WithoutType<ESTree.RegExpLiteral>)
+  }
+  if (typeof n.value === 'string') {
+    return stringLiteral(n as WithoutType<ESTree.StringLiteral>)
+  }
+  if (typeof n.value === 'number') {
+    return numberLiteral(n as WithoutType<ESTree.NumberLiteral>)
+  }
+  if (typeof n.value === 'boolean') {
+    return booleanLiteral(n as WithoutType<ESTree.BooleanLiteral>)
+  }
+  if (n.value === null) {
+    return nullLiteral(n as WithoutType<ESTree.NullLiteral>)
+  }
+
+  // Unreachable in well-typed callers — fall back to stringifying as a string
+  // literal so this degrades gracefully at runtime.
+  return stringLiteral(n as WithoutType<ESTree.StringLiteral>)
+}
+
 export const identifier = (
   param: WithoutType<ESTree.Identifier> | string
 ): StringableASTNode<ESTree.Identifier> => {
   const name = typeof param === 'string' ? param : param.name
-  const other = typeof param === 'object' ? param : ({} as any)
+  const other = typeof param === 'object' ? param : {}
   return {
     ...other,
     type: AST_NODE_TYPES.Identifier,
@@ -1125,7 +1269,6 @@ export const templateLiteral: StringableASTNodeFn<ESTree.TemplateLiteral> = ({
   }
   return {
     ...other,
-
     type: AST_NODE_TYPES.TemplateLiteral,
     quasis,
     expressions,
@@ -1283,8 +1426,7 @@ export const staticBlock: StringableASTNodeFn<ESTree.StaticBlock> = ({
 }
 
 export const functionDeclaration: StringableASTNodeFn<
-  ESTree.FunctionDeclaration,
-  'generator' | 'async'
+  ESTree.FunctionDeclaration
 > = ({ body, async = false, id, generator = false, params, ...other }) => ({
   ...other,
   type: AST_NODE_TYPES.FunctionDeclaration,
@@ -1303,8 +1445,10 @@ export const functionDeclaration: StringableASTNodeFn<
 export const methodOrPropertyFn = ({
   params,
   body,
-}: ESTree.FunctionExpression) => {
-  return `(${params.map(node).join(', ')}) ${node(body)}`
+}:
+  | Loose<ESTree.FunctionExpression>
+  | Loose<ESTree.TSEmptyBodyFunctionExpression>) => {
+  return `(${params.map(node).join(', ')}) ${body ? node(body) : `{}`}`
 }
 
 export const methodDefinition: StringableASTNodeFn<ESTree.MethodDefinition> = ({
@@ -1314,6 +1458,8 @@ export const methodDefinition: StringableASTNodeFn<ESTree.MethodDefinition> = ({
   value,
   ...other
 }) => {
+  // `MethodDefinition` is a union discriminated on `computed: boolean` — TS
+  // can't narrow a runtime boolean to one variant, so cast the result.
   return {
     ...other,
     computed,
@@ -1323,12 +1469,14 @@ export const methodDefinition: StringableASTNodeFn<ESTree.MethodDefinition> = ({
     type: AST_NODE_TYPES.MethodDefinition,
     toString: () =>
       `${computed ? `[${node(key)}]` : node(key)} ${methodOrPropertyFn(value)}`,
-  }
+  } as StringableASTNode<ESTree.MethodDefinition>
 }
 
 export const propertyDefinition: StringableASTNodeFn<
   ESTree.PropertyDefinition
 > = ({ computed, key, static: staticKeyWord, value, ...other }) => {
+  // `PropertyDefinition` is a union discriminated on `computed: boolean` —
+  // cast the structural return to satisfy the union.
   return {
     ...other,
     computed,
@@ -1337,7 +1485,7 @@ export const propertyDefinition: StringableASTNodeFn<
     value,
     type: AST_NODE_TYPES.PropertyDefinition,
     toString: () => `UNIMPLEMENTED`,
-  }
+  } as StringableASTNode<ESTree.PropertyDefinition>
 }
 
 export const classBody: StringableASTNodeFn<ESTree.ClassBody> = ({
@@ -1402,4 +1550,23 @@ export const program: StringableASTNodeFn<ESTree.Program> = ({
   type: AST_NODE_TYPES.Program,
   toString: () => body.map(node).map(String).join('\n'),
   body,
+})
+
+export const privateIdentifier: StringableASTNodeFn<
+  ESTree.PrivateIdentifier
+> = ({ name, ...other }) => ({
+  ...other,
+  type: AST_NODE_TYPES.PrivateIdentifier,
+  name,
+  toString: () => `#${name}`,
+})
+
+export const decorator: StringableASTNodeFn<ESTree.Decorator> = ({
+  expression,
+  ...other
+}) => ({
+  expression,
+  ...other,
+  type: AST_NODE_TYPES.Decorator,
+  toString: () => `@${node(expression)}`,
 })

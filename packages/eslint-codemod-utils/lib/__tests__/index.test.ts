@@ -489,8 +489,13 @@ describe('jsxElement', () => {
                 }),
                 children: [
                   jsxElement({
-                    // @ts-expect-error
-                    loc: { start: { column: 4 } },
+                    // Only `start.column` is consulted by `jsxElement.toString()`
+                    // for indentation — the rest of the `SourceLocation` is
+                    // padded to keep the `TSESTree.SourceLocation` shape.
+                    loc: {
+                      start: { column: 4, line: 0 },
+                      end: { column: 0, line: 0 },
+                    },
                     children: [jsxText({ value: 'Hi', raw: '"Hi"' })],
                     closingElement: jsxClosingElement({
                       name: jsxIdentifier({ name: 'VeryNested' }),

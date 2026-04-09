@@ -4,6 +4,32 @@ on:
     branches:
       - master
 
+# OIDC-based publishing with npm trusted publishers.
+# See: https://docs.npmjs.com/trusted-publishers
+#
+# Prerequisites (configure once in the npm UI, not in this file):
+#   1. On npmjs.com → package settings → "Trusted publishers" → add a GitHub
+#      Actions publisher pointing at:
+#        - organization/repo: DarkPurple141/eslint-codemod-utils
+#        - workflow file:      .github/workflows/publish.yml
+#        - environment:        Release  (matches `environment:` below)
+#   2. The package must be public for provenance attestations.
+#
+# With the above in place, the workflow can publish without any long-lived
+# NPM_TOKEN secret — npm CLI (>= 11.5.1) exchanges the GitHub OIDC token
+# ambient in the runner for a short-lived npm publish token.
+
+permissions:
+  # `id-token: write` lets the runner mint an OIDC token that npm can exchange
+  # for a short-lived publish credential. This is what replaces NPM_TOKEN.
+  id-token: write
+  # `contents: write` is required by changesets/action to push the version
+  # bump commit / tags back to the repo.
+  contents: write
+  # `pull-requests: write` is required by changesets/action to open the
+  # "Version Packages" PR.
+  pull-requests: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -13,31 +39,50 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 7
-      - name: Set node version to 18.x
+          version: 9
+
+      - name: Set node version to 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           registry-url: https://registry.npmjs.org/
-      - name: Setup npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            email=alex.hinds141@gmail.com
-            //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          cache: pnpm
+
+      # npm CLI must be >= 11.5.1 to participate in the OIDC token exchange.
+      # Node 22 LTS ships with npm 10.x, so upgrade the global npm to the
+      # latest stable release before any publish step runs.
+      - name: Upgrade npm to a version that supports OIDC trusted publishing
+        run: npm install --global npm@latest
+
       - name: Install dependencies
-        run: pnpm install
-      - name: Publish to npm
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm -r build
+
+      - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
+          # Bumps versions + writes CHANGELOGs on a PR.
           version: pnpm run version
-          publish: pnpm publish -r
+          # When the version PR is merged, changesets/action calls this to
+          # actually publish. `pnpm run release` is `pnpm changeset publish`,
+          # which calls `npm publish` for each bumped, non-private package.
+          # npm CLI (upgraded above to a version that supports OIDC trusted
+          # publishers) exchanges the ambient GitHub OIDC token for an npm
+          # publish credential automatically.
+          publish: pnpm run release
+          commit: 'chore: release packages'
+          title: 'chore: release packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Opt into npm provenance attestations for every publish invoked
+          # by `changeset publish` / `npm publish`. This only succeeds when
+          # the workflow also has `permissions: id-token: write` (above).
+          NPM_CONFIG_PROVENANCE: 'true'
+          # NB: no NODE_AUTH_TOKEN / NPM_TOKEN — OIDC replaces both.
