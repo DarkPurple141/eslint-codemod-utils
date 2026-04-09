@@ -59,9 +59,6 @@ describe('exportAllDeclaration', () => {
     expect(
       String(
         exportAllDeclaration({
-          exported: null,
-          assertions: [],
-          exportKind: 'value',
           source: literal('@atlaskit/modal-dialog'),
         })
       )
@@ -73,8 +70,6 @@ describe('exportAllDeclaration', () => {
       String(
         exportAllDeclaration({
           exported: identifier('modal'),
-          exportKind: 'value',
-          assertions: [],
           source: literal('@atlaskit/modal-dialog'),
         })
       )
@@ -88,8 +83,6 @@ describe('importDeclaration', () => {
       String(
         importDeclaration({
           specifiers: [],
-          assertions: [],
-          importKind: 'value',
           source: literal('@atlaskit/modal-dialog'),
         })
       )
@@ -110,11 +103,8 @@ describe('importDeclaration', () => {
     expect(
       String(
         importDeclaration({
-          importKind: 'value',
-          assertions: [],
           specifiers: [
             importSpecifier({
-              importKind: 'value',
               imported: identifier({ name: 'Hello' }),
               local: identifier({ name: 'Hello' }),
             }),
@@ -134,8 +124,6 @@ describe('importDeclaration', () => {
               local: identifier({ name: 'Hello' }),
             }),
           ],
-          assertions: [],
-          importKind: 'value',
           source: literal('@atlaskit/modal-dialog'),
         })
       )
@@ -146,14 +134,11 @@ describe('importDeclaration', () => {
     expect(
       String(
         importDeclaration({
-          assertions: [],
-          importKind: 'value',
           specifiers: [
             importDefaultSpecifier({
               local: identifier({ name: 'Hello' }),
             }),
             importSpecifier({
-              importKind: 'value',
               imported: identifier({ name: 'Bongo' }),
               local: identifier({ name: 'Bongo' }),
             }),
@@ -168,23 +153,18 @@ describe('importDeclaration', () => {
     expect(
       String(
         importDeclaration({
-          assertions: [],
-          importKind: 'value',
           specifiers: [
             importSpecifier({
               imported: identifier({ name: 'Bongo' }),
               local: identifier({ name: 'Bongo' }),
-              importKind: 'value',
             }),
             importSpecifier({
               imported: identifier({ name: 'Congo' }),
               local: identifier({ name: 'Congo' }),
-              importKind: 'value',
             }),
             importSpecifier({
               imported: identifier({ name: 'Jongo' }),
               local: identifier({ name: 'Jongo' }),
-              importKind: 'value',
             }),
           ],
           source: literal('@atlaskit/modal-dialog'),
@@ -196,23 +176,18 @@ describe('importDeclaration', () => {
   test('with aliasing', () => {
     expect(
       importDeclaration({
-        importKind: 'value',
-        assertions: [],
         specifiers: [
           importSpecifier({
             imported: identifier({ name: 'Bongo' }),
             local: identifier({ name: 'BongoMan' }),
-            importKind: 'value',
           }),
           importSpecifier({
             imported: identifier({ name: 'Congo' }),
             local: identifier({ name: 'CongoMan' }),
-            importKind: 'value',
           }),
           importSpecifier({
             imported: identifier({ name: 'Jongo' }),
             local: identifier({ name: 'JongoGirl' }),
-            importKind: 'value',
           }),
         ],
         source: literal('@atlaskit/modal-dialog'),
@@ -275,10 +250,6 @@ describe('objectExpression', () => {
       objectExpression({
         properties: [
           property({
-            shorthand: false,
-            computed: false,
-            kind: 'init',
-            method: false,
             key: identifier('hello'),
             value: identifier('world'),
           }),
@@ -307,8 +278,6 @@ describe('memberExpression', () => {
       memberExpression({
         object: identifier('hello'),
         property: identifier('x'),
-        computed: false,
-        optional: false,
       }).toString()
     ).eq('hello.x')
   })
@@ -318,7 +287,6 @@ describe('memberExpression', () => {
       memberExpression({
         object: identifier('hello'),
         property: identifier('x'),
-        optional: false,
         computed: true,
       }).toString()
     ).eq('hello[x]')
@@ -366,8 +334,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              selfClosing: false,
-              attributes: [],
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -392,7 +358,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              selfClosing: false,
               attributes: [
                 jsxAttribute({
                   name: jsxIdentifier({ name: 'isOpen' }),
@@ -431,8 +396,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              attributes: [],
-              selfClosing: false,
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -445,11 +408,8 @@ describe('jsxElement', () => {
               jsxElement({
                 openingElement: jsxOpeningElement({
                   selfClosing: true,
-                  attributes: [],
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
-                children: [],
-                closingElement: null,
               }),
             ],
           })
@@ -466,8 +426,6 @@ describe('jsxElement', () => {
         String(
           jsxElement({
             openingElement: jsxOpeningElement({
-              attributes: [],
-              selfClosing: false,
               name: jsxIdentifier({ name: 'Modal' }),
             }),
             closingElement: jsxClosingElement({
@@ -483,8 +441,6 @@ describe('jsxElement', () => {
                   end: { column: 10, line: 0 },
                 },
                 openingElement: jsxOpeningElement({
-                  attributes: [],
-                  selfClosing: false,
                   name: jsxIdentifier({ name: 'BadPeople' }),
                 }),
                 children: [
@@ -501,8 +457,6 @@ describe('jsxElement', () => {
                       name: jsxIdentifier({ name: 'VeryNested' }),
                     }),
                     openingElement: jsxOpeningElement({
-                      attributes: [],
-                      selfClosing: false,
                       name: jsxIdentifier({ name: 'VeryNested' }),
                     }),
                   }),
@@ -575,7 +529,6 @@ describe('jsxOpeningElement', () => {
           comment({ value: commentValue, type: AST_TOKEN_TYPES.Line }),
         ],
         name: jsxIdentifier({ name: 'Modal' }),
-        attributes: [],
         selfClosing: true,
       }).toString()
     ).eq(`// ${commentValue}\n<Modal />`)
@@ -589,7 +542,6 @@ describe('jsxOpeningElement', () => {
           comment({ value: 'Second line', type: AST_TOKEN_TYPES.Line }),
         ],
         name: jsxIdentifier('Modal'),
-        attributes: [],
         selfClosing: true,
       }).toString()
     ).eq(`// ${commentValue}\n// Second line\n<Modal />`)
@@ -599,7 +551,6 @@ describe('jsxOpeningElement', () => {
     expect(
       jsxOpeningElement({
         name: jsxIdentifier('Modal'),
-        attributes: [],
         selfClosing: true,
       }).toString()
     ).eq(`<Modal />`)
@@ -608,8 +559,6 @@ describe('jsxOpeningElement', () => {
   test('no attributes not-self closing', () => {
     expect(
       jsxOpeningElement({
-        selfClosing: false,
-        attributes: [],
         name: jsxIdentifier('Modal'),
       }).toString()
     ).eq(`<Modal>`)

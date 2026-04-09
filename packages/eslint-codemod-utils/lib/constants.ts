@@ -123,7 +123,12 @@ import type { StringableASTNode as StringableASTNodeImport } from './types'
 
 export const DEFAULT_WHITESPACE = '\n  '
 
-export const typeToHelperLookup = new Proxy(
+// Explicit annotation: the inferred object type for the proxy target is so
+// deep (every helper's destructured `Loose<…>` signature is distinct) that
+// `tsc --declaration` cannot serialize it into the emitted `.d.ts`. Pinning
+// the exported type to the compact `Partial<NodeMap>` shape keeps the public
+// declaration portable without weakening the runtime dispatch contract.
+export const typeToHelperLookup: Partial<NodeMap> = new Proxy(
   {
     // TODO implement
     AssignmentPattern: identity,

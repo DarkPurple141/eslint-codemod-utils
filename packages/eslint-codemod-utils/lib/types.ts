@@ -13,15 +13,83 @@ type BaseNode = TSESTree.Node
  */
 type LocationKeys = 'loc' | 'range'
 
+/**
+ * Bookkeeping fields on TSESTree nodes that every node-factory helper in
+ * this library either already provides a runtime default for, or where a
+ * `false` / `[]` / `null` default is unambiguous. Marking these optional in
+ * the helper input lets callers focus on semantic fields:
+ *
+ * ```ts
+ * // Before: forced to declare every flag every time
+ * property({ key, value, kind: 'init', method: false, computed: false, shorthand: false })
+ *
+ * // After: the helper fills the defaults in
+ * property({ key, value })
+ * ```
+ *
+ * The list is deliberately broad — any field here MUST either:
+ *   (a) have a sensible, unambiguous "empty" default the helper can supply,
+ *       and the helper MUST actually supply it, or
+ *   (b) already be declared optional on the underlying TSESTree node (in
+ *       which case marking it optional again is a harmless no-op).
+ *
+ * The runtime-default obligation is the important part — see `nodes.ts` and
+ * `jsx-nodes.ts` for the helpers that honour it.
+ */
+type DefaultableFields =
+  // Call/new/member/chain flags
+  | 'optional'
+  // Function flavour flags
+  | 'async'
+  | 'generator'
+  // Property / MethodDefinition / PropertyDefinition discriminants
+  | 'computed'
+  | 'method'
+  | 'shorthand'
+  | 'kind'
+  // Class member modifiers (all declared optional on TSESTree already;
+  // listing them here is a harmless no-op that documents intent).
+  | 'static'
+  | 'override'
+  | 'declare'
+  | 'readonly'
+  | 'definite'
+  | 'accessibility'
+  // Import/export metadata. NOTE: `exported` is deliberately excluded —
+  // it's required on `ExportSpecifier` (the thing being re-exported) even
+  // though it's nullable on `ExportAllDeclaration`, so flagging it globally
+  // optional would silently weaken the `ExportSpecifier` contract.
+  | 'importKind'
+  | 'exportKind'
+  | 'assertions'
+  // JSX-specific defaults
+  | 'attributes'
+  | 'selfClosing'
+  | 'leadingComments'
+  | 'closingElement'
+  | 'children'
+  // TSESTree fields declared optional on most nodes; listing them here
+  // lets the handful of required positions stay required while everywhere
+  // else picks up the default-free ergonomics.
+  | 'decorators'
+  | 'typeParameters'
+
+type LooseKeys = LocationKeys | DefaultableFields
+
 export type EslintCodemodUtilsBaseNode = BaseNode
 
 /**
- * A recursive transformer that makes every `loc` and `range` field in an AST
- * node (and its children) optional. The `parent` field is dropped because
- * `TSESTree.BaseNode.parent` is self-referential (every node points back to
- * its parent), which would cause `Loose<T>` to recurse infinitely.
+ * A recursive transformer that loosens a TSESTree node for use in node-factory
+ * helpers. It:
  *
- * Distributive conditional type semantics mean that unions like
+ *  1. Drops `parent` — `TSESTree.BaseNode.parent` is self-referential, which
+ *     would cause `Loose<T>` to recurse infinitely.
+ *  2. Makes `loc`/`range` optional at every depth, so constructed nodes don't
+ *     need synthetic location info.
+ *  3. Makes every field in `DefaultableFields` optional at every depth, so
+ *     callers don't have to pass bookkeeping flags the helpers can default.
+ *
+ * Distributive conditional type semantics mean unions like
  * `TSESTree.Literal = StringLiteral | NumberLiteral | ...` still distribute
  * cleanly through `Loose<…>`, so discriminants are preserved.
  */
@@ -44,12 +112,14 @@ export type Loose<T> =
     ? {
         // Homomorphic mapped type with key remapping preserves `?` modifiers
         // from the source for every retained field.
-        [K in keyof T as K extends 'parent' | LocationKeys ? never : K]: Loose<
+        [K in keyof T as K extends 'parent' | LooseKeys ? never : K]: Loose<
           T[K]
         >
       } & {
-        // loc/range are always optional in the loose view.
-        [K in Extract<keyof T, LocationKeys>]?: T[K]
+        // loc/range + every known defaultable field become optional in the
+        // loose view. Values themselves are still recursively loosened so
+        // that nested constructed nodes compose cleanly.
+        [K in Extract<keyof T, LooseKeys>]?: Loose<T[K]>
       }
     : T
 

@@ -500,7 +500,14 @@ export const importDefaultSpecifier: StringableASTNodeFn<
  */
 export const exportNamedDeclaration: StringableASTNodeFn<
   ESTree.ExportNamedDeclaration
-> = ({ declaration, specifiers, source, ...other }) => {
+> = ({
+  declaration,
+  specifiers,
+  source,
+  assertions = [],
+  exportKind = 'value',
+  ...other
+}) => {
   // `ExportNamedDeclaration` is a discriminated union with mutually-exclusive
   // `source`/`declaration`/`specifiers` invariants that depend on runtime
   // values. TypeScript can't narrow to one variant here, so fall back to a
@@ -511,6 +518,8 @@ export const exportNamedDeclaration: StringableASTNodeFn<
     declaration,
     specifiers,
     source,
+    assertions,
+    exportKind,
     type: AST_NODE_TYPES.ExportNamedDeclaration,
     toString: () =>
       `export ${declaration ? node(declaration) : ''}${
@@ -561,14 +570,31 @@ export const exportDefaultDeclaration: StringableASTNodeFn<
  *
  * @returns {ESTree.ExportAllDeclaration}
  */
-export const exportAllDeclaration: StringableASTNodeFn<
-  ESTree.ExportAllDeclaration
-> = ({ source, exported = null, ...other }) => {
+/**
+ * `exported` is made optional here (defaults to `null`) via a narrowed input
+ * type so callers don't have to write `exported: null` for the common
+ * `export * from '…'` case. It stays required on the underlying TSESTree type
+ * (and on `ExportSpecifier`, which is why it's deliberately excluded from the
+ * shared `DefaultableFields` list).
+ */
+export const exportAllDeclaration: (
+  node: Omit<WithoutType<ESTree.ExportAllDeclaration>, 'exported'> & {
+    exported?: WithoutType<ESTree.ExportAllDeclaration>['exported']
+  }
+) => StringableASTNode<ESTree.ExportAllDeclaration> = ({
+  source,
+  exported = null,
+  assertions = [],
+  exportKind = 'value',
+  ...other
+}) => {
   return {
     ...other,
     type: AST_NODE_TYPES.ExportAllDeclaration,
     source,
     exported,
+    assertions,
+    exportKind,
     toString: () =>
       `export * ${exported ? `as ${node(exported)} ` : ''}from ${node(source)}`,
   }
@@ -577,12 +603,14 @@ export const exportAllDeclaration: StringableASTNodeFn<
 export const exportSpecifier: StringableASTNodeFn<ESTree.ExportSpecifier> = ({
   exported,
   local,
+  exportKind = 'value',
   ...other
 }) => {
   return {
     ...other,
     exported,
     local,
+    exportKind,
     type: AST_NODE_TYPES.ExportSpecifier,
     toString: () =>
       local.name !== exported.name
@@ -955,11 +983,19 @@ export const templateElement: StringableASTNodeFn<ESTree.TemplateElement> = ({
 
 export const importDeclaration: StringableASTNodeFn<
   ESTree.ImportDeclaration
-> = ({ specifiers, source, ...other }) => ({
+> = ({
+  specifiers,
+  source,
+  importKind = 'value',
+  assertions = [],
+  ...other
+}) => ({
   ...other,
   type: AST_NODE_TYPES.ImportDeclaration,
   specifiers,
   source,
+  importKind,
+  assertions,
   toString: () => {
     if (!specifiers.length) {
       return `import '${source.value}'`
@@ -983,7 +1019,7 @@ export const importDeclaration: StringableASTNodeFn<
       otherSpecifiers.length > 4 ? `,${DEFAULT_WHITESPACE}` : ', '
     const leadOrEndSpecifier = otherSpecifiers.length > 4 ? '\n' : ' '
 
-    return `import ${other['importKind'] === 'type' ? 'type ' : ''}${
+    return `import ${importKind === 'type' ? 'type ' : ''}${
       defaultSpecifier ? defaultSpecifier.local.name : ''
     }${
       otherSpecifiers.length

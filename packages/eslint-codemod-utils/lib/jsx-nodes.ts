@@ -107,7 +107,7 @@ export const jsxClosingFragment: StringableASTNodeFn<
 export const jsxFragment: StringableASTNodeFn<ESTree.JSXFragment> = ({
   openingFragment,
   closingFragment,
-  children,
+  children = [],
   ...other
 }) => ({
   ...other,

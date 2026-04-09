@@ -112,8 +112,6 @@ const rule = createRule({
                   jsxElement({
                     openingElement: jsxOpeningElement({
                       name: jsxId,
-                      selfClosing: false,
-                      attributes: [],
                     }),
                     closingElement: jsxClosingElement({ name: jsxId }),
                     children: renderTitleChildren(title?.value ?? null),

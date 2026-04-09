@@ -174,8 +174,6 @@ const rule = createRule({
                       },
                       openingElement: jsxOpeningElement({
                         name: modalHeaderIdentifer,
-                        selfClosing: false,
-                        attributes: [],
                       }),
                       closingElement: jsxClosingElement({
                         name: modalHeaderIdentifer,
@@ -206,7 +204,6 @@ const rule = createRule({
               const namedImport = importSpecifier({
                 local: identifier('ModalHeader'),
                 imported: identifier('ModalHeader'),
-                importKind: 'value',
               })
 
               fixes.push(

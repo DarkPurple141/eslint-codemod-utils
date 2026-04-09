@@ -60,11 +60,6 @@ const rule = createRule({
                         return property({
                           key: identifier(id),
                           value: arg,
-                          kind: 'init',
-                          method: false,
-                          computed: false,
-                          shorthand: false,
-                          optional: false,
                         })
                       })
                       .filter(

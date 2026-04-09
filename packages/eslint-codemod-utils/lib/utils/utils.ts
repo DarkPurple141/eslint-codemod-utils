@@ -109,12 +109,11 @@ export function insertImportSpecifier(
     importName === 'default'
       ? // Narrowed above — `specifierAlias` is guaranteed non-undefined here.
         importDefaultSpecifier({
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            local: identifier(specifierAlias!),
-          })
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          local: identifier(specifierAlias!),
+        })
       : importSpecifier({
           imported: identifier(importName),
-          importKind: 'value',
           local: specifierAlias ? identifier(specifierAlias) : id,
         })
 
@@ -148,8 +147,6 @@ export function insertImportDeclaration(
   specifiers: (string | { local: string; imported: string })[]
 ): StringableASTNode<ESTree.ImportDeclaration> {
   return importDeclaration({
-    importKind: 'value',
-    assertions: [],
     source: literal(source),
     specifiers: specifiers.map((spec) => {
       return spec === 'default'
@@ -157,7 +154,6 @@ export function insertImportDeclaration(
             local: identifier('__default'),
           })
         : importSpecifier({
-            importKind: 'value',
             imported:
               typeof spec === 'string'
                 ? identifier(spec)
