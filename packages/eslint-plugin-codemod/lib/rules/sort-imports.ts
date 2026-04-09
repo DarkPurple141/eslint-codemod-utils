@@ -73,15 +73,11 @@ const rule = createRule<[SortImportsOptions?], 'sortMembersAlphabetically'>({
         }))
 
         const sortedIndexed = [...indexed].sort((a, b) => {
-          if (
-            isNodeOfType(a.spec, AST_NODE_TYPES.ImportDefaultSpecifier)
-          ) {
+          if (isNodeOfType(a.spec, AST_NODE_TYPES.ImportDefaultSpecifier)) {
             return -1
           }
 
-          if (
-            isNodeOfType(b.spec, AST_NODE_TYPES.ImportDefaultSpecifier)
-          ) {
+          if (isNodeOfType(b.spec, AST_NODE_TYPES.ImportDefaultSpecifier)) {
             return 1
           }
 

@@ -43,18 +43,18 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10.26.0
 
-      - name: Set node version to 22.x
+      - name: Set node version to 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
       # npm CLI must be >= 11.5.1 to participate in the OIDC token exchange.
-      # Node 22 LTS ships with npm 10.x, so upgrade the global npm to the
-      # latest stable release before any publish step runs.
+      # Node 24 ships with npm 10.x, so upgrade the global npm to the latest
+      # stable release before any publish step runs.
       - name: Upgrade npm to a version that supports OIDC trusted publishing
         run: npm install --global npm@latest
 

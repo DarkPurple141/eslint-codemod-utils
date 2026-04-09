@@ -29,9 +29,7 @@ type JsxChild =
   | undefined
 
 export const jsx = function (
-  type:
-    | string
-    | ((...args: any[]) => StringableASTNode<ESTree.JSXElement>),
+  type: string | ((...args: any[]) => StringableASTNode<ESTree.JSXElement>),
   props: JsxProps,
   ...children: JsxChild[]
 ): StringableASTNode<ESTree.JSXElement> | undefined {

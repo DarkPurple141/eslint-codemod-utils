@@ -1,8 +1,4 @@
-import {
-  AST_NODE_TYPES,
-  isNodeOfType,
-  TSESTree,
-} from 'eslint-codemod-utils'
+import { AST_NODE_TYPES, isNodeOfType, TSESTree } from 'eslint-codemod-utils'
 
 export function findF(node: TSESTree.CallExpression) {
   if (!isNodeOfType(node.callee, AST_NODE_TYPES.Identifier)) {

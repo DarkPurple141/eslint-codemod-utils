@@ -30,9 +30,7 @@ export const node = <EstreeNodeType extends EslintCodemodUtilsBaseNode>(
   // (doing so would require N-way correlated-union support). Narrow via a
   // single explicit cast — the map entries are authored to respect the
   // `NodeMap` contract, so the dispatch is safe at runtime.
-  type Handler = (
-    n: Loose<EstreeNodeType>
-  ) => StringableASTNode<EstreeNodeType>
+  type Handler = (n: Loose<EstreeNodeType>) => StringableASTNode<EstreeNodeType>
   const handler = typeToHelperLookup[
     estNode.type as keyof typeof typeToHelperLookup
   ] as unknown as Handler

@@ -9,6 +9,12 @@
     "jsx": "react-jsx",
     "jsxImportSource": "eslint-codemod-utils",
     "declaration": true,
+    // Skip typechecking of declaration files from dependencies. Without this
+    // we pick up drift between third-party `.d.ts` files (e.g. an older
+    // `vite@4`'s `FSWatcher` not matching the newer `@types/node` shape) that
+    // has nothing to do with our source. It's the tsconfig-base recommended
+    // default for a reason.
+    "skipLibCheck": true,
     "types": [
       "vitest/globals"
     ],

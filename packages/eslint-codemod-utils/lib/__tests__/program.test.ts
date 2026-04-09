@@ -9,9 +9,7 @@ describe('program', () => {
     // input type that `program(…)` accepts.
     expect(
       String(
-        program(
-          programFixture as unknown as WithoutType<TSESTree.Program>
-        )
+        program(programFixture as unknown as WithoutType<TSESTree.Program>)
       )
     ).eq(
       `import A, { Welcome } from '@atlaskit/welcome'
