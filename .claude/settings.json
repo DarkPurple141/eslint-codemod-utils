@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "halyard@halyard-labs": true
+  },
+  "extraKnownMarketplaces": {
+    "halyard-labs": {
+      "source": {
+        "source": "github",
+        "repo": "halyard-labs/claude-plugin-marketplace"
+      }
+    }
+  }
+}
